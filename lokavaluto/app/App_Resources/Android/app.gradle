@@ -1,0 +1,16 @@
+android { 
+    compileSdkVersion 29
+  defaultConfig {  
+    multiDexEnabled true
+    minSdkVersion 18
+    targetSdkVersion 29
+    versionCode 1
+    versionName "1.0.0"
+    ndk {
+      abiFilters.clear()
+    }
+  }
+  aaptOptions {
+    additionalParameters "--no-version-vectors"  
+  }  
+}

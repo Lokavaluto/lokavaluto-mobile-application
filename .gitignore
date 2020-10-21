@@ -1,0 +1,19 @@
+# JetBrains project files
+.idea
+
+# NPM
+node_modules
+
+# NativeScript application
+hooks
+platforms
+
+certs
+/.vscode/settings.json
+*/.vscode/settings.json
+.vscode
+pnpm-lock.yaml
+report.xml
+/cairn_mobile_end_user/dist
+/cairn_mobile_end_user/times.html
+google-services.json
