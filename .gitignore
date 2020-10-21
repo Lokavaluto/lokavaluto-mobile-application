@@ -17,3 +17,6 @@ report.xml
 /cairn_mobile_end_user/dist
 /cairn_mobile_end_user/times.html
 google-services.json
+**/Android/src/main/res/values*/strings.xml
+**/iOS/*.lproj/InfoPlist.strings
+**/iOS/*.lproj/Localizable.strings
