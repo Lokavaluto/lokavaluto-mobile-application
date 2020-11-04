@@ -1,10 +1,9 @@
 import * as Platform from '@nativescript/core/platform';
 import dayjs from 'dayjs';
-import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import calendar from 'dayjs/plugin/calendar';
+
 import { Address, NominatimAddress } from '../services/AuthService';
-dayjs.extend(LocalizedFormat);
-dayjs.extend(calendar);
+export { convertTime, convertDuration } from './locale';
+
 
 // const dayjs: (...args) => Dayjs = require('dayjs');
 // const Duration = require('duration');
@@ -31,22 +30,7 @@ dayjs.extend(calendar);
 //     return 'en-US';
 // }
 
-export function convertTime(date, formatStr: string) {
-    // clog('convertTime', date, formatStr);
-    return dayjs(date).format(formatStr);
-}
 
-// function createDateAsUTC(date) {
-//     return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), date.getHours(), date.getMinutes(), date.getSeconds());
-// }
-
-export function convertDuration(date, formatStr: string) {
-    const test = new Date(date);
-    test.setTime(test.getTime() + test.getTimezoneOffset() * 60 * 1000);
-    const result = dayjs(test).format(formatStr);
-    // clog('convertDuration', date, formatStr, test, result);
-    return result;
-}
 
 // export function convertValueToUnit(value: any, unit: UNITS, otherParam?): [string, string] {
 //     if (value === undefined || value === null) {

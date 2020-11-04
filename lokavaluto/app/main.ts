@@ -13,8 +13,8 @@ Vue.prototype.$crashReportService = crashReportService;
 // trace.addCategories(trace.categories.Transition);
 // trace.enable();
 
-import { init } from '@nativescript-community/push';
-init();
+// import { init } from '@nativescript-community/push';
+// init();
 
 import { cwarn } from '~/common/utils/logging';
 
@@ -36,6 +36,7 @@ Vue.config['debug'] = false;
 function throwVueError(err) {
     crashReportService.showError(err);
 }
+setMapPosKeys('lat', 'lon');
 
 Vue.config.errorHandler = (e, vm, info) => {
     if (e) {
@@ -44,7 +45,7 @@ Vue.config.errorHandler = (e, vm, info) => {
     }
 };
 
-Vue.config.warnHandler = function(msg, vm, trace) {
+Vue.config.warnHandler = function (msg, vm, trace) {
     cwarn(msg, trace);
 };
 
@@ -56,6 +57,7 @@ if (global.isIOS) {
 }
 
 import App from '~/common/components/App';
+import { setMapPosKeys } from '@nativescript-community/ui-carto/core/index.common';
 new Vue({
-    render: h => h(App)
+    render: (h) => h(App),
 }).$start();

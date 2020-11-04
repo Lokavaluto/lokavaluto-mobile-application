@@ -1,6 +1,7 @@
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
 import { iconColor, listBorderColor, subtitleColor } from '../variables';
+import { Color } from '@nativescript/core/color';
 
 @Component({
     inheritAttrs: false
@@ -35,9 +36,9 @@ export default class ListItem extends BaseVueComponent {
     @Prop({ default: 12, type: Number })
     topBottomPadding: number;
 
-    @Prop({ default: '#5C5C5C', type: String })
-    overlineColor: string;
-    @Prop({ default: subtitleColor, type: String })
+    @Prop({ default: ()=>new Color('#5C5C5C'), type: Color })
+    overlineColor: Color;
+    @Prop({ default: ()=>subtitleColor, type: Color })
     subtitleColor: string;
 
     @Watch('avatar')

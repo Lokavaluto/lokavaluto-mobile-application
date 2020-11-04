@@ -1,9 +1,11 @@
 import { ActivityIndicator } from '@nativescript-community/ui-material-activityindicator';
 import { AlertDialog } from '@nativescript-community/ui-material-dialogs';
 import { Frame, Label, Page, StackLayout, View } from '@nativescript/core';
+import { Color } from '@nativescript/core/color';
+import { Progress } from '@nativescript/core/ui';
 import { openUrl } from '@nativescript/core/utils/utils';
 import { bind } from 'helpful-decorators';
-// import InAppBrowser from 'nativescript-inappbrowser';
+import {InAppBrowser} from 'nativescript-inappbrowser';
 import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
@@ -21,13 +23,13 @@ export interface BaseVueComponentRefs {
 }
 
 export default class BaseVueComponent extends Vue {
-    protected loadingIndicator: AlertDialog & { label?: Label };
+    protected loadingIndicator: AlertDialog & { label?: Label; indicator?: ActivityIndicator; progress?: Progress };
     $refs: BaseVueComponentRefs;
-    @Prop({ type: String, default: primaryColor })
+    @Prop({ type: Color, default: ()=>primaryColor })
     public themeColor;
-    @Prop({ type: String, default: darkColor })
+    @Prop({ type: Color, default: ()=>darkColor })
     public darkColor;
-    @Prop({ type: String, default: accentColor })
+    @Prop({ type: Color, default: ()=> accentColor })
     public accentColor;
     public appFontFamily = appFontFamily;
     needsRoundedWatchesHandle = false;
@@ -40,24 +42,29 @@ export default class BaseVueComponent extends Vue {
     noop() {}
     getLoadingIndicator() {
         if (!this.loadingIndicator) {
-            const stack = new StackLayout();
-            stack.padding = 10;
-            stack.orientation = 'horizontal';
-            const activityIndicator = new ActivityIndicator();
-            activityIndicator.className = 'activity-indicator';
-            activityIndicator.busy = true;
-            stack.addChild(activityIndicator);
-            const label = new Label();
-            label.paddingLeft = 15;
-            label.textWrap = true;
-            label.verticalAlignment = 'middle';
-            label.fontSize = 16;
-            stack.addChild(label);
+            const instance = new (require('./LoadingIndicator.vue').default)();
+            instance.$mount();
+            const view = instance.nativeView;
+            // const stack = new GridLayout();
+            // stack.padding = 10;
+            // stack.style.rows = 'auto,auto';
+            // const activityIndicator = new ActivityIndicator();
+            // activityIndicator.className = 'activity-indicator';
+            // activityIndicator.busy = true;
+            // stack.addChild(activityIndicator);
+            // const label = new Label();
+            // label.paddingLeft = 15;
+            // label.textWrap = true;
+            // label.verticalAlignment = 'middle';
+            // label.fontSize = 16;
+            // stack.addChild(label);
             this.loadingIndicator = new AlertDialog({
-                view: stack,
-                cancelable: false
+                view,
+                cancelable: false,
             });
-            this.loadingIndicator.label = label;
+            this.loadingIndicator.indicator = view.getChildAt(0) as ActivityIndicator;
+            this.loadingIndicator.label = view.getChildAt(1) as Label;
+            this.loadingIndicator.progress = view.getChildAt(2) as Progress;
         }
         return this.loadingIndicator;
     }
@@ -113,30 +120,27 @@ export default class BaseVueComponent extends Vue {
     }
     async openLink(url: string) {
         try {
-            // const available = await InAppBrowser.isAvailable();
-            // if (available) {
-            //     const result = await InAppBrowser.open(url, {
-            //         // iOS Properties
-            //         dismissButtonStyle: 'close',
-            //         preferredBarTintColor: primaryColor,
-            //         preferredControlTintColor: 'white',
-            //         readerMode: false,
-            //         animated: true,
-            //         // modalPresentationStyle: 'fullScreen',
-            //         // modalTransitionStyle: 'partialCurl',
-            //         // modalEnabled: true,
-            //         enableBarCollapsing: false,
-            //         // Android Properties
-            //         showTitle: true,
-            //         toolbarColor: primaryColor,
-            //         secondaryToolbarColor: 'white',
-            //         enableUrlBarHiding: true,
-            //         enableDefaultShare: true,
-            //         forceCloseOnRedirection: false
-            //     });
-            // } else {
+            const available = await InAppBrowser.isAvailable();
+            if (available) {
+                const result = await InAppBrowser.open(url, {
+                    // iOS Properties
+                    dismissButtonStyle: 'close',
+                    preferredBarTintColor: primaryColor as any,
+                    preferredControlTintColor: 'white',
+                    readerMode: false,
+                    animated: true,
+                    enableBarCollapsing: false,
+                    // Android Properties
+                    showTitle: true,
+                    toolbarColor: primaryColor  as any,
+                    secondaryToolbarColor: 'white',
+                    enableUrlBarHiding: true,
+                    enableDefaultShare: true,
+                    forceCloseOnRedirection: false
+                });
+            } else {
                 openUrl(url);
-            // }
+            }
         } catch (error) {
             alert({
                 title: 'Error',

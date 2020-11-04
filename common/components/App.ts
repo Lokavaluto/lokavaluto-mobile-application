@@ -1,7 +1,7 @@
 import { AppURL, handleOpenURL } from '@nativescript-community/appurl';
 import * as EInfo from '@nativescript-community/extendedinfo';
 import * as perms from '@nativescript-community/perms';
-import { Message, registerForPushNotifications } from '@nativescript-community/push';
+// import { Message, registerForPushNotifications } from '@nativescript-community/push';
 import { confirm, login } from '@nativescript-community/ui-material-dialogs';
 import { showSnack } from '@nativescript-community/ui-material-snackbar';
 import { TextField } from '@nativescript-community/ui-material-textfield';
@@ -232,65 +232,65 @@ export default class App extends BaseVueComponent {
         this.userProfile = this.$authService.userProfile || null;
         this.appVersion = EInfo.getVersionNameSync() + '.' + EInfo.getBuildNumberSync();
     }
-    onPushMessage(message: Message) {
-        console.log('Push message received ', message);
-        observable.notify({ eventName: 'pushMessage', object: observable, message });
-    }
-    onPushToken(token: string) {
-        console.log('onPushToken', token);
-        this.$authService.registerPushToken(token).catch(this.showError);
-    }
+    // onPushMessage(message: Message) {
+    //     console.log('Push message received ', message);
+    //     observable.notify({ eventName: 'pushMessage', object: observable, message });
+    // }
+    // onPushToken(token: string) {
+    //     console.log('onPushToken', token);
+    //     this.$authService.registerPushToken(token).catch(this.showError);
+    // }
     async registerForPushNotifs() {
         // added this here so we can do some wiring
-        try {
-            const result = await registerForPushNotifications({
-                onPushTokenReceivedCallback: this.onPushToken.bind(this),
-                onMessageReceivedCallback: this.onPushMessage.bind(this),
-                // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
-                showNotifications: true,
-                // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
-                showNotificationsWhenInForeground: true
-            });
-            console.log('Registered for push', result);
-            if (global.isAndroid) {
-                if (android.os.Build.VERSION.SDK_INT >= 26) {
-                    const color = android.graphics.Color.parseColor(primaryColor);
-                    const context = androidApp.context;
-                    // API level 26 ("Android O") supports notification channels.
+        // try {
+        //     const result = await registerForPushNotifications({
+        //         onPushTokenReceivedCallback: this.onPushToken.bind(this),
+        //         onMessageReceivedCallback: this.onPushMessage.bind(this),
+        //         // Whether you want this plugin to automatically display the notifications or just notify the callback. Currently used on iOS only. Default true.
+        //         showNotifications: true,
+        //         // Whether you want this plugin to always handle the notifications when the app is in foreground. Currently used on iOS only. Default false.
+        //         showNotificationsWhenInForeground: true
+        //     });
+        //     console.log('Registered for push', result);
+        //     if (global.isAndroid) {
+        //         if (android.os.Build.VERSION.SDK_INT >= 26) {
+        //             const color = android.graphics.Color.parseColor(primaryColor);
+        //             const context = androidApp.context;
+        //             // API level 26 ("Android O") supports notification channels.
 
-                    const service = context.getSystemService(
-                        android.content.Context.NOTIFICATION_SERVICE
-                    ) as android.app.NotificationManager;
+        //             const service = context.getSystemService(
+        //                 android.content.Context.NOTIFICATION_SERVICE
+        //             ) as android.app.NotificationManager;
 
-                    // create channel
-                    let channel = new android.app.NotificationChannel(
-                        context.getString(ad.resources.getStringId('payment_channel_id')),
-                        $t('payment_channel_name'),
-                        android.app.NotificationManager.IMPORTANCE_HIGH
-                    );
-                    // channel.setDescription($t('payment_channel_description'));
-                    channel.setLightColor(color);
-                    service.createNotificationChannel(channel);
+        //             // create channel
+        //             let channel = new android.app.NotificationChannel(
+        //                 context.getString(ad.resources.getStringId('payment_channel_id')),
+        //                 $t('payment_channel_name'),
+        //                 android.app.NotificationManager.IMPORTANCE_HIGH
+        //             );
+        //             // channel.setDescription($t('payment_channel_description'));
+        //             channel.setLightColor(color);
+        //             service.createNotificationChannel(channel);
 
-                    channel = new android.app.NotificationChannel(
-                        context.getString(ad.resources.getStringId('newpro_channel_id')),
-                        $t('newpro_channel_name'),
-                        android.app.NotificationManager.IMPORTANCE_DEFAULT
-                    );
-                    // channel.setDescription($t('newpro_channel_description'));
-                    channel.setLightColor(color);
-                    service.createNotificationChannel(channel);
-                    return true;
-                } else {
-                    return false;
-                }
-            }
-        } catch (err) {
-            if (err.toString().endsWith('MISSING_INSTANCEID_SERVICE')) {
-                err = $tc('no_google_play_services');
-            }
-            this.showError(err);
-        }
+        //             channel = new android.app.NotificationChannel(
+        //                 context.getString(ad.resources.getStringId('newpro_channel_id')),
+        //                 $t('newpro_channel_name'),
+        //                 android.app.NotificationManager.IMPORTANCE_DEFAULT
+        //             );
+        //             // channel.setDescription($t('newpro_channel_description'));
+        //             channel.setLightColor(color);
+        //             service.createNotificationChannel(channel);
+        //             return true;
+        //         } else {
+        //             return false;
+        //         }
+        //     }
+        // } catch (err) {
+        //     if (err.toString().endsWith('MISSING_INSTANCEID_SERVICE')) {
+        //         err = $tc('no_google_play_services');
+        //     }
+        //     this.showError(err);
+        // }
     }
 
     onLoaded() {

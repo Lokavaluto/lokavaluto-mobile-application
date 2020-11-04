@@ -1,13 +1,17 @@
-import { Device } from '@nativescript/core/platform';
 import { loadLocaleJSON } from '@nativescript-community/l';
-import { prefs } from '../services/preferences';
-export { l as $t, lt as $tt, lu as $tu, lc as $tc } from '@nativescript-community/l';
+import { getString } from '@nativescript/core/application-settings';
+import { Device } from '@nativescript/core/platform';
 import dayjs from 'dayjs';
-const supportedLanguages = ['en', 'fr'];
-import { getString, setString } from '@nativescript/core/application-settings';
 import updateLocale from 'dayjs/plugin/updateLocale';
+import { prefs } from '../services/preferences';
+import LocalizedFormat from 'dayjs/plugin/localizedFormat';
+import calendar from 'dayjs/plugin/calendar'
+export { l as $t, lc as $tc, lt as $tt, lu as $tu } from '@nativescript-community/l';
+const supportedLanguages = SUPPORTED_LOCALES;
 
 dayjs.extend(updateLocale);
+dayjs.extend(calendar);
+dayjs.extend(LocalizedFormat);
 
 function setLang(newLang) {
     newLang = getOwmLanguage(newLang);
@@ -70,6 +74,18 @@ function getOwmLanguage(language) {
     }
 }
 export let lang;
+
+export function convertTime(date, formatStr: string) {
+    return dayjs(date).format(formatStr);
+}
+
+
+export function convertDuration(date, formatStr: string) {
+    const test = new Date(date);
+    test.setTime(test.getTime() + test.getTimezoneOffset() * 60 * 1000);
+    const result = dayjs(test).format(formatStr);
+    return result;
+}
 
 // const rtf = new Intl.RelativeTimeFormat('es');
 

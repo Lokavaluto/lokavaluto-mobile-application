@@ -1,8 +1,11 @@
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="fill">
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="fill">
     <item>
-        <color android:color="@color/ns_primary"/>
+        <shape>
+            <solid android:color="@color/ns_primaryDark" />
+        </shape>
     </item>
-    <item>
-        <bitmap android:gravity="center" android:src="@drawable/logo" />
+    <!-- Your product logo - 144dp color version of your app icon -->
+    <item android:gravity="center"  android:drawable="@drawable/ic_logo_big">
     </item>
 </layer-list>

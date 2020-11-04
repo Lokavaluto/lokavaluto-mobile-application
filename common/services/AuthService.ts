@@ -84,31 +84,55 @@ export enum TransactionType {
 }
 
 export class User {
+    contact_info:{
+        phone:number
+        mobile:number
+        email:string
+        website:string
+    }
+    local_group:string
+    exchange_counter:string
+    convention_signature_date:string
+    address:{
+        city: string, 
+        zip: string,
+        street:string
+    }
+    coords: {
+        partner_lat:number
+        partner_lon:number
+    }
+    activities: {
+        member_comment:string
+        main_activity:string
+    }
+    name:string
+    itinerant:string
+    [k:string]:any
     // webPushSubscriptions: string[] = null;
-    phoneNumbers: PhoneNumber[] = null;
-    smsIds: SmsId[] = null;
+    // phoneNumbers: PhoneNumber[] = null;
+    // smsIds: SmsId[] = null;
     // adherent: true = null;
     // admin: false = null;
-    mainICC: string = null;
-    autocompleteLabel?: string = null;
-    name: string = null;
-    creationDate: number = null; // timestamp
-    address: Address = null;
-    excerpt: string = null;
-    description: string = null;
-    image: string = null;
+    // mainICC: string = null;
+    // autocompleteLabel?: string = null;
+    // name: string = null;
+    // creationDate: number = null; // timestamp
+    // excerpt: string = null;
+    // description: string = null;
+    // image: string = null;
     // identityDocument: {
     //     id: number;
     //     webPath: string;
     // } = null;
-    firstname: string = null;
-    id: number = null;
-    username: string = null;
-    email: string = null;
-    roles: Roles[] = null;
-    enabled: boolean = null;
-    groups: string[] = null;
-    groupNames: string[] = null;
+    // firstname: string = null;
+    // id: number = null;
+    // username: string = null;
+    // email: string = null;
+    // roles: Roles[] = null;
+    // enabled: boolean = null;
+    // groups: string[] = null;
+    // groupNames: string[] = null;
 }
 
 const UserKeys = Object.getOwnPropertyNames(new User());
@@ -158,8 +182,8 @@ function cleanupUser(user: any) {
         result.address = {
             street1: result.address.street1,
             street2: result.address.street2,
-            latitude: result.address.latitude,
-            longitude: result.address.longitude,
+            lat: result.address.lat,
+            lon: result.address.lon,
             zipCity: {
                 zipCode: result.address.zipCity.zipCode,
                 city: result.address.zipCity.city,
@@ -183,12 +207,12 @@ function cleanupTransaction(transaction: any, myUserId) {
     result.reason = result.reason.split('\n')[0];
     // t.executionDate = dayjs(t.executionDate).valueOf();
     result.credit = !result.creditor || result.creditor.id === myUserId;
-    if (result.creditor) {
-        result.creditor = cleanupUser(result.creditor);
-    }
-    if (result.debitor) {
-        result.debitor = cleanupUser(result.debitor);
-    }
+    // if (result.creditor) {
+    //     result.creditor = cleanupUser(result.creditor);
+    // }
+    // if (result.debitor) {
+    //     result.debitor = cleanupUser(result.debitor);
+    // }
     return result;
 }
 
@@ -215,8 +239,8 @@ export interface Address {
     id: number;
     street1: string;
     street2: string;
-    latitude: number;
-    longitude: number;
+    lat: number;
+    lon: number;
     zipCity: ZipCity;
 }
 
@@ -664,8 +688,8 @@ export default class AuthService extends NetworkService {
                 r => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode
             )
             .map(r => ({
-                longitude: r.geometry && r.geometry.coordinates[0],
-                latitude: r.geometry && r.geometry.coordinates[1],
+                lon: r.geometry && r.geometry.coordinates[0],
+                lat: r.geometry && r.geometry.coordinates[1],
                 display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
                     r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
                 street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
@@ -757,16 +781,16 @@ export default class AuthService extends NetworkService {
         };
         if (mapBounds) {
             boundingBox = {
-                minLon: mapBounds.southwest.longitude + '',
-                maxLon: mapBounds.northeast.longitude + '',
-                minLat: mapBounds.southwest.latitude + '',
-                maxLat: mapBounds.northeast.latitude + ''
+                minLon: mapBounds.southwest.lon + '',
+                maxLon: mapBounds.northeast.lon + '',
+                minLat: mapBounds.southwest.lat + '',
+                maxLat: mapBounds.northeast.lat + ''
             };
         }
 
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         let result = await this.request<User[]>({
-            apiPath,
+            url:'https://lokavaluto.dev.myceliandre.fr/web/get_application_elements',
             method: 'POST',
             body: {
                 limit: limit || 100,
@@ -782,10 +806,12 @@ export default class AuthService extends NetworkService {
                 categories
             }
         });
+        result = (result as any).result || result;
+        console.log('result', result)
         if (!Array.isArray(result)) {
             result = [result];
         }
-        return result.filter(b => !!b).map(cleanupUser);
+        return result.filter(b => !!b);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         // this.lastBenificiariesUpdateTime = undefined;

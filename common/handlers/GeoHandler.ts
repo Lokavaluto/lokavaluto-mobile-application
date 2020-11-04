@@ -7,7 +7,6 @@ import { $t } from '../helpers/locale';
 import { DEV_LOG, clog } from '../utils/logging';
 
 import { GPS, GenericGeoLocation, Options as GeolocationOptions, setMockEnabled } from '@nativescript-community/gps';
-import { DefaultLatLonKeys } from '@nativescript-community/ui-carto/core';
 let geolocation: GPS;
 
 export const desiredAccuracy = global.isAndroid ? Accuracy.high : kCLLocationAccuracyBestForNavigation;
@@ -39,7 +38,7 @@ export enum SessionState {
     PAUSED = 'paused'
 }
 
-export type GeoLocation = GenericGeoLocation<DefaultLatLonKeys>;
+export type GeoLocation = GenericGeoLocation<LatLonKeys>;
 
 export const SessionStateEvent = 'sessionState';
 export const SessionChronoEvent = 'sessionChrono';
@@ -378,7 +377,7 @@ export class GeoHandler extends Observable {
     onNewLoc = (err, loc: GeoLocation) => {
         // clog(
         //     'onNewLoc test',
-        //     `${loc.speed && loc.speed.toFixed(1)}, loc:${loc.latitude.toFixed(2)},${loc.longitude.toFixed(2)}, ${loc.timestamp.toLocaleTimeString()}, ${loc.horizontalAccuracy}, ${
+        //     `${loc.speed && loc.speed.toFixed(1)}, loc:${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}, ${loc.timestamp.toLocaleTimeString()}, ${loc.horizontalAccuracy}, ${
         //         loc.verticalAccuracy
         //     }`
         // );
@@ -387,7 +386,7 @@ export class GeoHandler extends Observable {
         if (
             err ||
             loc.horizontalAccuracy >= 40 ||
-            (this.lastLoc && ((this.lastLoc.latitude === loc.latitude && this.lastLoc.longitude === loc.longitude) || this.lastLoc.timestamp === loc.timestamp))
+            (this.lastLoc && ((this.lastLoc.lat === loc.lat && this.lastLoc.lon === loc.lon) || this.lastLoc.timestamp === loc.timestamp))
         ) {
             return;
         }
@@ -479,7 +478,7 @@ export class GeoHandler extends Observable {
             if (TEST_LOGS) {
                 this.log(
                     'onNewLoc',
-                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.latitude.toFixed(2)},${loc.longitude.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${this
+                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${this
                         .currentSession.currentSpeed && this.currentSession.currentSpeed.toFixed(1)}, ${deltaDistance}, ${deltaTime}, ${deltaAlt}`
                 );
             }

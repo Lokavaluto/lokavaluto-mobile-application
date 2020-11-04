@@ -74,7 +74,7 @@
                         <Button :text="$tc('change_address')" @tap="changeAddress" />
                     </StackLayout>
                     <StackLayout v-else>
-                        <MapComponent v-if="!myProfile && userProfile.address && userProfile.address.latitude" ref="mapComp" @mapReady="onMapReady" rowSpan="4" :zoom="16" width="100%" height="150" />
+                        <MapComponent v-if="!myProfile && userProfile.address && userProfile.address.lat" ref="mapComp" @mapReady="onMapReady" rowSpan="4" :zoom="16" width="100%" height="150" />
 
                         <ListItem
                             v-if="userProfile.description"

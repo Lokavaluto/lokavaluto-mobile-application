@@ -23,8 +23,8 @@ export function getCenter(...coords: MapPos[]) {
 
     for (let i = 0, l = coords.length; i < l; ++i) {
         coord = coords[i];
-        lat = coord.latitude * TO_RAD;
-        lon = coord.longitude * TO_RAD;
+        lat = coord.lat * TO_RAD;
+        lon = coord.lon * TO_RAD;
 
         X += Math.cos(lat) * Math.cos(lon);
         Y += Math.cos(lat) * Math.sin(lon);
@@ -41,8 +41,8 @@ export function getCenter(...coords: MapPos[]) {
     lat = Math.atan2(Z, hyp);
 
     return {
-        latitude: lat * TO_DEG,
-        longitude: lon * TO_DEG
+        lat: lat * TO_DEG,
+        lon: lon * TO_DEG
     } as MapPos;
 }
 
@@ -62,9 +62,9 @@ export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; h
     const ne = bounds.northeast;
     const sw = bounds.southwest;
 
-    const latFraction = (latRad(ne.latitude) - latRad(sw.latitude)) / Math.PI;
+    const latFraction = (latRad(ne.lat) - latRad(sw.lat)) / Math.PI;
 
-    const lngDiff = ne.longitude - sw.longitude;
+    const lngDiff = ne.lon - sw.lon;
     const lngFraction = (lngDiff < 0 ? lngDiff + 360 : lngDiff) / 360;
 
     const latZoom = zoom(mapDim.height, worldDim, latFraction);
@@ -75,18 +75,18 @@ export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; h
 
 export function getBounds(sourceLocs: MapPos[]) {
     const northeast = {
-        latitude: -Infinity,
-        longitude: -Infinity
+        lat: -Infinity,
+        lon: -Infinity
     };
     const southwest = {
-        latitude: Infinity,
-        longitude: Infinity
+        lat: Infinity,
+        lon: Infinity
     };
     sourceLocs.forEach(l => {
-        northeast.latitude = Math.max(l.latitude, northeast.latitude);
-        southwest.latitude = Math.min(l.latitude, southwest.latitude);
-        northeast.longitude = Math.max(l.longitude, northeast.longitude);
-        southwest.longitude = Math.min(l.longitude, southwest.longitude);
+        northeast.lat = Math.max(l.lat, northeast.lat);
+        southwest.lat = Math.min(l.lat, southwest.lat);
+        northeast.lon = Math.max(l.lon, northeast.lon);
+        southwest.lon = Math.min(l.lon, southwest.lon);
     });
     console.log('getBounds', northeast, southwest);
     return new MapBounds(northeast, southwest);

@@ -84,14 +84,14 @@ export default class Profile extends PageComponent {
         this.$authService.on(UserProfileEvent, this.onProfileUpdate, this);
     }
     updateMapCenter() {
-        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.lat) {
             const map = this.$refs.mapComp.cartoMap;
             map.setFocusPos(this.userProfile.address, 0);
         }
     }
     onMapReady(e) {
         this.updateMapCenter();
-        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.latitude) {
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.lat) {
             this.$refs.mapComp.addGeoJSONPoints([this.userProfile]);
         }
     }

@@ -16,7 +16,7 @@ if (_sdkVersion >= 24) {
             } else {
                 this.unlockAndRun(
                     new java.lang.Runnable({
-                        run: () => this.handleClick()
+                        run: () => this.handleClick(),
                     })
                 );
             }
@@ -29,11 +29,7 @@ if (_sdkVersion >= 24) {
             const tapActionIntent = new android.content.Intent(this, activityClass);
             tapActionIntent.setAction(android.content.Intent.ACTION_MAIN);
             tapActionIntent.addCategory(android.content.Intent.CATEGORY_LAUNCHER);
-            tapActionIntent.setFlags(
-                android.content.Intent.FLAG_ACTIVITY_NEW_TASK |
-                    android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP |
-                    android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
-            );
+            tapActionIntent.setFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK | android.content.Intent.FLAG_ACTIVITY_SINGLE_TOP | android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP);
             this.startActivityAndCollapse(tapActionIntent);
         }
         handleClick() {
@@ -41,11 +37,7 @@ if (_sdkVersion >= 24) {
             const authService = Vue.prototype.$authService as AuthService;
             if (!authService.isLoggedIn()) {
                 this.showApp();
-                android.widget.Toast.makeText(
-                    androidApp.context,
-                    $t('loggedin_needed'),
-                    android.widget.Toast.LENGTH_SHORT
-                ).show();
+                android.widget.Toast.makeText(androidApp.context, $t('loggedin_needed'), android.widget.Toast.LENGTH_SHORT).show();
                 return;
             }
             if (appComp && appComp.isVisisble()) {

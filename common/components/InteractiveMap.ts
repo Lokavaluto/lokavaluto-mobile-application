@@ -80,7 +80,7 @@ export default class InteractiveMap extends BaseVueComponent {
     // map: Mapbox;
     onMapReady(e) {
         const map = (this._cartoMap = e.object as CartoMap);
-        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"latitude":45.2002,"longitude":5.7222}') as MapPos;
+        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"lat":45.2002,"lon":5.7222}') as MapPos;
         const zoom = appSettings.getNumber('mapZoom', 10);
         if (pos) {
             map.setFocusPos(pos, 0);
@@ -151,7 +151,7 @@ export default class InteractiveMap extends BaseVueComponent {
                 // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {
-                    // const geojson = GeoJSON.parse(r, { Point: ['address.latitude', 'address.longitude'], include: ['name', 'id'] });
+                    // const geojson = GeoJSON.parse(r, { Point: ['address.lat', 'address.lon'], include: ['name', 'id'] });
                     this.mapComp.addGeoJSONPoints(r);
                     // this.ignoreStable = true;
                     // this.mapComp.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
@@ -164,7 +164,10 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     selectItem(item: User) {
         this.selectedItem = item;
-        this.cartoMap.setFocusPos(item.address, 200);
+        this.cartoMap.setFocusPos({
+            lat:item.coords.partner_lat,
+            lon:item.coords.partner_lon
+        }, 200);
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         this.bottomSheetHolder.peek();
     }

@@ -5,7 +5,7 @@ import { $t } from '../helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
 import { Headers } from '@nativescript/core/http';
-import * as https from 'nativescript-akylas-https';
+import * as https from '@nativescript-community/https';
 
 export interface CacheOptions {
     diskLocation: string;

@@ -1,6 +1,9 @@
 /// <reference path="./node_modules/@nativescript/types-ios/lib/ios.d.ts" />
 /// <reference path="./node_modules/@nativescript/types-android/lib/android-28.d.ts" />
+/// <reference path="./node_modules/@nativescript/core/global-types.d.ts" />
 /// <reference path="./vue.shim.d.ts" />
+
+import { GenericGeoLocation } from "@nativescript-community/gps";
 
 // import { SmsListener } from '~/common/receivers/SMSReceiver';
 
@@ -37,11 +40,17 @@ declare const APP_TRANSFER_QRCODE_AMOUNT_PARAM: string;
 declare const APP_FULL_QRCODE_FORMAT: string;
 declare const WITH_PUSH_NOTIFICATIONS: boolean;
 declare const FAKE_ALL: boolean;
+declare const SUPPORTED_LOCALES: string[];
 
+
+type LatLonKeys = {
+    lat: number;
+    lon: number;
+    altitude?: number;
+};
 declare namespace com {
     export namespace lokavaluto {
         export namespace lokavaluto {
-
             class OkhttpCallback {
                 onStringResponse(responseString, statusCode, headers);
                 onFailure(call, error);

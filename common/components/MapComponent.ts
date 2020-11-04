@@ -1,5 +1,5 @@
 import { TWEEN } from '@nativescript-community/tween';
-import { DefaultLatLonKeys, MapPosVector } from '@nativescript-community/ui-carto/core';
+import { MapPosVector } from '@nativescript-community/ui-carto/core';
 import { GeoJSONVectorTileDataSource } from '@nativescript-community/ui-carto/datasources';
 import { PersistentCacheTileDataSource } from '@nativescript-community/ui-carto/datasources/cache';
 import { HTTPTileDataSource } from '@nativescript-community/ui-carto/datasources/http';
@@ -21,7 +21,7 @@ import { DEV_LOG } from '../utils/logging';
 import BaseVueComponent from './BaseVueComponent';
 const GeoJSON = require('geojson');
 
-const perimeterGeoJSON = require('~/assets/perimeter.json');
+// const perimeterGeoJSON = require('~/assets/perimeter.json');
 
 interface GeoJSONProperties {
     name: string;
@@ -32,7 +32,7 @@ const LOCATION_ANIMATION_DURATION = 300;
 
 @Component({})
 export default class MapComponent extends BaseVueComponent {
-    _cartoMap: CartoMap = null;
+    _cartoMap: CartoMap<LatLonKeys> = null;
     mapProjection: Projection = null;
     rasterLayer: RasterTileLayer = null;
     lastUserLocation: GeoLocation;
@@ -83,7 +83,7 @@ export default class MapComponent extends BaseVueComponent {
         this.geoHandler.on(UserLocationdEvent, this.onLocation, this);
     }
     onMapReady(e) {
-        const cartoMap = (this._cartoMap = e.object as CartoMap);
+        const cartoMap = (this._cartoMap = e.object as CartoMap<LatLonKeys>);
 
         setShowDebug(DEV_LOG);
         setShowInfo(DEV_LOG);
@@ -103,7 +103,7 @@ export default class MapComponent extends BaseVueComponent {
         options.setRotatable(true);
 
         cartoMap.setZoom(this.zoom, 0);
-        cartoMap.setFocusPos({ latitude: 45.2002, longitude: 5.7222 }, 0);
+        cartoMap.setFocusPos({ lat: 45.2002, lon: 5.7222 }, 0);
 
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -129,9 +129,9 @@ export default class MapComponent extends BaseVueComponent {
         });
         cartoMap.addLayer(this.rasterLayer);
 
-        this.getOrCreateLocalVectorTileLayer();
+        // this.getOrCreateLocalVectorTileLayer();
         // this.ignoreStable = true;
-        this.localVectorTileDataSource.setLayerGeoJSON(1, perimeterGeoJSON);
+        // this.localVectorTileDataSource.setLayerGeoJSON(1, perimeterGeoJSON);
 
         console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
         // setTimeout(() => {
@@ -179,8 +179,8 @@ export default class MapComponent extends BaseVueComponent {
 
     getCirclePoints(loc: Partial<GeoLocation>) {
         const EARTH_RADIUS = 6378137;
-        const centerLat = loc.latitude;
-        const centerLon = loc.longitude;
+        const centerLat = loc.lat;
+        const centerLon = loc.lon;
         const radius = loc.horizontalAccuracy;
         const N = Math.min(radius * 8, 100);
 
@@ -190,9 +190,9 @@ export default class MapComponent extends BaseVueComponent {
             const angle = (Math.PI * 2 * (i % N)) / N;
             const dx = radius * Math.cos(angle);
             const dy = radius * Math.sin(angle);
-            const latitude = centerLat + (180 / Math.PI) * (dy / EARTH_RADIUS);
-            const longitude = centerLon + ((180 / Math.PI) * (dx / EARTH_RADIUS)) / Math.cos((centerLat * Math.PI) / 180);
-            points.add({ latitude, longitude } as any);
+            const lat = centerLat + (180 / Math.PI) * (dy / EARTH_RADIUS);
+            const lon = centerLon + ((180 / Math.PI) * (dx / EARTH_RADIUS)) / Math.cos((centerLat * Math.PI) / 180);
+            points.add({ lat, lon } as any);
         }
 
         return points;
@@ -246,11 +246,11 @@ export default class MapComponent extends BaseVueComponent {
     }
     addGeoJSONPoints(points: any[]) {
         const geojson = GeoJSON.parse(points, {
-            Point: ['address.latitude', 'address.longitude'],
+            Point: ['address.lat', 'address.lon'],
             include: ['name', 'id']
         }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach(f => (f.properties.id = f.properties.id + ''));
-        geojson.features.unshift(perimeterGeoJSON.features[0]);
+        // geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
@@ -275,8 +275,8 @@ export default class MapComponent extends BaseVueComponent {
         if (
             !this._cartoMap ||
             (this.lastUserLocation &&
-                this.lastUserLocation.latitude === geoPos.latitude &&
-                this.lastUserLocation.longitude === geoPos.longitude &&
+                this.lastUserLocation.lat === geoPos.lat &&
+                this.lastUserLocation.lon === geoPos.lon &&
                 this.lastUserLocation.horizontalAccuracy === geoPos.horizontalAccuracy)
         ) {
             this.lastUserLocation = geoPos;
@@ -284,22 +284,22 @@ export default class MapComponent extends BaseVueComponent {
         }
 
         const position = {
-            latitude: geoPos.latitude,
-            longitude: geoPos.longitude,
+            lat: geoPos.lat,
+            lon: geoPos.lon,
             horizontalAccuracy: geoPos.horizontalAccuracy
         };
         // console.log('updateUserLocation', position, this.userFollow);
         if (this.userMarker) {
             const currentLocation = {
-                latitude: this.lastUserLocation.latitude,
-                longitude: this.lastUserLocation.longitude,
+                lat: this.lastUserLocation.lat,
+                lon: this.lastUserLocation.lon,
                 horizontalAccuracy: this.lastUserLocation.horizontalAccuracy
             };
             new TWEEN.Tween(currentLocation)
                 .to(
                     {
-                        latitude: position.latitude,
-                        longitude: position.longitude,
+                        lat: position.lat,
+                        lon: position.lon,
                         horizontalAccuracy: position.horizontalAccuracy
                     },
                     LOCATION_ANIMATION_DURATION
@@ -388,7 +388,7 @@ export default class MapComponent extends BaseVueComponent {
     //         this.getOrCreateLocalVectorLayer();
     //         this.localVectorDataSource.add(this.sessionLine);
     //     }
-    //     this.sessionLine.positions = this.session.locs.map(l => ({ latitude: l.latitude, longitude: l.longitude }));
+    //     this.sessionLine.positions = this.session.locs.map(l => ({ lat: l.lat, lon: l.lon }));
     // }
     // @Watch('session', { deep: true })
     // onSessionUpdated(s: Session) {
