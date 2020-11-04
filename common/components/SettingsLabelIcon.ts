@@ -1,3 +1,4 @@
+import { Color } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { iconColor, listBorderColor, mdiFontFamily, primaryColor, subtitleColor } from '../variables';
@@ -18,7 +19,7 @@ export default class SettingLabelIcon extends Vue {
     @Prop({ type: String }) title: string;
     @Prop({ type: String }) subtitle: string;
     @Prop({ type: String }) icon: string;
-    @Prop({ default: subtitleColor, type: String }) subtitleColor: string;
+    @Prop({ default: ()=>subtitleColor, type: Color }) subtitleColor: string;
     @Prop({ default: 2, type: Number })
     subtitleMaxLines: number;
 }

@@ -13,7 +13,9 @@
 
 		::icon {
 			marker-placement: [nuti::markers3d];
-			marker-file: @markerIcon;
+			marker-type: ellipse;
+			marker-line-color: #fff;
+			marker-fill: #8DA378;
 			marker-width: 24;
 			marker-height: 24;
 			marker-allow-overlap: true;

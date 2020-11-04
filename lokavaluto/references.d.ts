@@ -3,8 +3,6 @@
 /// <reference path="./node_modules/@nativescript/core/global-types.d.ts" />
 /// <reference path="./vue.shim.d.ts" />
 
-import { GenericGeoLocation } from "@nativescript-community/gps";
-
 // import { SmsListener } from '~/common/receivers/SMSReceiver';
 
 declare module '*.scss';
@@ -43,7 +41,7 @@ declare const FAKE_ALL: boolean;
 declare const SUPPORTED_LOCALES: string[];
 
 
-type LatLonKeys = {
+interface LatLonKeys {
     lat: number;
     lon: number;
     altitude?: number;

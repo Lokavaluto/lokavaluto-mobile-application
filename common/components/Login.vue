@@ -2,20 +2,15 @@
     <CairnPage @navigatedTo="onNavigatedTo" actionBarHidden :actionBarHeight="logoViewHeight">
         <InteractiveMap />
         <StackLayout verticalAlignment="top">
-            <Label
+            <SVGView
                 :height="logoViewHeight"
-                :fontFamily="appFontFamily"
-                :fontSize="logoViewHeight"
-                color="white"
-                text="app-full_logo"
-                textAlignment="center"
-                verticalTextAlignment="center"
+                src="~/assets/logo_big.svg"
                 :backgroundColor="themeColor"
             />
-            <Button verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" />
+            <!-- <Button verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" /> -->
         </StackLayout>
         <Button verticalAlignment="top" horizontalAlignment="right" rippleColor="white" variant="flat" class="icon-btn" text="mdi-information-outline" @tap="showAbout" />
-        <ScrollView ref="scrollView" opacity="0" class="pageContent">
+        <ScrollView ref="scrollView" opacity="0" class="pageContent"  v-show="showLogin">
             <StackLayout>
                 <Label
                     :height="logoViewHeight"

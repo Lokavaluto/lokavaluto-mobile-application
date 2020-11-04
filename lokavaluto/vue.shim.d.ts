@@ -12,18 +12,10 @@ declare module 'vue/types/vue' {
         $securityService: SecurityService;
         $crashReportService: CrashReportService;
 
-        $isAndroid: boolean;
-        $isIOS: boolean;
         $t: (s: string, ...args) => string;
         $tc: (s: string, ...args) => string;
         $tu: (s: string, ...args) => string;
-        // $filters: {
-        //     titleclase(s: string): string;
-        //     uppercase(s: string): string;
-        //     L(s: string, ...args): string;
-        // };
         $alert(message: string);
-        // $showToast(message: string, duration?: ToastDuration, position?: ToastPosition);
         $setAppComponent(comp: App);
         $getAppComponent(): App;
         $scanQRCode(manualHandle?: boolean): Promise<string>;

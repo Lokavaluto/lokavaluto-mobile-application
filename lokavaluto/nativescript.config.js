@@ -10,4 +10,5 @@ module.exports = {
         codeCache: true,
         forceLog: true,
     },
+    cssParser: 'rework',
 };

@@ -93,14 +93,10 @@ export class User {
     local_group:string
     exchange_counter:string
     convention_signature_date:string
-    address:{
-        city: string, 
-        zip: string,
-        street:string
-    }
+    address:Address
     coords: {
-        partner_lat:number
-        partner_lon:number
+        partner_latitude:number
+        partner_longitude:number
     }
     activities: {
         member_comment:string
@@ -236,12 +232,9 @@ export interface ZipCity {
     name: string;
 }
 export interface Address {
-    id: number;
-    street1: string;
-    street2: string;
-    lat: number;
-    lon: number;
-    zipCity: ZipCity;
+    city: string, 
+    zip: string,
+    street:string
 }
 
 export class Phone {
@@ -498,7 +491,8 @@ export default class AuthService extends NetworkService {
     //     });
     // }
     isProUser(profile: User = this.userProfile) {
-        return profile.roles.indexOf(Roles.PRO) !== -1;
+        return true;
+        // return profile.roles.indexOf(Roles.PRO) !== -1;
     }
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
         // console.log('handleRequestRetry ', retry, requestParams);
@@ -768,7 +762,7 @@ export default class AuthService extends NetworkService {
         limit?: number;
         offset?: number;
         query?: string;
-        mapBounds?: MapBounds;
+        mapBounds?: MapBounds<LatLonKeys>;
         roles?: string[];
         categories?: string[];
         payment_context?: boolean;
@@ -807,7 +801,6 @@ export default class AuthService extends NetworkService {
             }
         });
         result = (result as any).result || result;
-        console.log('result', result)
         if (!Array.isArray(result)) {
             result = [result];
         }
@@ -858,7 +851,7 @@ export default class AuthService extends NetworkService {
         await this.getAccounts();
         return result;
     }
-    async getUsersForMap(mapBounds: MapBounds, categories: string[]) {
+    async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
         return this.getUsers({ mapBounds, payment_context: false, categories });
     }
     accountHistory: {

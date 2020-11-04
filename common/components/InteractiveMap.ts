@@ -21,8 +21,8 @@ let categories = null;
     }
 })
 export default class InteractiveMap extends BaseVueComponent {
-    _cartoMap: CartoMap;
-    currentBounds: MapBounds;
+    _cartoMap: CartoMap<LatLonKeys>;
+    currentBounds: MapBounds<LatLonKeys>;
     selectedItem: User = null;
 
     bottomSheetTranslation = 0;
@@ -79,9 +79,9 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     // map: Mapbox;
     onMapReady(e) {
-        const map = (this._cartoMap = e.object as CartoMap);
-        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"lat":45.2002,"lon":5.7222}') as MapPos;
-        const zoom = appSettings.getNumber('mapZoom', 10);
+        const map = (this._cartoMap = e.object as CartoMap<LatLonKeys>);
+        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"lat":45,"lon":6}') as MapPos<LatLonKeys>;
+        const zoom = appSettings.getNumber('mapZoom', 7);
         if (pos) {
             map.setFocusPos(pos, 0);
             map.setZoom(zoom, 0);
@@ -109,12 +109,15 @@ export default class InteractiveMap extends BaseVueComponent {
         appSettings.setNumber('mapZoom', cartoMap.zoom);
         appSettings.setString('mapFocusPos', JSON.stringify(cartoMap.focusPos));
     }
-
+    onMapClicked(e) {
+        this.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
+        this.unselectItem();;
+    }
     onMapStable(e) {
         // this.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
         this.saveSettings();
-        const map = e.object as CartoMap;
-        const currentBounds = new MapBounds(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
+        const map = e.object as CartoMap<LatLonKeys>;
+        const currentBounds = new MapBounds<LatLonKeys>(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
         // console.log('onMapStable', currentBounds);
         if (!this.currentBounds || !currentBounds.equals(this.currentBounds)) {
             this.currentBounds = currentBounds;
@@ -126,7 +129,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
 
     onVectorTileClicked(data: VectorTileEventData) {
-        // this.log('onVectorTileClicked', data);
+        this.log('onVectorTileClicked', data);
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
@@ -142,7 +145,7 @@ export default class InteractiveMap extends BaseVueComponent {
         return true;
     }
     @throttle(2000)
-    refresh(mapBounds: MapBounds) {
+    refresh(mapBounds: MapBounds<LatLonKeys>) {
         // console.log('refresh', this._cartoMap.zoom, mapBounds, this.mapFilterSlugs);
         this.loading = true;
         this.$authService
@@ -165,8 +168,8 @@ export default class InteractiveMap extends BaseVueComponent {
     selectItem(item: User) {
         this.selectedItem = item;
         this.cartoMap.setFocusPos({
-            lat:item.coords.partner_lat,
-            lon:item.coords.partner_lon
+            lat:item.coords.partner_latitude,
+            lon:item.coords.partner_longitude
         }, 200);
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         this.bottomSheetHolder.peek();

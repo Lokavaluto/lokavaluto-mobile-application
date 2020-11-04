@@ -264,10 +264,12 @@ export class GeoHandler extends Observable {
     }
 
     getLocation(options?) {
+        console.log('getLocation');
         return geolocation
-            .getCurrentLocation(options || { desiredAccuracy, minimumUpdateTime, timeout, onDeferred: this.onDeferred })
+            .getCurrentLocation<LatLonKeys>(options || { desiredAccuracy, minimumUpdateTime, timeout, onDeferred: this.onDeferred })
             .then(r => {
-                if (r) {
+        console.log('gotLocation', );
+        if (r) {
                     this.notify({
                         eventName: UserLocationdEvent,
                         object: this,

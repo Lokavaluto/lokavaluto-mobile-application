@@ -37,6 +37,7 @@ function throwVueError(err) {
     crashReportService.showError(err);
 }
 setMapPosKeys('lat', 'lon');
+setGeoLocationKeys('lat', 'lon');
 
 Vue.config.errorHandler = (e, vm, info) => {
     if (e) {
@@ -58,6 +59,7 @@ if (global.isIOS) {
 
 import App from '~/common/components/App';
 import { setMapPosKeys } from '@nativescript-community/ui-carto/core/index.common';
+import { setGeoLocationKeys } from '@nativescript-community/gps';
 new Vue({
     render: (h) => h(App),
 }).$start();

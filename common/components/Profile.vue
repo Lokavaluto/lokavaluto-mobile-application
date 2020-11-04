@@ -1,9 +1,9 @@
 <template>
     <CairnPage id="profile" @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
-        <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" v-if="editable">
-            <Button variant="text" class="icon-btn" v-show="myProfile && !editing" text="mdi-qrcode" @tap="toggleQRCode()" />
-            <Button variant="text" class="icon-btn" v-show="canSave" text="mdi-content-save" @tap="saveProfile()" />
-            <Button variant="text" class="icon-btn" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
+        <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" >
+            <Button variant="text" class="icon-btn" v-show="!editing" text="mdi-qrcode" @tap="toggleQRCode()" />
+            <Button variant="text" class="icon-btn" v-show="editable && canSave" text="mdi-content-save" @tap="saveProfile()" />
+            <Button variant="text" class="icon-btn"  v-show="editable" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
         </StackLayout>
         <GridLayout slot="actionBarSubView" height="150" col="0" colSpan="3" verticalAlignment="top" rows="*,3*,*,*">
             <Label

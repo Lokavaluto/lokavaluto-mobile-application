@@ -17,6 +17,7 @@ import { Folder, knownFolders, path } from '@nativescript/core/file-system';
 import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
 import { Component, Prop } from 'vue-property-decorator';
 import { GeoHandler, GeoLocation, UserLocationdEvent, UserLocationdEventData } from '../handlers/GeoHandler';
+import { User } from '../services/AuthService';
 import { DEV_LOG } from '../utils/logging';
 import BaseVueComponent from './BaseVueComponent';
 const GeoJSON = require('geojson');
@@ -36,10 +37,10 @@ export default class MapComponent extends BaseVueComponent {
     mapProjection: Projection = null;
     rasterLayer: RasterTileLayer = null;
     lastUserLocation: GeoLocation;
-    _localVectorDataSource: LocalVectorDataSource;
+    _localVectorDataSource: LocalVectorDataSource<LatLonKeys>;
     localVectorLayer: VectorLayer;
-    userBackMarker: Point;
-    userMarker: Point;
+    userBackMarker: Point<LatLonKeys>;
+    userMarker: Point<LatLonKeys>;
     accuracyMarker: Polygon;
     // sessionLine: Line;
     isUserFollow = true;
@@ -103,7 +104,7 @@ export default class MapComponent extends BaseVueComponent {
         options.setRotatable(true);
 
         cartoMap.setZoom(this.zoom, 0);
-        cartoMap.setFocusPos({ lat: 45.2002, lon: 5.7222 }, 0);
+        cartoMap.setFocusPos({ lat: 45, lon:6 }, 0);
 
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -176,6 +177,9 @@ export default class MapComponent extends BaseVueComponent {
     onMapIdle(e) {
         this.$emit('mapIdle', e);
     }
+    onMapClicked(e) {
+        this.$emit('mapClicked', e);
+    }
 
     getCirclePoints(loc: Partial<GeoLocation>) {
         const EARTH_RADIUS = 6378137;
@@ -244,9 +248,9 @@ export default class MapComponent extends BaseVueComponent {
         }
         return this._localVectorTileDataSource;
     }
-    addGeoJSONPoints(points: any[]) {
+    addGeoJSONPoints(points: User[]) {
         const geojson = GeoJSON.parse(points, {
-            Point: ['address.lat', 'address.lon'],
+            Point: ['coords.partner_latitude', 'coords.partner_longitude'],
             include: ['name', 'id']
         }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach(f => (f.properties.id = f.properties.id + ''));
@@ -255,7 +259,7 @@ export default class MapComponent extends BaseVueComponent {
         this.ignoreStable = true;
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
     }
-    onVectorElementClicked(data: VectorElementEventData<DefaultLatLonKeys>) {
+    onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;
         // console.log('onVectorElementClicked');
         Object.keys(metaData).forEach(k => {
@@ -288,7 +292,7 @@ export default class MapComponent extends BaseVueComponent {
             lon: geoPos.lon,
             horizontalAccuracy: geoPos.horizontalAccuracy
         };
-        // console.log('updateUserLocation', position, this.userFollow);
+        console.log('updateUserLocation', position, geoPos, this.userFollow);
         if (this.userMarker) {
             const currentLocation = {
                 lat: this.lastUserLocation.lat,
@@ -359,7 +363,7 @@ export default class MapComponent extends BaseVueComponent {
             return;
         }
         // const { android, ios, ...toPrint } = data.location;
-        // console.log('onLocation', this._userFollow, toPrint, this.userFollow);
+        console.log('onLocation', data.location);
         this.updateUserLocation(data.location);
     }
     // onServiceLoaded(bluetoothHandler, geoHandler: GeoHandler) {

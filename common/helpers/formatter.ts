@@ -83,7 +83,7 @@ export { convertTime, convertDuration } from './locale';
 // }
 
 export function formatAddress(address: Address) {
-    return `${address.street1} ${address.zipCity.name}`;
+    return `${address.street} ${address.city}`;
 }
 export function formatOsmAddress(address: NominatimAddress) {
     return `${address.house_number? `${address.house_number} `: ''} ${address.pedestrian || address.road|| address.street} ${address.postcode} ${address.city || address.village}`;

@@ -84,14 +84,14 @@ export default class Profile extends PageComponent {
         this.$authService.on(UserProfileEvent, this.onProfileUpdate, this);
     }
     updateMapCenter() {
-        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.lat) {
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.coords.partner_latitude) {
             const map = this.$refs.mapComp.cartoMap;
             map.setFocusPos(this.userProfile.address, 0);
         }
     }
     onMapReady(e) {
         this.updateMapCenter();
-        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.address.lat) {
+        if (this.$refs.mapComp && this.userProfile.address && this.userProfile.coords.partner_latitude) {
             this.$refs.mapComp.addGeoJSONPoints([this.userProfile]);
         }
     }
@@ -227,9 +227,7 @@ export default class Profile extends PageComponent {
                                 resultPConfirm.text,
                                 true
                             );
-                            console.log('result', result);
                             isValidConfirmResult = true;
-                            console.log('test 1', isValidConfirmResult);
                             await this.$authService.getUserProfile();
                             showSnack({
                                 message: this.$t('phone_added', phoneNumber)
@@ -316,7 +314,7 @@ export default class Profile extends PageComponent {
                                 // we need to resize the image as our server only accept images < 500kb
                                 const mutableImageSource = BitmapFactory.makeMutable(new ImageSource(image));
                                 const bmp = BitmapFactory.asBitmap(mutableImageSource);
-                                this.updateUserProfile.image = this.image = bmp.resizeMax(500).toImageSource();
+                                // this.updateUserProfile.image = this.image = bmp.resizeMax(500).toImageSource();
                             }
                         });
                     });

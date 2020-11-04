@@ -43,10 +43,10 @@ export function getCenter(...coords: MapPos[]) {
     return {
         lat: lat * TO_DEG,
         lon: lon * TO_DEG
-    } as MapPos;
+    } as MapPos<LatLonKeys>;
 }
 
-export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; height: number }, worldDim = 256) {
+export function getBoundsZoomLevel(bounds: MapBounds<LatLonKeys>, mapDim: { width: number; height: number }, worldDim = 256) {
     const zoomMax = 24;
 
     function latRad(lat) {
@@ -73,7 +73,7 @@ export function getBoundsZoomLevel(bounds: MapBounds, mapDim: { width: number; h
     return Math.min(Math.min(latZoom, lngZoom), zoomMax);
 }
 
-export function getBounds(sourceLocs: MapPos[]) {
+export function getBounds(sourceLocs: MapPos<LatLonKeys>[]) {
     const northeast = {
         lat: -Infinity,
         lon: -Infinity
@@ -88,6 +88,5 @@ export function getBounds(sourceLocs: MapPos[]) {
         northeast.lon = Math.max(l.lon, northeast.lon);
         southwest.lon = Math.min(l.lon, southwest.lon);
     });
-    console.log('getBounds', northeast, southwest);
-    return new MapBounds(northeast, southwest);
+    return new MapBounds<LatLonKeys>(northeast, southwest);
 }
