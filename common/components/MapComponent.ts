@@ -101,7 +101,7 @@ export default class MapComponent extends BaseVueComponent {
         options.setEnvelopeThreadPoolSize(2);
         options.setTileThreadPoolSize(2);
         options.setZoomGestures(true);
-        options.setRotatable(true);
+        options.setRotatable(false);
 
         cartoMap.setZoom(this.zoom, 0);
         cartoMap.setFocusPos({ lat: 45, lon:6 }, 0);
