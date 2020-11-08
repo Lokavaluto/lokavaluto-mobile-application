@@ -1,0 +1,10 @@
+*Features*
+- NOCONSOLE
+
+*Bug fixes*
+- build fix
+- xcode 12 build fix
+- cleanup
+- make logging work correctly with sentry
+- disable map rotation
+- handle returns with no loc
