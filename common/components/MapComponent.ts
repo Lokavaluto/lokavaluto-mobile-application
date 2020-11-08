@@ -249,7 +249,7 @@ export default class MapComponent extends BaseVueComponent {
         return this._localVectorTileDataSource;
     }
     addGeoJSONPoints(points: User[]) {
-        const geojson = GeoJSON.parse(points, {
+        const geojson = GeoJSON.parse(points.filter(p=>!!p.coords), {
             Point: ['coords.partner_latitude', 'coords.partner_longitude'],
             include: ['name', 'id']
         }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
