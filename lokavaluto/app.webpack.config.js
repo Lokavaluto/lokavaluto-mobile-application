@@ -93,6 +93,7 @@ module.exports = (env, params = {}) => {
     console.log('locales', locales);
     const defines = {
         PRODUCTION: !!production,
+        NO_CONSOLE:noconsole,
         process: 'global.process',
         'global.TNS_WEBPACK': 'true',
         'gVars.platform': `"${platform}"`,

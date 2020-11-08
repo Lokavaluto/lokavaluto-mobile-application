@@ -17,6 +17,7 @@ declare const TNS_ENV: string;
 declare const LOG_LEVEL: string;
 declare const SENTRY_DSN: string;
 declare const TEST_LOGS: boolean;
+declare const NO_CONSOLE: boolean;
 declare const PRODUCTION: boolean;
 declare const SENTRY_PREFIX: string;
 declare const APP_CLIENT_ID: string;
