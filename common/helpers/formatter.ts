@@ -36,7 +36,7 @@ export { convertTime, convertDuration } from './locale';
 //     if (value === undefined || value === null) {
 //         return ['', ''];
 //     }
-//     // clog('convertValueToUnit', value, unit, otherParam);
+//     // console.log('convertValueToUnit', value, unit, otherParam);
 //     switch (unit) {
 //         case UNITS.Duration:
 //             return [convertDuration(value, 'HH:mm:ss'), ''];

@@ -8,11 +8,13 @@ import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from '@nativescript-community/l';
 import { CustomError, HTTPError, MessageError, NoNetworkError } from './NetworkService';
 import { Color } from '@nativescript/core';
+import { install } from '../utils/logging';
 
 export default class CrashReportService extends Observable {
     @booleanProperty({ default: true }) sentryEnabled: boolean;
     sentry: typeof Sentry;
     async start() {
+        install();
         console.log('CrashReportService', 'start', gVars.sentry, this.sentryEnabled);
         if (gVars.sentry && this.sentryEnabled) {
             const Sentry = await import('@nativescript-community/sentry');

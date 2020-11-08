@@ -10,7 +10,6 @@ import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
 import { $t } from '../helpers/locale';
-import { clog } from '../utils/logging';
 import { accentColor, appFontFamily, darkColor, primaryColor } from '../variables';
 
 function timeout(ms) {
@@ -112,7 +111,7 @@ export default class BaseVueComponent extends Vue {
     }
 
     log(...args) {
-        clog(`[${this.constructor.name}]`, ...args);
+        console.log(`[${this.constructor.name}]`, ...args);
     }
 
     goBack() {

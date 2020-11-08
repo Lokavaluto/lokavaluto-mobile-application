@@ -1,6 +1,5 @@
 import * as connectivity from '@nativescript/core/connectivity';
 import { EventData, Observable } from '@nativescript/core/data/observable';
-import { clog } from '../utils/logging';
 import { $t } from '../helpers/locale';
 import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
@@ -285,7 +284,7 @@ export class NetworkService extends Observable {
         super();
     }
     log(...args) {
-        clog(`[${this.constructor.name}]`, ...args);
+        console.log(`[${this.constructor.name}]`, ...args);
     }
     start() {
         connectivity.startMonitoring(this.onConnectionStateChange.bind(this));
