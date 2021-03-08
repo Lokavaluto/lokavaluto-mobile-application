@@ -1,4 +1,4 @@
-import http from 'http';
+import https from 'https';
 
 const USERNAME = 'username'
 const PASSWORD = 'password'
@@ -15,8 +15,12 @@ function runRequest(url, options) {
         });
     })
 }
+try {
+    const tokenResult = await runRequest(`https://myurl/getToken?username=${USERNAME}&password=${PASSWORD}`, { headers:{} });
+    console.log('got Token', tokenResult);
+    const myprofile = await runRequest(`https://myurl/myprofile?`, { headers:{"Authorization":`Bearer ${tokenResult.access_oken}`} });
+    console.log('my profile', myprofile);
 
-const tokenResult = await runRequest(`https://myurl/getToken?username=${USERNAME}&password=${PASSWORD}`, { headers:{} });
-console.log('got Token', tokenResult);
-const myprofile = await runRequest(`https://myurl/myprofile?`, { headers:{"Authorization":`Bearer ${tokenResult.access_oken}`} });
-console.log('my profile', myprofile);
+} catch(err) {
+    console.error(err.statusCode, err.statusMessage, err.toString());
+}
