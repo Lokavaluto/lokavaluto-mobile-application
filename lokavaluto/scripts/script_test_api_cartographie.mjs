@@ -24,5 +24,5 @@ try {
     console.log('Map elements', map_elements);
 
 } catch(err) {
-    console.error(err);
+    console.error(err.statusCode, err.statusMessage, err.toString());
 }
