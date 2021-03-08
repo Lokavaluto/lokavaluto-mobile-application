@@ -1,4 +1,4 @@
-import http from 'http';
+import https from 'https';
 
 const URL_TAXONOMY = "https://lokavaluto.dev.myceliandre.fr/web/get_application_taxonomy"
 const URL_ELEMENTS = "https://lokavaluto.dev.myceliandre.fr/web/get_application_elements"
@@ -6,7 +6,7 @@ const URL_ELEMENTS = "https://lokavaluto.dev.myceliandre.fr/web/get_application_
 function runRequest(url, options) {
     console.log('runRequest', url, options);
     return new Promise((resolve, reject)=>{
-        http.get(url, options, (err, res, body) => {
+        https.get(url, options, (err, res, body) => {
             if (err) { 
                 reject(err);
             } else {
@@ -16,8 +16,13 @@ function runRequest(url, options) {
     })
 }
 
-const map_taxonomy = await runRequest(`${URL_TAXONOMY}`, {});
-console.log('Map taxonomy', map_taxonomy);
+try {
+    const map_taxonomy = await runRequest(`${URL_TAXONOMY}`, {});
+    console.log('Map taxonomy', map_taxonomy);
+    
+    const map_elements = await runRequest(`${URL_ELEMENTS}`, {});
+    console.log('Map elements', map_elements);
 
-const map_elements = await runRequest(`${URL_ELEMENTS}`, {});
-console.log('Map elements', map_elements);
+} catch(err) {
+    console.error(err);
+}
