@@ -5,7 +5,7 @@ const URL_PARTNER = "https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/privat
 function runRequest(url, options) {
     console.log('runRequest', url, options);
     return new Promise((resolve, reject)=>{
-        https.get(url, options, (err, res, body) => {
+        https.get(encodeURI(url), options, (err, res, body) => {
             if (err) { 
                 reject(err);
             } else {
@@ -20,5 +20,5 @@ try {
     console.log('Partner info : ', info_partner);
     
 } catch(err) {
-    console.error(err.statusCode, err.statusMessage, err.toString());
+    console.error(err.statusCode, err.statusMessage, err);
 }
