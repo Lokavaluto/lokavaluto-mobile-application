@@ -20,5 +20,5 @@ try {
     console.log('Partner info : ', info_partner);
     
 } catch(err) {
-    console.error(err.statusCode, err.statusMessage, err);
+    console.error(err.statusCode, err.statusMessage, err.toString());
 }
