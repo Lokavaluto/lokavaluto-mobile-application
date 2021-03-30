@@ -1,24 +1,71 @@
 import https from 'https';
 
-const URL_PARTNER = "https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/private/partner/?name=a patons rompus"
+const URL_PARTNER = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/private/partner/?name=a patons rompus';
+const URL_AUTH = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate';
 
-function runRequest(url, options) {
-    console.log('runRequest', url, options);
-    return new Promise((resolve, reject)=>{
+function runPost(url, jsonData, options) {
+    const data = JSON.stringify(jsonData);
+    console.log('runRequest', url, data, options);
+    return new Promise((resolve, reject) => {
+        const req = https.request(
+            url,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                },
+                ...options
+            },
+            (res) => {
+                res.on('data', (d) => {
+                    resolve(JSON.parse(d.toString()));
+                });
+            }
+        );
+
+        req.on('error', (error) => {
+            reject(error);
+        });
+
+        req.write(data);
+        req.end();
+    });
+}
+function runGet(url, options) {
+    console.log('runRequest', encodeURI(url), options);
+    return new Promise((resolve, reject) => {
         https.get(encodeURI(url), options, (err, res, body) => {
-            if (err) { 
+            // console.log('request done : ', err, res, body);
+            if (err) {
                 reject(err);
             } else {
-                 resolve(body);
+                resolve(body);
             }
         });
-    })
+    });
 }
 
 try {
-    const info_partner = await runRequest(`${URL_PARTNER}`, {});
-    console.log('Partner info : ', info_partner);
-    
-} catch(err) {
+    const res = await runPost(
+        `${URL_AUTH}`,
+        {
+            db: 'laroue.v12.dev.myceliandre.fr',
+            params: ['lcc_app']
+        },
+        {
+            auth: 'martin.guillon@akylas.fr:1234'
+        }
+    );
+    console.log('token info : ', res);
+    const api_token = res.response.api_token;
+    console.log('api_token : ', api_token);
+    res = await runGet(`${URL_PARTNER}`, { method: 'GET', headers:{
+
+      'Authorization': `Basic ${Buffer.from(`martin.guillon@akylas.fr:1234`, 'utf-8').toString('base64')}` 
+    }
+    });
+    console.log('Partner info : ', res);
+} catch (err) {
     console.error(err.statusCode, err.statusMessage, err.toString());
 }
