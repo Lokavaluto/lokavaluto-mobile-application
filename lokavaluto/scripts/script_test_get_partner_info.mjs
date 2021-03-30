@@ -62,7 +62,7 @@ try {
     console.log('api_token : ', api_token);
     res = await runGet(`${URL_PARTNER}`, { method: 'GET', headers:{
 
-      'Authorization': `Basic ${Buffer.from(`martin.guillon@akylas.fr:1234`, 'utf-8').toString('base64')}` 
+      'API-KEY': api_token
     }
     });
     console.log('Partner info : ', res);
