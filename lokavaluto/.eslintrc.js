@@ -1,13 +1,21 @@
 module.exports = {
-    extends: ['plugin:prettier/recommended'],
-    plugins: ['prettier', '@typescript-eslint'],
-    parser: '@typescript-eslint/parser',
+    extends: ['plugin:prettier/recommended', 'plugin:vue/essential'],
+
+    parser: 'vue-eslint-parser',
     parserOptions: {
-        createDefaultProgram: true,
-        project: './tsconfig.json',
+        ecmaVersion: 2018,
+        sourceType: 'module',
+        parser: '@typescript-eslint/parser',
+        project: 'tsconfig.eslint.json',
+        extraFileExtensions: ['.vue', '.mjs'],
+        warnOnUnsupportedTypeScriptVersion: false,
+        tsconfigRootDir: __dirname
     },
+    ignorePatterns: ['scripts', 'config', 'node_modules'],
+    plugins: ['prettier', '@typescript-eslint'],
     rules: {
         'prettier/prettier': 'warn',
+        'vue/custom-event-name-casing': 'off',
         '@typescript-eslint/adjacent-overload-signatures': 'error',
         '@typescript-eslint/array-type': 'error',
         '@typescript-eslint/await-thenable': 'error',
@@ -18,8 +26,8 @@ module.exports = {
         '@typescript-eslint/explicit-member-accessibility': [
             'off',
             {
-                accessibility: 'explicit',
-            },
+                accessibility: 'explicit'
+            }
         ],
         '@typescript-eslint/indent': 'off',
         '@typescript-eslint/interface-name-prefix': 'off',
@@ -45,8 +53,8 @@ module.exports = {
             'error',
             'single',
             {
-                avoidEscape: true,
-            },
+                avoidEscape: true
+            }
         ],
         '@typescript-eslint/semi': ['error'],
         '@typescript-eslint/space-within-parens': ['off', 'never'],
@@ -72,8 +80,8 @@ module.exports = {
                 ignoreCase: false,
                 ignoreDeclarationSort: true,
                 ignoreMemberSort: false,
-                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single'],
-            },
+                memberSyntaxSortOrder: ['none', 'all', 'multiple', 'single']
+            }
         ],
         'linebreak-style': 'off',
         'max-classes-per-file': 'off',
@@ -81,8 +89,8 @@ module.exports = {
             'off',
             {
                 ignorePattern: '^import |^export {(.*?)}',
-                code: 200,
-            },
+                code: 200
+            }
         ],
         'new-parens': 'off',
         'newline-per-chained-call': 'off',
@@ -112,14 +120,14 @@ module.exports = {
                     'profile',
                     'profileEnd',
                     'timeStamp',
-                    'context',
-                ],
-            },
+                    'context'
+                ]
+            }
         ],
         'no-constant-condition': 'error',
         'no-control-regex': 'off',
         'no-debugger': 'error',
-        'no-duplicate-imports': ['error', { includeExports: true }],
+        'no-duplicate-imports': 'error',
         'no-empty': 'off',
         'no-eval': 'off',
         'no-extra-semi': 'off',
@@ -135,8 +143,8 @@ module.exports = {
         'no-shadow': [
             'off',
             {
-                hoist: 'all',
-            },
+                hoist: 'all'
+            }
         ],
         'no-throw-literal': 'error',
         'no-trailing-spaces': 'error',
@@ -147,8 +155,8 @@ module.exports = {
             'error',
             {
                 allowTaggedTemplates: true,
-                allowShortCircuit: true,
-            },
+                allowShortCircuit: true
+            }
         ],
         'no-unused-labels': 'error',
         'no-var': 'error',
@@ -160,6 +168,6 @@ module.exports = {
         radix: 'error',
         'space-before-function-paren': 'off',
         'use-isnan': 'error',
-        'valid-typeof': 'off',
-    },
+        'valid-typeof': 'off'
+    }
 };

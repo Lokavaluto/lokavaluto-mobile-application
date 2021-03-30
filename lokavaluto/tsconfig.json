@@ -21,8 +21,6 @@
         "paths": {
             "~/*": ["app/*"],
             "@nativescript/core": ["./node_modules/@akylas/nativescript"],
-            "tns-core-modules": ["./node_modules/@akylas/nativescript"],
-            "tns-core-modules/*": ["./node_modules/@akylas/nativescript/*"],
             "*": ["./node_modules/*"]
         }
     },
