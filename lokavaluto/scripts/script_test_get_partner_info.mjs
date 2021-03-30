@@ -18,8 +18,13 @@ function runPost(url, jsonData, options) {
                 ...options
             },
             (res) => {
-                res.on('data', (d) => {
-                    resolve(JSON.parse(d.toString()));
+                let data = '';
+                
+                res.on('data', chunk => {
+                  data += chunk.toString('utf8');
+                });
+                res.on('end', () => {
+                  resolve(JSON.parse(data));
                 });
             }
         );
@@ -35,19 +40,23 @@ function runPost(url, jsonData, options) {
 function runGet(url, options) {
     console.log('runRequest', encodeURI(url), options);
     return new Promise((resolve, reject) => {
-        https.get(encodeURI(url), options, (err, res, body) => {
-            // console.log('request done : ', err, res, body);
-            if (err) {
-                reject(err);
-            } else {
-                resolve(body);
-            }
+        https.get(encodeURI(url), options, (res) => {
+          let data = '';
+          res.on('data', chunk => {
+            data += chunk.toString('utf8');
+          });
+          res.on('end', () => {
+            resolve(JSON.parse(data));
+          });
+          res.on('error', (error) => {
+              reject(error);
+          });
         });
     });
 }
 
 try {
-    const res = await runPost(
+    let res = await runPost(
         `${URL_AUTH}`,
         {
             db: 'laroue.v12.dev.myceliandre.fr',
@@ -67,5 +76,5 @@ try {
     });
     console.log('Partner info : ', res);
 } catch (err) {
-    console.error(err.statusCode, err.statusMessage, err.toString());
+    console.error(err.statusCode, err.statusMessage, err.toString(), err.stack);
 }
