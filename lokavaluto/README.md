@@ -1,6 +1,10 @@
-# eCairn
+# Lokavaluto
 
 > A native application built with NativeScript-Vue
+
+## Nativescript
+
+Nativescript doc for project setup: https://docs.nativescript.org/environment-setup.html
 
 ## Usage
 
