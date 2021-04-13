@@ -44,7 +44,12 @@ curl --request POST \
 
 * get user accounts  and balances 
 
-### Get user account
+TODO
+
+* list favorites 
+* see account "profile"
+
+### Get user Profile
 
 ```
 curl --request GET \
@@ -69,14 +74,8 @@ curl --request GET \
   "phone": null
 }
 ```
-### Get balance
 
-TODO
-
-* For the next  user stories you can decide :
-  * list favorites 
-  * see account "profile"
-  * ...
+* ...
 
 
 ## Nativescript
