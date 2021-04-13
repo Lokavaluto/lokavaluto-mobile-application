@@ -22,6 +22,10 @@ https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2
   * ...
 
 
+## Nativescript
+
+Nativescript doc for project setup: https://docs.nativescript.org/environment-setup.html
+
 ## Usage
 
 ``` bash
