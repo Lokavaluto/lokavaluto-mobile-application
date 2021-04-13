@@ -44,6 +44,8 @@ curl --request POST \
 
 * get user accounts  and balances 
 
+### Get user account
+
 ```
 curl --request GET \
   --url https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/private/partner/34699 \
@@ -67,7 +69,9 @@ curl --request GET \
   "phone": null
 }
 ```
+### Get balance
 
+TODO
 
 * For the next  user stories you can decide :
   * list favorites 
