@@ -16,6 +16,10 @@ https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2
 * login with login/password
   * retrieve token
 * get user accounts  and balances 
+* For the next  user stories you can decide :
+  * list favorites 
+  * see account "profile"
+  * ...
 
 
 ## Usage
