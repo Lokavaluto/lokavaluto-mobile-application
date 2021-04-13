@@ -19,18 +19,56 @@ https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2
 ```
 curl --request POST \
   --url https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate \
-  --header 'Authorization: Basic dGVzdEB0ZXN0LmNvbTp0ZXN0' \
+  --header 'Authorization: Basic XXXXXXXXXXXXXXXXX' \
   --header 'Content-Type: application/json' \
-  --cookie session_id=7e74b241c664ca20ce3f0fc2ca9cc1f028ee4907 \
   --data '{
   "db": "laroue.v12.dev.myceliandre.fr",
   "params": [
-    "lcc_app","cyclos","demo"
+    "lcc_app"
   ]
 }'
 ```
 
+**Response:**
+
+```
+{
+  "response": {
+    "status": "OK",
+    "partner_id": 34699,
+    "uid": 117,
+    "api_token": "token qui va bien"
+  }
+}
+```
+
 * get user accounts  and balances 
+
+```
+curl --request GET \
+  --url https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/private/partner/34699 \
+  --header 'API-KEY: token qui va bien' \
+  --header 'Content-Type: application/json' \
+  --data '{}'
+```
+
+**Response:**
+
+```
+{
+  "id": 34699,
+  "name": "Prénom NOM",
+  "street": null,
+  "street2": null,
+  "zip": null,
+  "city": null,
+  "mobile": null,
+  "email": "test@test.com",
+  "phone": null
+}
+```
+
+
 * For the next  user stories you can decide :
   * list favorites 
   * see account "profile"
