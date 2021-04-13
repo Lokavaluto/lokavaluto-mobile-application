@@ -1,6 +1,22 @@
-# eCairn
+# Lokavaluto
 
-> A native application built with NativeScript-Vue
+
+## Doc Lokavaluto
+
+https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2Fprivate%3A%20partner#/default
+
+## First User Stories
+
+### Offline
+
+* map view 
+
+### Online
+
+* login with login/password
+  * retrieve token
+* get user accounts  and balances 
+
 
 ## Usage
 
