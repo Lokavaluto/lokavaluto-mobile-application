@@ -15,6 +15,21 @@ https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2
 
 * login with login/password
   * retrieve token
+
+```
+curl --request POST \
+  --url https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate \
+  --header 'Authorization: Basic dGVzdEB0ZXN0LmNvbTp0ZXN0' \
+  --header 'Content-Type: application/json' \
+  --cookie session_id=7e74b241c664ca20ce3f0fc2ca9cc1f028ee4907 \
+  --data '{
+  "db": "laroue.v12.dev.myceliandre.fr",
+  "params": [
+    "lcc_app","cyclos","demo"
+  ]
+}'
+```
+
 * get user accounts  and balances 
 * For the next  user stories you can decide :
   * list favorites 
