@@ -7,7 +7,7 @@ https://laroue.v12.dev.myceliandre.fr/api-docs?urls.primaryName=lokavaluto_api%2
 
 ## First User Stories
 
-### Offline
+### Offline (no account)
 
 * map view 
 
