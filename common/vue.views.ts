@@ -18,7 +18,9 @@ import DrawerPlugin from '@nativescript-community/ui-drawer/vue';
 import CActionBar from '~/common/components/CActionBar';
 import ListItem from '~/common/components/ListItem';
 import EditableListItem from '~/common/components/EditableListItem';
-import CairnPage from '~/common/components/CairnPage';
+import BasePage from '~/common/components/BasePage';
+
+//@ts-ignore
 import Pager from '@nativescript-community/ui-pager/vue';
 import SVGPlugin from '@nativescript-community/ui-svg/vue';
 
@@ -27,7 +29,7 @@ const Plugin = {
         Vue.component('CActionBar', CActionBar);
         Vue.component('ListItem', ListItem);
         Vue.component('EditableListItem', EditableListItem);
-        Vue.component('CairnPage', CairnPage);
+        Vue.component('BasePage', BasePage);
         Vue.use(ActivityIndicatorPlugin);
         Vue.use(ImagePlugin);
         Vue.use(BottomSheetPlugin);

@@ -19,7 +19,7 @@ export default class FilterCategories extends BaseVueComponent {
         this.currentFilterSlugs = this.filterSlugs;
         this.dataItems = new ObservableArray(
             [{ name: this.$tc('all'), selected: this.filterSlugs.length === 0 }].concat(
-                this.categories.map(c => ({
+                this.categories.map((c) => ({
                     ...c,
                     selected: this.currentFilterSlugs.indexOf(c.slug) !== -1
                 }))
@@ -39,7 +39,7 @@ export default class FilterCategories extends BaseVueComponent {
         }
     }
     updateItem(key: string, selected: boolean) {
-        const index = this.categories.findIndex(d => key === d.slug);
+        const index = this.categories.findIndex((d) => key === d.slug);
         if (index !== -1) {
             this.dataItems.setItem(index + 1, Object.assign(this.dataItems.getItem(index + 1), { selected }));
         }
@@ -61,7 +61,7 @@ export default class FilterCategories extends BaseVueComponent {
                 this.updateItem(item.slug, false);
             }
         } else {
-            this.currentFilterSlugs.forEach(s => this.updateItem(s, false));
+            this.currentFilterSlugs.forEach((s) => this.updateItem(s, false));
             this.currentFilterSlugs.splice(0, this.currentFilterSlugs.length);
             this.dataItems.setItem(0, Object.assign(this.dataItems.getItem(0), { selected: true }));
         }

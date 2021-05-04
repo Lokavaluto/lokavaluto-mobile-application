@@ -1,27 +1,10 @@
 <template>
-    <CairnPage @navigatedTo="onNavigatedTo" actionBarHidden :actionBarHeight="logoViewHeight">
-        <InteractiveMap />
-        <StackLayout verticalAlignment="top">
-            <SVGView
-                :height="logoViewHeight"
-                src="~/assets/logo_big.svg"
-                :backgroundColor="themeColor"
-            />
-            <!-- <Button verticalAlignment="top" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="hideMap" /> -->
-        </StackLayout>
-        <Button verticalAlignment="top" horizontalAlignment="right" rippleColor="white" variant="flat" class="icon-btn" text="mdi-information-outline" @tap="showAbout" />
-        <ScrollView ref="scrollView" opacity="0" class="pageContent"  v-show="showLogin">
+    <BasePage @navigatedTo="onNavigatedTo" :actionBarHeight="logoViewHeight" :modal="modal">
+        <!-- <StackLayout verticalAlignment="top">
+            <SVGView :height="logoViewHeight" src="~/assets/logo_big.svg" :backgroundColor="themeColor" />
+        </StackLayout> -->
+        <ScrollView ref="scrollView" class="pageContent">
             <StackLayout>
-                <Label
-                    :height="logoViewHeight"
-                    :fontFamily="appFontFamily"
-                    :fontSize="logoViewHeight"
-                    color="white"
-                    text="app-full_logo"
-                    textAlignment="center"
-                    verticalTextAlignment="center"
-                    :backgroundColor="themeColor"
-                />
                 <StackLayout class="form" horizontalAlignment="center">
                     <TextField
                         ref="username"
@@ -63,7 +46,6 @@
                     />
 
                     <Button v-show="!loading" :text="(isLoggingIn ? $t('login') : $t('register')) | capitalize" @tap="submit" :isEnabled="canLoginOrRegister" />
-                    <Button v-show="!loading" :text="$t('cancel') | capitalize" @tap="showMap" />
                     <Label v-show="isLoggingIn" :text="$t('forgot_password') | capitalize" class="login-label" @tap="forgotPassword" />
                 </StackLayout>
 
@@ -73,7 +55,7 @@
                 </Label>
             </StackLayout>
         </ScrollView>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./Login.ts" />

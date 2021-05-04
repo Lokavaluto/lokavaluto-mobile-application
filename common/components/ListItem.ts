@@ -36,9 +36,9 @@ export default class ListItem extends BaseVueComponent {
     @Prop({ default: 12, type: Number })
     topBottomPadding: number;
 
-    @Prop({ default: ()=>new Color('#5C5C5C'), type: Color })
+    @Prop({ default: () => new Color('#5C5C5C'), type: Color })
     overlineColor: Color;
-    @Prop({ default: ()=>subtitleColor, type: Color })
+    @Prop({ default: () => subtitleColor, type: Color })
     subtitleColor: string;
 
     @Watch('avatar')

@@ -23,8 +23,8 @@ export default class Beneficiaries extends PageComponent {
         this.loading = true;
         this.$authService
             .getBenificiaries()
-            .then(r => {
-                this.dataItems = r.map(b => b.user);
+            .then((r) => {
+                this.dataItems = r.map((b) => b.user);
             })
             .catch(this.showError)
             .finally(() => {

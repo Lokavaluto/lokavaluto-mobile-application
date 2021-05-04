@@ -1,6 +1,6 @@
 <template>
     <!-- <Frame> -->
-    <CairnPage actionBarHidden backgroundColor="transparent">
+    <BasePage actionBarHidden backgroundColor="transparent">
         <GridLayout :backgroundColor="themeColor">
             <Button variant="text" color="white" class="icon-btn" text="mdi-close" @tap="close()" horizontalAlignment="left" verticalAlignment="top" />
             <StackLayout horizontalAlignment="center" marginTop="40" widhth="80%">
@@ -17,7 +17,7 @@
                 </Label>
             </StackLayout>
         </GridLayout>
-    </CairnPage>
+    </BasePage>
     <!-- </Frame> -->
 </template>
 

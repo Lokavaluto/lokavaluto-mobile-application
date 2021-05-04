@@ -7,48 +7,38 @@ import { showSnack } from '@nativescript-community/ui-material-snackbar';
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { CSSUtils, Device, Frame, GridLayout, Observable, Page, Screen, StackLayout, View } from '@nativescript/core';
 import {
-    android as androidApp, AndroidActivityResultEventData,
+    AndroidActivityResultEventData,
     AndroidApplication,
     ApplicationEventData,
-
-
-
-    getNativeApplication, off as applicationOff,
+    android as androidApp,
+    off as applicationOff,
     on as applicationOn,
-
+    getNativeApplication,
     resumeEvent,
     suspendEvent
 } from '@nativescript/core/application';
 import { ad } from '@nativescript/core/utils/utils';
 import { compose } from '@nativescript/email';
-import {Drawer} from '@nativescript-community/ui-drawer';
+import { Drawer } from '@nativescript-community/ui-drawer';
 import { Vibrate } from 'nativescript-vibrate';
-import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
+import Vue, { NativeScriptVue, NativeScriptVueConstructor, NavigationEntryVue } from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { VueConstructor } from 'vue/types/umd';
 import { $t, $tc } from '../helpers/locale';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '../services/AuthService';
-import { NetworkConnectionStateEvent, NetworkConnectionStateEventData } from '../services/NetworkService';
+import { NetworkConnectionStateEvent, NetworkConnectionStateEventData, base64Encode } from '../services/NetworkService';
 import { parseUrlScheme } from '../utils/urlscheme';
 import { primaryColor, screenHeightDips, screenWidthDips } from '../variables';
-import About from './About';
-// import Map from './Map';
-import AppFrame from './AppFrame';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
-import Beneficiaries from './Beneficiaries';
 import Floating from './Floating';
 import Home from './Home';
-import Login from './Login';
 import Map from './Map';
-import Profile from './Profile';
-import Settings from './Settings';
 import TransferWindow from './TransferWindow';
 
 const observable = new Observable();
 export const QRCodeDataEvent = 'qrcodedata';
 export const on = observable.on.bind(observable);
 export const off = observable.off.bind(observable);
-
 
 let drawerInstance: Drawer;
 export function getDrawerInstance() {
@@ -58,18 +48,6 @@ export function setDrawerInstance(instance: Drawer) {
     drawerInstance = instance;
 }
 
-function base64Encode(value) {
-    if (global.isIOS) {
-        const text = NSString.stringWithString(value);
-        const data = text.dataUsingEncoding(NSUTF8StringEncoding);
-        return data.base64EncodedStringWithOptions(0);
-    }
-    if (global.isAndroid) {
-        const text = new java.lang.String(value);
-        const data = text.getBytes('UTF-8');
-        return android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
-    }
-}
 export interface AppRefs extends BaseVueComponentRefs {
     [key: string]: any;
     innerFrame: NativeScriptVue<Frame>;
@@ -98,80 +76,34 @@ const mailRegexp = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}
 @Component({
     components: {
         Home,
-        Login,
-        Profile,
-        AppFrame
+        Map
     }
 })
 export default class App extends BaseVueComponent {
     $refs: AppRefs;
     mMessageReceiver: android.content.BroadcastReceiver;
     networkConnected = true;
-    // drawerOptions: OptionsType = {
-    //     // top: {
-    //     //     height: '100%',
-    //     //     animation: {
-    //     //         openDuration: 150,
-    //     //         closeDuration: 150
-    //     //     },
-    //     //     swipeOpenTriggerHeight: 30,
-    //     //     swipeOpenTriggerMinDrag: 20,
-    //     //     swipeCloseTriggerMinDrag: 30
-    //     // }
-    //     left: {
-    //         swipeOpenTriggerWidth: 5
-    //     }
-    // };
-
-    get drawerOptions() {
-        if (this.currentlyLoggedIn) {
-            return {
-                enabled: true,
-                // debug:true,
-                // top: {
-                //     height: '100%',
-                //     animation: {
-                //         openDuration: 150,
-                //         closeDuration: 150
-                //     },
-                //     swipeOpenTriggerHeight: 30,
-                //     swipeOpenTriggerMinDrag: 20,
-                //     swipeCloseTriggerMinDrag: 30
-                // }
-                left: {
-                    swipeOpenTriggerWidth: 5
-                }
-            };
-        } else {
-            return {
-                left: {
-                    enabled: false,
-                    swipeOpenTriggerWidth: 0
-                }
-            };
-        }
-    }
-    protected routes: { [k: string]: { component: typeof Vue } } = {
+    protected routes: { [k: string]: { component: Function | typeof Vue } } = {
         [ComponentIds.Situation]: {
-            component: Home
+            component: async () => (await import('~/common/components/Home')).default
         },
         [ComponentIds.Profile]: {
-            component: Profile
+            component: async () => (await import('~/common/components/Profile')).default
         },
         [ComponentIds.Login]: {
-            component: Login
+            component: async () => (await import('~/common/components/Login')).default
         },
         [ComponentIds.Beneficiaries]: {
-            component: Beneficiaries
+            component: async () => (await import('~/common/components/Beneficiaries')).default
         },
         [ComponentIds.Map]: {
-            component: Map
+            component: async () => (await import('~/common/components/Map')).default
         },
         [ComponentIds.Settings]: {
-            component: Settings
+            component: async () => (await import('~/common/components/Settings')).default
         },
         [ComponentIds.About]: {
-            component: About
+            component: async () => (await import('~/common/components/About')).default
         }
     };
     selectedTabIndex: number = 0;
@@ -188,40 +120,48 @@ export default class App extends BaseVueComponent {
         return this.$refs.innerFrame && this.$refs.innerFrame.nativeView;
     }
     get menuItems() {
-        const result = [
-            {
-                title: this.$t('situation'),
-                icon: 'mdi-bank',
-                url: ComponentIds.Situation
-            },
-            {
-                title: this.$t('profile'),
-                icon: 'mdi-account',
-                url: ComponentIds.Profile
-            },
-            {
-                title: this.$t('favorites'),
-                icon: 'mdi-account-group',
-                url: ComponentIds.Beneficiaries
-            },
-            {
-                title: this.$t('map'),
-                icon: 'mdi-map',
-                url: ComponentIds.Map
-            },
-            {
-                title: this.$t('settings'),
-                icon: 'mdi-settings',
-                url: ComponentIds.Settings
-            },
-            {
-                title: this.$t('about'),
-                icon: 'mdi-information-outline',
-                url: ComponentIds.About
-            }
-        ];
-
-        return result;
+        if (this.currentlyLoggedIn) {
+            return [
+                {
+                    title: this.$t('situation'),
+                    icon: 'mdi-bank',
+                    url: ComponentIds.Situation
+                },
+                {
+                    title: this.$t('profile'),
+                    icon: 'mdi-account',
+                    url: ComponentIds.Profile
+                },
+                {
+                    title: this.$t('favorites'),
+                    icon: 'mdi-account-group',
+                    url: ComponentIds.Beneficiaries
+                },
+                {
+                    title: this.$t('map'),
+                    icon: 'mdi-map',
+                    url: ComponentIds.Map
+                },
+                {
+                    title: this.$t('settings'),
+                    icon: 'mdi-settings',
+                    url: ComponentIds.Settings
+                },
+                {
+                    title: this.$t('about'),
+                    icon: 'mdi-information-outline',
+                    url: ComponentIds.About
+                }
+            ];
+        } else {
+            return [
+                {
+                    title: this.$t('map'),
+                    icon: 'mdi-map',
+                    url: ComponentIds.Map
+                }
+            ];
+        }
     }
 
     constructor() {
@@ -257,11 +197,9 @@ export default class App extends BaseVueComponent {
         //             const color = android.graphics.Color.parseColor(primaryColor);
         //             const context = androidApp.context;
         //             // API level 26 ("Android O") supports notification channels.
-
         //             const service = context.getSystemService(
         //                 android.content.Context.NOTIFICATION_SERVICE
         //             ) as android.app.NotificationManager;
-
         //             // create channel
         //             let channel = new android.app.NotificationChannel(
         //                 context.getString(ad.resources.getStringId('payment_channel_id')),
@@ -271,7 +209,6 @@ export default class App extends BaseVueComponent {
         //             // channel.setDescription($t('payment_channel_description'));
         //             channel.setLightColor(color);
         //             service.createNotificationChannel(channel);
-
         //             channel = new android.app.NotificationChannel(
         //                 context.getString(ad.resources.getStringId('newpro_channel_id')),
         //                 $t('newpro_channel_name'),
@@ -310,9 +247,7 @@ export default class App extends BaseVueComponent {
         if (global.isAndroid && gVars.internalApp) {
             androidApp.unregisterBroadcastReceiver('com.lokavaluto.lokavaluto.SMS_RECEIVED');
             if (this.mMessageReceiver) {
-                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(
-                    this.mMessageReceiver
-                );
+                androidx.localbroadcastmanager.content.LocalBroadcastManager.getInstance(androidApp.context).unregisterReceiver(this.mMessageReceiver);
                 this.mMessageReceiver = null;
             }
         }
@@ -336,17 +271,14 @@ export default class App extends BaseVueComponent {
             perms
                 .request('receiveSms')
                 .then(() => {
-                    androidApp.registerBroadcastReceiver(
-                        'com.lokavaluto.lokavaluto.SMS_RECEIVED',
-                        (context: android.content.Context, intent: android.content.Intent) => {
-                            const msg = intent.getStringExtra('message');
-                            const sender = intent.getStringExtra('sender');
-                            showSnack({
-                                message: this.$t('sms_received', msg, sender)
-                            });
-                            new Vibrate().vibrate(1000);
-                        }
-                    );
+                    androidApp.registerBroadcastReceiver('com.lokavaluto.lokavaluto.SMS_RECEIVED', (context: android.content.Context, intent: android.content.Intent) => {
+                        const msg = intent.getStringExtra('message');
+                        const sender = intent.getStringExtra('sender');
+                        showSnack({
+                            message: this.$t('sms_received', msg, sender)
+                        });
+                        new Vibrate().vibrate(1000);
+                    });
                 })
                 .catch(this.showError);
         }
@@ -375,10 +307,10 @@ export default class App extends BaseVueComponent {
         console.log('we loggedin', this.currentlyLoggedIn);
         this.userProfile = this.$authService.userProfile;
         this.$crashReportService.setExtra('profile', JSON.stringify(this.userProfile));
-        if (e) {
-            // means received as event
-            this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
-        }
+        // if (e) {
+        //     // means received as event
+        //     this.navigateToUrl(ComponentIds.Situation, { clearHistory: true });
+        // }
     }
     onLoggedOut() {
         if (WITH_PUSH_NOTIFICATIONS) {
@@ -388,7 +320,8 @@ export default class App extends BaseVueComponent {
         this.$crashReportService.setExtra('profile', null);
         this.currentlyLoggedIn = false;
         this.$securityService.clear();
-        this.goBackToLogin();
+        this.navigateToUrl(ComponentIds.Map, { clearHistory: true });
+        this.goToLogin();
     }
     firstResume = true;
     onAppResume(args: ApplicationEventData) {
@@ -430,10 +363,10 @@ export default class App extends BaseVueComponent {
     // }
     // tabviewLoaded(args: EventData) {
     //     var tabview = <any>args.object
-    //     if (this.$isAndroid) {
+    //     if (global.isAndroid) {
     //         var tabViewgrid = tabview._grid
     //         tabViewgrid.removeViewAt(0)
-    //     } else if (this.$isIOS) {
+    //     } else if (global.isIOS) {
     //         tabview._ios.tabBar.hidden = true
     //     }
     // }
@@ -449,6 +382,9 @@ export default class App extends BaseVueComponent {
         //     this.$navigateBack(), 5000)
     }
     onPageNavigation(event) {
+        if (!event.entry.resolvedPage) {
+            return;
+        }
         // this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
         this.closeDrawer();
         this.setActivatedUrl(event.entry.resolvedPage[navigateUrlProperty]);
@@ -500,7 +436,7 @@ export default class App extends BaseVueComponent {
             this.$refs.menu &&
                 this.$refs.menu.nativeView.eachChildView((c: GridLayout) => {
                     c.notify({ eventName: 'activeChange', object: c });
-                    c.eachChildView(c2 => {
+                    c.eachChildView((c2) => {
                         if (c2.hasOwnProperty('active')) {
                             c2.notify({ eventName: 'activeChange', object: c });
                             return true;
@@ -529,7 +465,7 @@ export default class App extends BaseVueComponent {
         }
     }
     findNavigationUrlIndex(url) {
-        return this.innerFrame.backStack.findIndex(b => b.resolvedPage[navigateUrlProperty] === url);
+        return this.innerFrame.backStack.findIndex((b) => b.resolvedPage[navigateUrlProperty] === url);
     }
     navigateBackToUrl(url) {
         const index = this.findNavigationUrlIndex(url);
@@ -634,7 +570,7 @@ export default class App extends BaseVueComponent {
                             }
                         });
                     }
-                }).then(result => {
+                }).then((result) => {
                     if (result.result) {
                         if (!result.userName || !mailRegexp.test(result.userName)) {
                             this.showError(this.$tc('email_required'));
@@ -644,7 +580,7 @@ export default class App extends BaseVueComponent {
                             this.showError(this.$tc('description_required'));
                             return;
                         }
-                        this.$crashReportService.withScope(scope => {
+                        this.$crashReportService.withScope((scope) => {
                             scope.setUser({ email: result.userName });
                             this.$crashReportService.captureMessage(result.password);
                             this.$alert(this.$t('bug_report_sent'));
@@ -659,7 +595,7 @@ export default class App extends BaseVueComponent {
                     okButtonText: this.$tc('logout'),
                     cancelButtonText: this.$tc('cancel')
                 })
-                    .then(r => {
+                    .then((r) => {
                         if (r) {
                             this.$authService.logout();
                         }
@@ -679,7 +615,7 @@ export default class App extends BaseVueComponent {
         (options as any).frame = options['frame'] || this.innerFrame.id;
         return super.navigateTo(component, options, cb);
     }
-    navigateToUrl(url: ComponentIds, options?: NavigationEntryVue, cb?: () => Page): Promise<any> {
+    async navigateToUrl(url: ComponentIds, options?: NavigationEntryVue, cb?: () => Page): Promise<any> {
         this.closeDrawer();
         if (this.isActiveUrl(url) || !this.routes[url]) {
             return Promise.reject();
@@ -691,7 +627,11 @@ export default class App extends BaseVueComponent {
         console.log('navigateToUrl', url);
         const index = this.findNavigationUrlIndex(url);
         if (index === -1) {
-            return this.navigateTo(this.routes[url].component, options);
+            let component = this.routes[url].component;
+            if (typeof component === 'function') {
+                component = await (component as any)();
+            }
+            return this.navigateTo(component as NativeScriptVueConstructor, options);
         } else {
             return this.navigateBackToUrl(url);
         }
@@ -705,6 +645,15 @@ export default class App extends BaseVueComponent {
             clearHistory: true
         });
     }
+
+    async goToLogin(options: any = {}, modal = true) {
+        if (modal) {
+            const component = (await import('~/common/components/Login')).default;
+            return this.$showModal(component, { fullscreen: true, props: { modal: true, ...options } });
+        } else {
+            return this.navigateToUrl(ComponentIds.Login, { clearHistory: true });
+        }
+    }
     async showOverlayComponent(data) {
         if (global.isAndroid) {
             const activity = this.nativeView._context;
@@ -715,11 +664,9 @@ export default class App extends BaseVueComponent {
                 throw new Error('missing_overlay_permission');
             }
             const nativeApp = getNativeApplication();
-            const mWindowManager = nativeApp.getSystemService(
-                android.content.Context.WINDOW_SERVICE
-            ) as android.view.WindowManager;
+            const mWindowManager = nativeApp.getSystemService(android.content.Context.WINDOW_SERVICE) as android.view.WindowManager;
 
-            const close = function() {
+            const close = function () {
                 mWindowManager.removeView(frame);
                 navEntryInstance.$destroy();
             };
@@ -728,7 +675,7 @@ export default class App extends BaseVueComponent {
                 methods: {
                     close
                 },
-                render: h =>
+                render: (h) =>
                     h(Floating, {
                         props: {
                             qrCodeData: data
@@ -739,7 +686,7 @@ export default class App extends BaseVueComponent {
             const rootView = (navEntryInstance.$mount().$el as any).nativeView as View;
             rootView.cssClasses.add(CSSUtils.MODAL_ROOT_VIEW_CSS_CLASS);
             const modalRootViewCssClasses = CSSUtils.getSystemCssClasses();
-            modalRootViewCssClasses.forEach(c => rootView.cssClasses.add(c));
+            modalRootViewCssClasses.forEach((c) => rootView.cssClasses.add(c));
             rootView._setupAsRootView(activity);
             rootView._isAddedToNativeVisualTree = true;
             rootView.callLoaded();
@@ -762,7 +709,7 @@ export default class App extends BaseVueComponent {
     requestPermission(permission) {
         if (global.isAndroid) {
             const activity = androidApp.foregroundActivity || androidApp.startActivity;
-            return new Promise((resolve, reject) => {
+            return new Promise<void>((resolve, reject) => {
                 if (android.provider.Settings.canDrawOverlays(activity)) {
                     return resolve();
                 }
@@ -785,14 +732,7 @@ export default class App extends BaseVueComponent {
     isVisisble() {
         if (global.isAndroid) {
             const activity = androidApp.startActivity;
-            return (
-                activity &&
-                activity
-                    .getWindow()
-                    .getDecorView()
-                    .getRootView()
-                    .isShown()
-            );
+            return activity && activity.getWindow().getDecorView().getRootView().isShown();
         }
     }
 
@@ -850,13 +790,7 @@ export default class App extends BaseVueComponent {
 
         if (global.isAndroid) {
             const activity = androidApp.startActivity;
-            const visible =
-                activity &&
-                activity
-                    .getWindow()
-                    .getDecorView()
-                    .getRootView()
-                    .isShown();
+            const visible = activity && activity.getWindow().getDecorView().getRootView().isShown();
             if (!visible) {
                 if (args && args.eventName === AndroidApplication.activityStartedEvent) {
                     //ignoring newIntent in background as we already received start activity event with intent

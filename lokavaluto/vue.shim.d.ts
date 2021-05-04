@@ -11,7 +11,6 @@ declare module 'vue/types/vue' {
         $authService: AuthService;
         $securityService: SecurityService;
         $crashReportService: CrashReportService;
-
         $t: (s: string, ...args) => string;
         $tc: (s: string, ...args) => string;
         $tu: (s: string, ...args) => string;

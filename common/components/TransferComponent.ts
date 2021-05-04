@@ -1,4 +1,3 @@
-import { showSnack } from '@nativescript-community/ui-material-snackbar';
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { PropertyChangeData } from '@nativescript/core';
 import { sms } from 'nativescript-phone';
@@ -12,7 +11,7 @@ import TransferConfirmation from './TransferConfirmation';
 import UserPicker from './UserPicker';
 
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 const amountRegexp = /^\d*([,\.]\d{0,2})?$/;
@@ -49,7 +48,7 @@ export default class TransferComponent extends BaseVueComponent {
     }
 
     get canSendSMS() {
-        return  (this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0);
+        return this.canStartTransfer && this.recipient.smsIds && this.recipient.smsIds.length > 0;
     }
 
     @Watch('reason')
@@ -68,7 +67,7 @@ export default class TransferComponent extends BaseVueComponent {
         } else {
             this.amountError = null;
         }
-        this.canStartTransfer = this.amount > 0 && !!this.account && (FAKE_ALL ||this.account.balance > 0) && !!this.recipient && !this.reasonError;
+        this.canStartTransfer = this.amount > 0 && !!this.account && (FAKE_ALL || this.account.balance > 0) && !!this.recipient && !this.reasonError;
     }
     onInputChange(e: PropertyChangeData, value) {
         this.checkForm();
@@ -138,7 +137,7 @@ export default class TransferComponent extends BaseVueComponent {
     refresh() {
         this.refreshing = true;
         return Promise.all([
-            this.$authService.getAccounts().then(r => {
+            this.$authService.getAccounts().then((r) => {
                 // console.log('got accounts', r);
                 this.accounts = r;
                 if (r.length === 1) {
@@ -146,14 +145,14 @@ export default class TransferComponent extends BaseVueComponent {
                     this.checkForm();
                 }
             }),
-            this.$authService.getBenificiaries().then(r => {
+            this.$authService.getBenificiaries().then((r) => {
                 this.beneficiaries = r;
                 if (this.beneficiaries.length === 1 && !this.recipient) {
                     this.recipient = this.beneficiaries[0].user;
                 }
             })
         ])
-            .then(r => {
+            .then((r) => {
                 this.refreshing = false;
             })
             .catch(this.showError);
@@ -219,7 +218,7 @@ export default class TransferComponent extends BaseVueComponent {
                 await this.$authService.confirmOperation(r.operation.id, code);
                 this.hideLoading();
             }
-            
+
             this.showTransactionDone(this.account, this.recipient, this.amount, this.reason, this.description);
             this.close();
             new Vibrate().vibrate(500);
@@ -231,16 +230,22 @@ export default class TransferComponent extends BaseVueComponent {
     }
     async showTransactionDone(account: AccountInfo, recipient: User, amount: number, reason: string, description: string) {
         await timeout(700);
-        this.$showModal(TransferConfirmation, {props:{
-            account,
-            recipient,
-            amount,
-            reason, description
-        }, fullscreen: false,
-        animated:false,
-        ios: global.isIOS?{
-          presentationStyle: UIModalPresentationStyle.OverFullScreen
-        }:undefined})
+        this.$showModal(TransferConfirmation, {
+            props: {
+                account,
+                recipient,
+                amount,
+                reason,
+                description
+            },
+            fullscreen: false,
+            animated: false,
+            ios: global.isIOS
+                ? {
+                      presentationStyle: UIModalPresentationStyle.OverFullScreen
+                  }
+                : undefined
+        });
         // showSnack({
         //     message: this.$t('transaction_done', amount, recipient)
         // });
@@ -255,7 +260,7 @@ export default class TransferComponent extends BaseVueComponent {
                 beneficiaries: this.beneficiaries
             },
             fullscreen: true
-        }).then(r => {
+        }).then((r) => {
             if (r) {
                 this.recipient = r;
                 this.checkForm();
@@ -268,7 +273,7 @@ export default class TransferComponent extends BaseVueComponent {
         }
         if (ICC && name) {
             // this.log('handleQRData1', ICC, name);
-            const beneficiary = this.beneficiaries && this.beneficiaries.find(b => b.id === id);
+            const beneficiary = this.beneficiaries && this.beneficiaries.find((b) => b.id === id);
             if (beneficiary) {
                 this.recipient = beneficiary.user;
             } else {

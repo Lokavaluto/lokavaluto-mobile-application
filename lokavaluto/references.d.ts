@@ -24,6 +24,7 @@ declare const APP_CLIENT_ID: string;
 declare const APP_CLIENT_SECRET: string;
 declare const SHA_SECRET_KEY: string;
 declare const APP_URL: string;
+declare const APP_HOST: string;
 declare const APP_SMS_NUMBER: string;
 declare const PRIVACY_POLICY_URL: string;
 declare const TERMS_CONDITIONS_URL: string;

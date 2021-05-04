@@ -1,32 +1,38 @@
+// @ts-ignore
 const NsVueTemplateCompiler = require('nativescript-vue-template-compiler');
 NsVueTemplateCompiler.registerElement('MDTextField', () => require('@nativescript-community/ui-material-textfield').TextField, {
     model: {
         prop: 'text',
-        event: 'textChange',
-    },
+        event: 'textChange'
+    }
 });
 NsVueTemplateCompiler.registerElement('MDSlider', () => require('@nativescript-community/ui-material-slider').Slider, {
     model: {
         prop: 'value',
-        event: 'valueChange',
-    },
+        event: 'valueChange'
+    }
 });
 NsVueTemplateCompiler.registerElement('Pager', () => require('@nativescript-community/ui-pager').Pager, {
     model: {
         prop: 'selectedIndex',
-        event: 'selectedIndexChange',
-    },
+        event: 'selectedIndexChange'
+    }
 });
 const webpackConfig = require('./webpack.config.js');
-const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const webpack = require('webpack');
-const { readFileSync , readdirSync} = require('fs');
+const { readFileSync, readdirSync } = require('fs');
+// @ts-ignore
 const { dirname, join, relative, resolve, sep } = require('path');
 const nsWebpack = require('@nativescript/webpack');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const SentryCliPlugin = require('@sentry/webpack-plugin');
+// @ts-ignore
 const TerserPlugin = require('terser-webpack-plugin');
+// @ts-ignore
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+// @ts-ignore
+const Fontmin = require('fontmin');
+const IgnoreNotFoundExportPlugin = require('./IgnoreNotFoundExportPlugin');
 
 module.exports = (env, params = {}) => {
     if (env.adhoc) {
@@ -37,7 +43,7 @@ module.exports = (env, params = {}) => {
                 sentry: true,
                 uploadSentry: true,
                 sourceMap: true,
-                uglify: true,
+                uglify: true
             },
             env
         );
@@ -46,6 +52,7 @@ module.exports = (env, params = {}) => {
     const {
         appPath = nconfig.appPath,
         appResourcesPath = nconfig.appResourcesPath,
+        // @ts-ignore
         hmr, // --env.hmr
         production, // --env.production
         sourceMap, // --env.sourceMap
@@ -53,32 +60,45 @@ module.exports = (env, params = {}) => {
         inlineSourceMap, // --env.inlineSourceMap
         sentry, // --env.sentry
         uploadSentry,
+        // @ts-ignore
         verbose, // --env.verbose
         uglify, // --env.uglify
         noconsole, // --env.noconsole
         devlog, // --env.devlog
         fakeall, // --env.fakeall
-        adhoc, // --env.adhoc
+        adhoc // --env.adhoc
     } = env;
 
-    const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
+    env.appPath = appPath;
+    env.appResourcesPath = appResourcesPath;
+    // env.appComponents = env.appComponents || [];
+    // env.appComponents.push('~/services/android/BgService', '~/services/android/BgServiceBinder');
+    // @ts-ignore
+    const config = webpackConfig(env, params);
     const mode = production ? 'production' : 'development';
+    const platform = env && ((env.android && 'android') || (env.ios && 'ios'));
     const tsconfig = 'tsconfig.json';
     const projectRoot = params.projectRoot || __dirname;
-    const dist = resolve(projectRoot, nsWebpack.getAppPath(platform, projectRoot));
+    const dist = nsWebpack.Utils.platform.getDistPath();
     const appResourcesFullPath = resolve(projectRoot, appResourcesPath);
 
-    if (platform === 'android') {
-        // env.appComponents = [resolve(projectRoot, 'app/services/android/BgService.ts'), resolve(projectRoot, 'app/services/android/BgServiceBinder.ts')];
-    }
-    const config = webpackConfig(env, params);
+    // @ts-ignore
+    config.externals.push('~/licenses.json');
+    // @ts-ignore
+    config.externals.push(function ({ context, request }, cb) {
+        if (/i18n$/i.test(context)) {
+            return cb(null, './i18n/' + request);
+        }
+        cb();
+    });
     const coreModulesPackageName = '@akylas/nativescript';
     config.resolve.modules = [resolve(__dirname, `node_modules/${coreModulesPackageName}`), resolve(__dirname, 'node_modules'), `node_modules/${coreModulesPackageName}`, 'node_modules'];
     Object.assign(config.resolve.alias, {
         '@nativescript/core': `${coreModulesPackageName}`,
-        'tns-core-modules': `${coreModulesPackageName}`,
+        'tns-core-modules': `${coreModulesPackageName}`
     });
 
+    // @ts-ignore
     const package = require('./package.json');
     const isIOS = platform === 'ios';
     const isAndroid = platform === 'android';
@@ -93,7 +113,7 @@ module.exports = (env, params = {}) => {
     console.log('locales', locales);
     const defines = {
         PRODUCTION: !!production,
-        NO_CONSOLE:noconsole,
+        NO_CONSOLE: noconsole,
         process: 'global.process',
         'global.TNS_WEBPACK': 'true',
         'gVars.platform': `"${platform}"`,
@@ -104,7 +124,7 @@ module.exports = (env, params = {}) => {
         TNS_ENV: JSON.stringify(mode),
         'gVars.sentry': !!sentry,
         SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
-        APP_URL: `"${process.env.APP_URL}"`,
+        APP_HOST: `"${process.env.APP_HOST}"`,
         APP_CLIENT_ID: `"${process.env.APP_CLIENT_ID}"`,
         APP_CLIENT_SECRET: `"${process.env.APP_CLIENT_SECRET}"`,
         APP_SMS_NUMBER: `"${process.env.APP_SMS_NUMBER}"`,
@@ -129,41 +149,63 @@ module.exports = (env, params = {}) => {
         LOG_LEVEL: devlog ? '"full"' : '""',
         FAKE_ALL: fakeall,
         TEST_LOGS: adhoc || !production,
-        WITH_PUSH_NOTIFICATIONS: 'true',
+        WITH_PUSH_NOTIFICATIONS: 'true'
     };
-
-    const itemsToClean = [`${dist}/**/*`];
-    if (platform === 'android') {
-        itemsToClean.push(`${join(projectRoot, 'platforms', 'android', 'app', 'src', 'main', 'assets', 'snapshots/**/*')}`);
-        itemsToClean.push(`${join(projectRoot, 'platforms', 'android', 'app', 'build', 'configurations', 'nativescript-android-snapshot')}`);
-    }
 
     const symbolsParser = require('scss-symbols-parser');
     const mdiSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'node_modules/@mdi/font/scss/_variables.scss')).toString());
     const mdiIcons = JSON.parse(`{${mdiSymbols.variables[mdiSymbols.variables.length - 1].value.replace(/" (F|0)(.*?)([,\n]|$)/g, '": "$1$2"$3')}}`);
-
-    const appSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'css/app.scss')).toString());
-
-    const appIcons = JSON.parse(`{${appSymbols.variables[appSymbols.variables.length - 1].value.replace(/'app-([a-zA-Z0-9-_]+)' (F|f|e|0)(.*?)([,\n]+|$)/g, '"$1": "$2$3"$4')}}`);
+    const appSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'css/variables.scss')).toString());
+    const appIcons = {};
+    appSymbols.variables
+        .filter((v) => v.name.startsWith('$icon-'))
+        .forEach((v) => {
+            appIcons[v.name.replace('$icon-', '')] = String.fromCharCode(parseInt(v.value.slice(2), 16));
+        });
     const scssPrepend = `$lato-fontFamily: ${platform === 'android' ? 'res/lato' : 'Lato'};
     $app-fontFamily: app;
     $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Material Design Icons'};`;
 
-    config.module.rules.forEach((r) => {
-        if (Array.isArray(r.use) && r.use.indexOf('sass-loader') !== -1) {
-            r.use.splice(-1, 1, {
-                loader: 'sass-loader',
-                options: {
-                    sourceMap: false,
-                    additionalData: scssPrepend,
+    // @ts-ignore
+    const scssLoaderRuleIndex = config.module.rules.findIndex((r) => r.test && r.test.toString().indexOf('scss') !== -1);
+    console.log('scssLoaderRuleIndex', scssLoaderRuleIndex);
+    config.module.rules.splice(
+        scssLoaderRuleIndex,
+        1,
+        {
+            test: /\.scss$/,
+            exclude: /\.module\.scss$/,
+            use: [
+                { loader: 'apply-css-loader' },
+                {
+                    loader: 'css2json-loader',
+                    options: { useForImports: true }
                 },
-            });
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: false,
+                        additionalData: scssPrepend
+                    }
+                }
+            ]
+        },
+        {
+            test: /\.module\.scss$/,
+            use: [
+                { loader: 'css-loader', options: { url: false } },
+                {
+                    loader: 'sass-loader',
+                    options: {
+                        sourceMap: false,
+                        additionalData: scssPrepend
+                    }
+                }
+            ]
         }
-    });
-    const indexOfTsLoaderRule = config.module.rules.findIndex((r) => r.loader === 'ts-loader');
-    config.module.rules[indexOfTsLoaderRule].options.transpileOnly = true;
-    config.module.rules[indexOfTsLoaderRule].options.configFile = resolve(__dirname, 'tsconfig.json');
+    );
 
+    const usedMDIICons = [];
     config.module.rules.push({
         // rules to replace mdi icons and not use nativescript-font-icon
         test: /\.(ts|js|scss|css|vue)$/,
@@ -173,78 +215,134 @@ module.exports = (env, params = {}) => {
                 loader: 'string-replace-loader',
                 options: {
                     search: 'mdi-([a-z-]+)',
+                    // @ts-ignore
                     replace: (match, p1, offset, str) => {
                         if (mdiIcons[p1]) {
-                            return String.fromCharCode(parseInt(mdiIcons[p1], 16));
+                            const res = String.fromCharCode(parseInt(mdiIcons[p1], 16));
+                            usedMDIICons.push(res);
+                            return res;
                         }
                         return match;
                     },
-                    flags: 'g',
-                },
+                    flags: 'g'
+                }
             },
             {
                 loader: resolve(__dirname, 'node_modules', 'string-replace-loader'),
                 options: {
                     search: 'app-([a-zA-Z0-9-_]+)',
+                    // @ts-ignore
                     replace: (match, p1, offset) => {
+                        console.log('test', p1, appIcons[p1]);
                         if (appIcons[p1]) {
-                            return String.fromCharCode(parseInt(appIcons[p1], 16));
+                            return appIcons[p1];
                         }
                         return match;
                     },
-                    flags: 'g',
-                },
-            },
-        ],
+                    flags: 'g'
+                }
+            }
+        ]
     });
 
+    if (!!production) {
+        config.module.rules.push({
+            // rules to replace mdi icons and not use nativescript-font-icon
+            test: /\.(js)$/,
+            use: [
+                {
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: '__decorate\\(\\[((.|\n)*?)profile,((.|\n)*?)\\],.*?,.*?,.*?\\);?',
+                        // @ts-ignore
+                        replace: (match, p1, offset, str) => '',
+                        flags: 'g'
+                    }
+                }
+            ]
+        });
+        // rules to clean up all Trace in production
+        // we must run it for all files even node_modules
+        config.module.rules.push({
+            test: /\.(ts|js)$/,
+            use: [
+                {
+                    loader: 'string-replace-loader',
+                    options: {
+                        search: 'if\\s*\\(\\s*Trace.isEnabled\\(\\)\\s*\\)',
+                        replace: 'if (false)',
+                        flags: 'g'
+                    }
+                }
+            ]
+        });
+    }
+
+    // config.plugins.push(
+    //     new webpack.ProvidePlugin({
+    //         Buffer: ['buffer', 'Buffer']
+    //     })
+    // );
+    // handle node polyfills
+    config.externalsPresets = { node: false };
+    config.resolve.fallback = config.resolve.fallback || {};
+    config.resolve.fallback.buffer = require.resolve('url/');
+
+    // we remove default rules
+    config.plugins = config.plugins.filter((p) => ['CopyPlugin', 'ForkTsCheckerWebpackPlugin'].indexOf(p.constructor.name) === -1);
+    // we add our rules
+    const globOptions = { dot: false, ignore: [`**/${relative(appPath, appResourcesFullPath)}/**`] };
+    const context = nsWebpack.Utils.platform.getEntryDirPath();
+    const copyPatterns = [
+        { context, from: 'fonts/!(ios|android)/**/*', to: 'fonts/[name][ext]', noErrorOnMissing: true, globOptions },
+        { context, from: 'fonts/*', to: 'fonts/[name][ext]', noErrorOnMissing: true, globOptions },
+        { context, from: `fonts/${platform}/**/*`, to: 'fonts/[name][ext]', noErrorOnMissing: true, globOptions },
+        { context, from: '**/*.jpg', noErrorOnMissing: true, globOptions },
+        { context, from: '**/*.png', noErrorOnMissing: true, globOptions },
+        { context, from: 'assets/**/*', noErrorOnMissing: true, globOptions },
+        { context, from: 'i18n/**/*', globOptions },
+        {
+            from: 'node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
+            to: 'fonts',
+            globOptions,
+            transform: {
+                cache: { keys: { key: usedMDIICons.join('') } },
+                // @ts-ignore
+                transformer(content, path) {
+                    return new Promise((resolve, reject) => {
+                        new Fontmin()
+                            .src(content)
+                            // @ts-ignore
+                            .use(Fontmin.glyph({ text: usedMDIICons.join('') }))
+                            .run(function (err, files) {
+                                if (err) {
+                                    reject(err);
+                                } else {
+                                    resolve(files[0].contents);
+                                }
+                            });
+                    });
+                }
+            }
+        }
+    ];
+    config.plugins.unshift(new CopyWebpackPlugin({ patterns: copyPatterns }));
+    config.plugins.push(new IgnoreNotFoundExportPlugin());
+    // @ts-ignore
+    Object.assign(config.plugins.find((p) => p.constructor.name === 'DefinePlugin').definitions, defines);
     config.plugins.push(new webpack.ContextReplacementPlugin(/dayjs[\/\\]locale$/, new RegExp(`(${locales.join('|')})$`)));
     if (nconfig.cssParser !== 'css-tree') {
+        // @ts-ignore
         config.plugins.push(new webpack.IgnorePlugin(/css-tree$/));
     }
 
-    // we remove default rules
-    config.plugins = config.plugins.filter((p) => ['DefinePlugin', 'CleanWebpackPlugin', 'CopyPlugin'].indexOf(p.constructor.name) === -1);
-    // we add our rules
-    const copyIgnore = { ignore: [`**/${relative(appPath, appResourcesFullPath)}/**`] };
-    const copyPatterns = [
-        { from: 'fonts/!(ios|android)/**/*', to: 'fonts', flatten: true, dot: false },
-        { from: 'fonts/*', to: 'fonts', flatten: true, dot: false },
-        { from: `fonts/${platform}/**/*`, to: 'fonts', flatten: true, dot: false },
-        { from: '**/*.jpg', dot: false },
-        { from: '**/*.png', dot: false },
-        { from: 'assets/**/*', dot: false },
-        {
-            from: '../node_modules/@mdi/font/fonts/materialdesignicons-webfont.ttf',
-            to: 'fonts',
-            dot: false,
-        },
-    ];
-    config.plugins.unshift(new CopyWebpackPlugin(copyPatterns, copyIgnore));
-
-    config.plugins.unshift(
-        new CleanWebpackPlugin({
-            dangerouslyAllowCleanPatternsOutsideProject: true,
-            dry: false,
-            verbose: false,
-            cleanOnceBeforeBuildPatterns: itemsToClean,
-        })
-    );
-    config.plugins.unshift(new webpack.DefinePlugin(defines));
-    config.plugins.push(
-        new webpack.EnvironmentPlugin({
-            NODE_ENV: JSON.stringify(mode), // use 'development' unless process.env.NODE_ENV is defined
-            DEBUG: false,
-        })
-    );
-
-    config.devtool = inlineSourceMap ? 'inline-cheap-source-map' : false;
-    if (!inlineSourceMap && (hiddenSourceMap || sourceMap)) {
+    if (hiddenSourceMap || sourceMap) {
         if (!!sentry && !!uploadSentry) {
+            config.devtool = false;
             config.plugins.push(
                 new webpack.SourceMapDevToolPlugin({
                     append: `\n//# sourceMappingURL=${process.env.SENTRY_PREFIX}[name].js.map`,
-                    filename: join(process.env.SOURCEMAP_REL_DIR, '[name].js.map'),
+                    filename: join(process.env.SOURCEMAP_REL_DIR, '[name].js.map')
                 })
             );
             let appVersion;
@@ -259,30 +357,30 @@ module.exports = (env, params = {}) => {
             console.log('appVersion', appVersion, buildNumber);
 
             config.plugins.push(
+                // @ts-ignore
                 new SentryCliPlugin({
                     release: appVersion,
                     urlPrefix: 'app:///',
                     rewrite: true,
                     dist: `${buildNumber}.${platform}`,
                     ignore: ['tns-java-classes', 'hot-update'],
-                    include: [dist, join(dist, process.env.SOURCEMAP_REL_DIR)],
+                    include: [dist, join(dist, process.env.SOURCEMAP_REL_DIR)]
                 })
             );
         } else {
-            config.plugins.push(
-                new webpack.SourceMapDevToolPlugin({
-                    filename: '[name].js.map',
-                })
-            );
+            config.devtool = 'inline-nosources-cheap-module-source-map';
         }
+    } else {
+        config.devtool = false;
     }
+
     if (!!production) {
         config.plugins.push(
             new ForkTsCheckerWebpackPlugin({
                 async: false,
                 typescript: {
-                    configFile: resolve(tsconfig),
-                },
+                    configFile: resolve(tsconfig)
+                }
             })
         );
     }
@@ -291,15 +389,14 @@ module.exports = (env, params = {}) => {
     config.optimization.minimizer = [
         new TerserPlugin({
             parallel: true,
-            cache: true,
-            sourceMap: isAnySourceMapEnabled,
+            // cache: true,
+            // sourceMap: isAnySourceMapEnabled,
             terserOptions: {
-                ecma: 6,
-                // warnings: true,
-                // toplevel: true,
+                ecma: 2017,
+                module: true,
                 output: {
                     comments: false,
-                    semicolons: !isAnySourceMapEnabled,
+                    semicolons: !isAnySourceMapEnabled
                 },
                 compress: {
                     // The Android SBG has problems parsing the output
@@ -307,11 +404,11 @@ module.exports = (env, params = {}) => {
                     collapse_vars: platform !== 'android',
                     sequences: platform !== 'android',
                     passes: 2,
-                    drop_console: production && adhoc !== true,
+                    drop_console: production && adhoc !== true
                 },
-                keep_fnames: true,
-            },
-        }),
+                keep_fnames: true
+            }
+        })
     ];
     return config;
 };

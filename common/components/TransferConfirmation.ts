@@ -1,5 +1,14 @@
 import { AnimationCurve } from '@akylas/nativescript/ui/enums';
-import { GestureHandlerStateEvent, GestureHandlerTouchEvent, GestureState, GestureStateEventData, GestureTouchEventData, HandlerType, Manager, PanGestureHandler } from '@nativescript-community/gesturehandler/gesturehandler';
+import {
+    GestureHandlerStateEvent,
+    GestureHandlerTouchEvent,
+    GestureState,
+    GestureStateEventData,
+    GestureTouchEventData,
+    HandlerType,
+    Manager,
+    PanGestureHandler
+} from '@nativescript-community/gesturehandler/gesturehandler';
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
 import { AccountInfo, Benificiary, Roles, User } from '../services/AuthService';
@@ -16,8 +25,7 @@ export default class TransferConfirmation extends PageComponent {
     @Prop() amount: number;
     @Prop() reason: string;
     @Prop() description: string;
-  
-  
+
     panGestureHandler: PanGestureHandler;
     destroyed() {
         super.destroyed();
@@ -28,22 +36,21 @@ export default class TransferConfirmation extends PageComponent {
             gestureHandler.off(GestureHandlerStateEvent, this.onGestureState, this);
             this.panGestureHandler = null;
         }
-        
     }
     mounted() {
         super.mounted();
         const manager = Manager.getInstance();
-            const gestureHandler = this.panGestureHandler = manager.createGestureHandler(HandlerType.PAN, 12512, {
-                shouldCancelWhenOutside: false,
+        const gestureHandler = (this.panGestureHandler = manager.createGestureHandler(HandlerType.PAN, 12512, {
+            shouldCancelWhenOutside: false,
             activeOffsetY: 5,
-            failOffsetY: -5,
-            });
-            gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
+            failOffsetY: -5
+        }));
+        gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
         gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
-        gestureHandler.attachToView(this.nativeView)
+        gestureHandler.attachToView(this.nativeView);
     }
     close() {
-        this.$modal.close()
+        this.$modal.close();
     }
 
     prevDeltaY = 0;
@@ -59,17 +66,21 @@ export default class TransferConfirmation extends PageComponent {
             const endOffsetY = translationY - this.prevDeltaY + dragToss * velocityY;
             if (Math.abs(endOffsetY - this.nativeView.translateY) > 30) {
                 const height = this.nativeView.getMeasuredHeight();
-                this.nativeView.animate({
-                    translate:{x:0, y : endOffsetY > 0?height : -height},
-                    duration:300,
-                    curve: AnimationCurve.easeOut
-                }).then(()=>{this.close()})
+                this.nativeView
+                    .animate({
+                        translate: { x: 0, y: endOffsetY > 0 ? height : -height },
+                        duration: 300,
+                        curve: AnimationCurve.easeOut
+                    })
+                    .then(() => {
+                        this.close();
+                    });
             } else {
                 this.nativeView.animate({
-                    translate:{x:0, y : 0},
-                    duration:200,
+                    translate: { x: 0, y: 0 },
+                    duration: 200,
                     curve: AnimationCurve.spring
-                })
+                });
             }
 
             // const steps = [0].concat(this.peekerSteps);
@@ -88,7 +99,7 @@ export default class TransferConfirmation extends PageComponent {
             // this.scrollSheetToPosition(destSnapPoint);
             this.prevDeltaY = 0;
         }
-        }
+    }
     onGestureTouch(args: GestureTouchEventData) {
         const data = args.data;
         // this.log('onGestureTouch', this._isPanning, this.panEnabled, this.isAnimating, data.state, data.extraData.translationY, this.prevDeltaY);
@@ -97,6 +108,6 @@ export default class TransferConfirmation extends PageComponent {
             return;
         }
         const deltaY = data.extraData.translationY;
-        this.nativeView.translateY = deltaY - this.prevDeltaY
+        this.nativeView.translateY = deltaY - this.prevDeltaY;
     }
 }

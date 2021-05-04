@@ -1,7 +1,7 @@
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
 import { QrCodeTransferData } from '../services/AuthService';
-import { ComponentIds, off as appOff, on as appOn, QRCodeDataEvent } from './App';
+import { ComponentIds, QRCodeDataEvent, off as appOff, on as appOn } from './App';
 import PageComponent from './PageComponent';
 import TransferComponent from './TransferComponent';
 

@@ -1,5 +1,5 @@
 <template>
-    <CairnPage :title="$t('credit_account')">
+    <BasePage :title="$t('credit_account')">
         <GridLayout>
             <StackLayout verticalAlignment="center">
                 <StackLayout orientation="horizontal" horizontalAlignment="center">
@@ -29,7 +29,7 @@
             </StackLayout>
             <AWebView ref="webView" :src="CREDIT_URL" :visibility="showHelloAsso ? 'visible' : 'hidden'" @loadStarted="onUrlLoadStarted" @loadFinished="onUrlLoadFinished" />
         </GridLayout>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./CreditAccount.ts" />

@@ -1,11 +1,11 @@
-import { android as androidApp, AndroidActivityBackPressedEventData, AndroidApplication } from '@nativescript/core/application';
+import { AndroidActivityBackPressedEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 import { Component, Prop } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 
 enum State {
     CurrentPasswordQuery,
     PasswordQuery,
-    ConfirmPasswordQuery,
+    ConfirmPasswordQuery
 }
 
 export interface PasscodeWindowOptions {

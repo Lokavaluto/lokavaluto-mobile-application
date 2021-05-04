@@ -82,7 +82,7 @@ export function getBounds(sourceLocs: MapPos<LatLonKeys>[]) {
         lat: Infinity,
         lon: Infinity
     };
-    sourceLocs.forEach(l => {
+    sourceLocs.forEach((l) => {
         northeast.lat = Math.max(l.lat, northeast.lat);
         southwest.lat = Math.min(l.lat, southwest.lat);
         northeast.lon = Math.max(l.lon, northeast.lon);

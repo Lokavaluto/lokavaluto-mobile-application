@@ -38,9 +38,11 @@ mdripple {
 //     color: $accent-color;
 // }
 .app-page {
-    background-color: $dark-color;
-    status-bar-style: dark;
-    status-bar-color: $primary-color;
+    background-color: $background-color;
+    status-bar-style: light;
+    status-bar-color: $background-color;
+    navigation-bar-color: $background-color;
+    navigation-bar-style: light;
 }
 
 .pageContent {
@@ -62,8 +64,9 @@ button {
     // margin:4;
     // ripple-color: $primary-color;
 }
-mdbutton {
-    border-radius: 2;
+mdbutton,
+mdcardview {
+    shape: main;
 }
 mdbutton[variant='contained'] {
     color: white;
@@ -81,35 +84,12 @@ mdtextfield {
     // placeholder-color: $accent-color;
 }
 
-.fab-item-title {
-    background-color: #444;
-    vertical-text-alignment: middle;
-    border-radius: 6;
-    color: white;
-}
-
-.fab-button,
-.fab-item {
-    background-color: $accent-color;
-    ripple-color: $accent-color-dark;
-}
-.fab-icon,
-.fab-item {
-    color: white;
-}
-.fab-backdrop {
-    background-color: rgba(0, 0, 0, 0.4);
-}
-
-.cardView {
-    border-radius: 2;
-    elevation: 2;
-    dynamic-elevation-offset: 5;
-    ripple-color: $primary-color;
-    background-color: white;
-}
+// .cardView {
+//     ripple-color: $primary-color;
+//     background-color: white;
+// }
 .flatCardView {
-    border-radius: 2;
+    border-radius: 10;
     elevation: 1;
     background-color: white;
 }
@@ -132,13 +112,12 @@ mdtextfield {
 
 .floating-btn {
     @extend .mdi, .buttonwhite;
-    // color: $primary-color;
+    shape: round;
     font-size: 24;
     padding: 0;
     margin: 0;
     width: 54;
     height: 54;
-    border-radius: 27;
 }
 
 // .botom-nav {
@@ -155,7 +134,7 @@ mdtextfield {
 
 .actionBar {
     elevation: 1;
-    background-color: $primary-color;
+    background-color: $background-color;
 }
 
 .actionBarButton {
@@ -165,8 +144,8 @@ mdtextfield {
     margin: 0;
     padding: 0;
     font-size: 32;
-    border-radius: $actionbar-height/2;
-    color: #ffffff;
+    shape: round;
+    color: $primary-color;
     ripple-color: rgba(255, 255, 255, 0.533);
 }
 
@@ -174,7 +153,7 @@ mdtextfield {
     vertical-alignment: center;
     font-size: 20;
     font-weight: bold;
-    color: white;
+    color: $primary-color;
 }
 
 .actionBarSubtitle {
@@ -185,11 +164,11 @@ mdtextfield {
 .icon-btn {
     @extend .mdi;
     background-color: transparent;
-    ripple-color: white;
-    color: white;
+    ripple-color: $primary-color;
+    color: $primary-color;
     width: $navigation-bar-height;
     height: $navigation-bar-height;
-    border-radius: $navigation-bar-height / 2;
+    shape: round;
     font-size: 24;
     margin: 0;
     padding: 0;
@@ -263,7 +242,7 @@ mdtextfield {
 
 .menu-btn {
     @extend .icon-btn;
-    border-radius: 22;
+    shape: round;
     ripple-color: $primary-color;
     color: $primary-color;
 }

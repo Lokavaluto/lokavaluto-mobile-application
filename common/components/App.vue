@@ -1,5 +1,5 @@
 <template>
-    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" :statusBarColor="themeColor" ios:barStyle="light" :navigationBarColor="themeColor" @loaded="onLoaded">
+    <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" @loaded="onLoaded">
         <Drawer ref="drawer" :options="drawerOptions">
             <GridLayout ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
@@ -8,6 +8,25 @@
                     <NSImg :src="userProfile.image" v-show="!!userProfile.image" noCache />
                     <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />
+                </GridLayout>
+                <GridLayout v-if="!userProfile" height="150" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" marginBottom="4" columns="50,*">
+                    <Label :fontFamily="appFontFamily" colSpan="2" fontSize="40" :color="themeColor" text="app-full_logo" textAlignment="center" verticalAlignment="top" verticalTextAlignment="top" />
+                    <Label
+                        class="mdi"
+                        borderRadius="20"
+                        borderWidth="1"
+                        :color="themeColor"
+                        :borderColor="themeColor"
+                        fontSize="30"
+                        width="40"
+                        height="40"
+                        marginBottom="10"
+                        textAlignment="center"
+                        text="mdi-account"
+                        verticalTextAlignment="center"
+                        verticalAlignment="bottom"
+                    />
+                    <Button col="1" :text="$t('login')" @tap="goToLogin" verticalAlignment="bottom" />
                 </GridLayout>
                 <ScrollView row="1" @tap="noop">
                     <StackLayout ref="menu" @tap="noop">
@@ -26,7 +45,7 @@
             <!-- <GridLayout> -->
             <Frame ~mainContent ref="innerFrame" id="innerFrame">
                 <Home v-if="loggedInOnStart" />
-                <Login v-else />
+                <Map v-else />
             </Frame>
             <!-- <Label :text="$t('no_network_desc')"  verticalAlignment="bottom" textAlignment="center" color="white" backgroundColor="red" padding="10"/> -->
             <!-- </GridLayout> -->

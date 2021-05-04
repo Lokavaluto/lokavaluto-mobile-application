@@ -5,7 +5,7 @@ import dayjs from 'dayjs';
 import updateLocale from 'dayjs/plugin/updateLocale';
 import { prefs } from '../services/preferences';
 import LocalizedFormat from 'dayjs/plugin/localizedFormat';
-import calendar from 'dayjs/plugin/calendar'
+import calendar from 'dayjs/plugin/calendar';
 export { l as $t, lc as $tc, lt as $tt, lu as $tu } from '@nativescript-community/l';
 const supportedLanguages = SUPPORTED_LOCALES;
 
@@ -45,7 +45,7 @@ function setLang(newLang) {
     } catch (err) {
         console.log('failed to load lang json', lang, `~/i18n/${lang}.json`, err);
     }
-    onLanguageChangedCallbacks.forEach(c => c(lang));
+    onLanguageChangedCallbacks.forEach((c) => c(lang));
 }
 const onLanguageChangedCallbacks = [];
 export function onLanguageChanged(callback) {
@@ -78,7 +78,6 @@ export let lang;
 export function convertTime(date, formatStr: string) {
     return dayjs(date).format(formatStr);
 }
-
 
 export function convertDuration(date, formatStr: string) {
     const test = new Date(date);

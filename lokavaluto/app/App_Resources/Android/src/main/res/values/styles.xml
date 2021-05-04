@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" >
     <!-- theme to use FOR launch screen-->
     <style name="LaunchScreenThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="toolbarStyle">@style/NativeScriptToolbarStyle</item>
@@ -19,6 +20,7 @@
     <!-- theme to use AFTER launch screen is loaded-->
     <style name="AppThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="toolbarStyle">@style/NativeScriptToolbarStyle</item>
+        <item name="android:navigationBarColor" tools:targetApi="27">@android:color/white</item>
         <!-- <item name="android:statusBarColor">@color/ns_primaryDark</item> -->
         <item name="colorPrimary">@color/ns_primary</item>
         <item name="colorPrimaryDark">@color/ns_primaryDark</item>

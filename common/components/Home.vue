@@ -1,5 +1,5 @@
 <template>
-    <CairnPage
+    <BasePage
         id="home"
         @navigatedTo="onNavigatedTo"
         showMenuIcon
@@ -59,7 +59,7 @@
         <StackLayout slot="bottomActionBarRightButtons" verticalAlignment="center" orientation="horizontal">
             <Button variant="text" class="icon-btn" text="mdi-qrcode-scan" @tap="scanQRCode" />
         </StackLayout>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./Home.ts" />

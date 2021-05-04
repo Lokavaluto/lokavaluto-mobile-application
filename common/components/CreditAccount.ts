@@ -1,6 +1,6 @@
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { AWebView, LoadEventData } from '@nativescript-community/ui-webview';
-import { android as androidApp, AndroidActivityBackPressedEventData, AndroidApplication } from '@nativescript/core/application';
+import { AndroidActivityBackPressedEventData, AndroidApplication, android as androidApp } from '@nativescript/core/application';
 import { Component } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 import SettingLabelIcon from './SettingLabelIcon';
@@ -113,9 +113,9 @@ export default class CreditAccount extends PageComponent {
                 if (${isPro}) setValue('company', '${profile.name || ''}');
                 setValue('donation_free_unique', '${this.amount}');
                 setValue('firstName', '${profile.firstname || ''}');
-                setValue('address', '${profile.address.street1 || ''}');
-                setValue('city', '${profile.address.zipCity.city || ''}');
-                setValue('zipcode', '${profile.address.zipCity.zipCode || ''}');
+                setValue('address', '${profile.address.street || ''}');
+                setValue('city', '${profile.address.city || ''}');
+                setValue('zipcode', '${profile.address.zip || ''}');
                 setValue('email', '${profile.email || ''}');
                 // document.getElementsByClassName('container')[0].scrollTop = document.getElementById('birthdate').offsetTop;
                 `

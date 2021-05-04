@@ -2,14 +2,14 @@ import { numberProperty, objectProperty, stringProperty } from './BackendService
 import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from '@nativescript-community/ui-carto/core';
-import { HTTPError, HttpRequestOptions, NetworkService } from './NetworkService';
+import { HTTPError, HttpRequestOptions, NetworkService, base64Encode } from './NetworkService';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source';
 import { alert, login } from '@nativescript-community/ui-material-dialogs';
 import { $t, $tc, $tt, $tu } from '../helpers/locale';
 
-const tokenEndpoint = '/oauth/tokens';
+const tokenEndpoint = 'lokavaluto_api/public/auth/authenticate';
 
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
@@ -84,27 +84,17 @@ export enum TransactionType {
 }
 
 export class User {
-    contact_info:{
-        phone:number
-        mobile:number
-        email:string
-        website:string
-    }
-    local_group:string
-    exchange_counter:string
-    convention_signature_date:string
-    address:Address
-    coords: {
-        partner_latitude:number
-        partner_longitude:number
-    }
-    activities: {
-        member_comment:string
-        main_activity:string
-    }
-    name:string
-    itinerant:string
-    [k:string]:any
+    id: number;
+    name: string;
+    street: string;
+    street2: string;
+    zip: number;
+    city: string;
+    mobile: string;
+    email: string;
+    phone: string;
+
+    [k: string]: any;
     // webPushSubscriptions: string[] = null;
     // phoneNumbers: PhoneNumber[] = null;
     // smsIds: SmsId[] = null;
@@ -135,7 +125,7 @@ const UserKeys = Object.getOwnPropertyNames(new User());
 
 function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
     const ret: any = {};
-    keys.forEach(key => {
+    keys.forEach((key) => {
         ret[key] = obj[key];
     });
     return ret;
@@ -144,49 +134,49 @@ function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
 function cleanupUser(user: any) {
     const result = pick(user, UserKeys);
 
-    if (result.creationDate) {
-        result.creationDate = result.creationDate.timestamp * 1000;
-    }
-    if (result.image) {
-        result.image = `${APP_URL}/${result.image.webPath}`;
-        // } else {
-        // result.image = ``;
-    }
-    if (user.account_number) {
-        // in case of perso user returned we might have account_number instead of mainICC
-        result.mainICC = user.account_number;
-    }
-    if (user.phones) {
-        result.phoneNumbers = [];
-        result.smsIds = [];
-        user.phones.forEach(p => {
-            if (p.phoneNumber) {
-                result.phoneNumbers.push({
-                    id: p.id,
-                    phoneNumber: p.phoneNumber
-                });
-            }
-            if (p.identifier) {
-                result.smsIds.push({
-                    id: p.id,
-                    identifier: p.identifier
-                });
-            }
-        });
-    }
-    if (result.address) {
-        result.address = {
-            street1: result.address.street1,
-            street2: result.address.street2,
-            lat: result.address.lat,
-            lon: result.address.lon,
-            zipCity: {
-                zipCode: result.address.zipCity.zipCode,
-                city: result.address.zipCity.city,
-                name: result.address.zipCity.name
-            }
-        };
-    }
+    // if (result.creationDate) {
+    //     result.creationDate = result.creationDate.timestamp * 1000;
+    // }
+    // if (result.image) {
+    //     result.image = `${APP_URL}/${result.image.webPath}`;
+    //     // } else {
+    //     // result.image = ``;
+    // }
+    // if (user.account_number) {
+    //     // in case of perso user returned we might have account_number instead of mainICC
+    //     result.mainICC = user.account_number;
+    // }
+    // if (user.phones) {
+    //     result.phoneNumbers = [];
+    //     result.smsIds = [];
+    //     user.phones.forEach((p) => {
+    //         if (p.phoneNumber) {
+    //             result.phoneNumbers.push({
+    //                 id: p.id,
+    //                 phoneNumber: p.phoneNumber
+    //             });
+    //         }
+    //         if (p.identifier) {
+    //             result.smsIds.push({
+    //                 id: p.id,
+    //                 identifier: p.identifier
+    //             });
+    //         }
+    //     });
+    // }
+    // if (result.address) {
+    //     result.address = {
+    //         street1: result.address.street1,
+    //         street2: result.address.street2,
+    //         lat: result.address.lat,
+    //         lon: result.address.lon,
+    //         zipCity: {
+    //             zipCode: result.address.zipCity.zipCode,
+    //             city: result.address.zipCity.city,
+    //             name: result.address.zipCity.name
+    //         }
+    //     };
+    // }
 
     return result as User;
 }
@@ -232,9 +222,9 @@ export interface ZipCity {
     name: string;
 }
 export interface Address {
-    city: string, 
-    zip: string,
-    street:string
+    city: string;
+    zip: string;
+    street: string;
 }
 
 export class Phone {
@@ -323,13 +313,10 @@ export interface TransactionConfirmation {
 }
 
 interface TokenRequestResult {
-    access_token: string;
-    expires_in: number;
-    token_type: string;
-    scope: string;
-    refresh_token: string;
-    user_id: number;
-    first_login: boolean;
+    api_token: string;
+    status: string;
+    partner_id: number;
+    uid: number;
 }
 
 export class Transaction {
@@ -406,17 +393,17 @@ function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
     });
 }
 function flatten(arr) {
-    return arr.reduce(function(flat, toFlatten) {
+    return arr.reduce(function (flat, toFlatten) {
         return flat.concat(Array.isArray(toFlatten) ? flatten(toFlatten) : toFlatten);
     }, []);
 }
 function getFormData(actualData, prefix?: string) {
     return Promise.all(
-        Object.keys(actualData).map(k => {
+        Object.keys(actualData).map((k) => {
             const value = actualData[k];
             if (!!value) {
                 if (value instanceof ImageAsset || value instanceof ImageSource) {
-                    return getImageData(value).then(data => ({
+                    return getImageData(value).then((data) => ({
                         data,
                         contentType: 'image/png',
                         fileName: 'image.png',
@@ -434,7 +421,7 @@ function getFormData(actualData, prefix?: string) {
 
             return Promise.resolve(null);
         })
-    ).then(result => flatten(result));
+    ).then((result) => flatten(result));
 }
 
 export default class AuthService extends NetworkService {
@@ -442,7 +429,7 @@ export default class AuthService extends NetworkService {
     @objectProperty userProfile: UserProfile;
     @objectProperty loginParams: LoginParams;
     @stringProperty pushToken: string;
-    authority = APP_URL;
+    authority = `https://${APP_HOST}`;
 
     isLoggedIn() {
         return !!this.token && !!this.loginParams && !!this.userId;
@@ -505,19 +492,19 @@ export default class AuthService extends NetworkService {
                 requestParams
             });
         }
-        await this.getRefreshToken();
+        await this.getToken(this.loginParams);
         return this.request(requestParams, retry + 1);
     }
 
     async getUserProfile(userId?: number) {
-        const result = await this.request({
-            apiPath: `/mobile/users/${userId || this.userId}`,
+        const profile = await this.request<UserProfile>({
+            apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}`,
             method: 'GET'
         });
-        if (!result) {
+        if (!profile) {
             return null;
         }
-        const profile = cleanupUser(result);
+        // const profile = cleanupUser(result);
         if (!userId || userId === this.userId) {
             this.userProfile = profile;
             this.notify({
@@ -534,14 +521,14 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'GET'
         });
-        result.baseNotifications = result.baseNotifications.sort(function(a, b) {
+        result.baseNotifications = result.baseNotifications.sort(function (a, b) {
             return a.id - b.id;
         });
         return result;
     }
     async postUserSettings(userSettings: UserSettings) {
         const body = JSON.parse(JSON.stringify({ baseNotifications: userSettings.baseNotifications })) as UserSettings;
-        body.baseNotifications = body.baseNotifications.sort(function(a, b) {
+        body.baseNotifications = body.baseNotifications.sort(function (a, b) {
             return a.id - b.id;
         });
         const result = await this.request<UserSettings>({
@@ -605,7 +592,7 @@ export default class AuthService extends NetworkService {
                 'Content-Type': 'multipart/form-data'
             },
             apiPath: `/mobile/users/profile/${userId || this.userId}`,
-            body: params.filter(s => !!s),
+            body: params.filter((s) => !!s),
             method: 'POST'
         });
         // if it succeeds we need to update the user profile
@@ -635,7 +622,7 @@ export default class AuthService extends NetworkService {
         return this.request<{ validation_url: string }>({
             apiPath: validationUrl,
             method: 'POST',
-            body: body
+            body
         });
     }
 
@@ -678,16 +665,12 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         const newItems = result.features
-            .filter(
-                r => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode
-            )
-            .map(r => ({
+            .filter((r) => (r.properties.osm_key === 'highway' || r.properties.street) && r.properties.city && r.properties.postcode)
+            .map((r) => ({
                 lon: r.geometry && r.geometry.coordinates[0],
                 lat: r.geometry && r.geometry.coordinates[1],
-                display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
-                    r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
-                street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street ||
-                    r.properties.name}`,
+                display_name: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name} ${r.properties.postcode} ${r.properties.city}`,
+                street1: `${r.properties.housenumber ? `${r.properties.housenumber} ` : ''}${r.properties.street || r.properties.name}`,
                 zipCity: {
                     name: `${r.properties.postcode} ${r.properties.city}`,
                     zipCode: r.properties.postcode,
@@ -696,7 +679,7 @@ export default class AuthService extends NetworkService {
             }));
         // const newItems = result.filter(s => s.address && (s.address.pedestrian || s.address.road || s.address.street) && (s.address.city || s.address.village));
         // newItems.forEach(s => (s.display_name = formatOsmAddress(s.address)));
-        const displayNames = newItems.map(s => s.display_name);
+        const displayNames = newItems.map((s) => s.display_name);
         return newItems.filter((el, i, a) => i === displayNames.indexOf(el.display_name)) as Address[];
         // return newItems;
     }
@@ -710,7 +693,7 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
 
-        result = result.map(a => ({
+        result = result.map((a) => ({
             balance: parseFloat(a.status.balance),
             creditLimit: parseFloat(a.status.creditLimit),
             number: a.number,
@@ -738,8 +721,8 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
         this.beneficiaries = result = result
-            .filter(b => !!b.user)
-            .map(b => {
+            .filter((b) => !!b.user)
+            .map((b) => {
                 b.user = cleanupUser(b.user);
                 return b;
             });
@@ -784,7 +767,7 @@ export default class AuthService extends NetworkService {
 
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         let result = await this.request<User[]>({
-            url:'https://lokavaluto.dev.myceliandre.fr/web/get_application_elements',
+            url: 'https://lokavaluto.dev.myceliandre.fr/web/get_application_elements',
             method: 'POST',
             body: {
                 limit: limit || 100,
@@ -804,7 +787,7 @@ export default class AuthService extends NetworkService {
         if (!Array.isArray(result)) {
             result = [result];
         }
-        return result.filter(b => !!b);
+        return result.filter((b) => !!b);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         // this.lastBenificiariesUpdateTime = undefined;
@@ -816,13 +799,7 @@ export default class AuthService extends NetworkService {
             }
         });
     }
-    async createTransaction(
-        account: AccountInfo,
-        user: User,
-        amount: number,
-        reason: string,
-        description: string
-    ): Promise<TransactionConfirmation> {
+    async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
         const body = {
             fromAccount: account.number,
@@ -857,27 +834,11 @@ export default class AuthService extends NetworkService {
     accountHistory: {
         [k: string]: Transaction[];
     } = {};
-    async getAccountHistory({
-        accountId,
-        sortKey,
-        sortOrder,
-        limit,
-        offset,
-        query
-    }: {
-        accountId: string;
-        sortKey?: string;
-        sortOrder?: string;
-        limit?: number;
-        offset?: number;
-        query?: string;
-    }) {
+    async getAccountHistory({ accountId, sortKey, sortOrder, limit, offset, query }: { accountId: string; sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string }) {
         const result = await this.request<Transaction[]>({
             apiPath: `/mobile/account/operations/${accountId}`,
             body: {
-                begin: dayjs()
-                    .subtract(2, 'month')
-                    .format('YYYY-MM-DD'),
+                begin: dayjs().subtract(2, 'month').format('YYYY-MM-DD'),
                 end: dayjs().format('YYYY-MM-DD'),
                 // maxAmount: '',
                 // keywords: '',
@@ -894,8 +855,8 @@ export default class AuthService extends NetworkService {
             method: 'POST'
         });
         const accountHistory = result
-            .map(t => cleanupTransaction(t, this.userId))
-            .sort(function(a, b) {
+            .map((t) => cleanupTransaction(t, this.userId))
+            .sort(function (a, b) {
                 return b.executionDate - a.executionDate;
             });
         this.accountHistory[accountId] = accountHistory;
@@ -922,89 +883,34 @@ export default class AuthService extends NetworkService {
         try {
             const result = await this.request<TokenRequestResult>({
                 cachePolicy: 'noCache',
-                apiPath: tokenEndpoint,
+                apiPath: 'lokavaluto_api/public/auth/authenticate',
                 canRetry: false,
                 method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    Autorization: base64Encode(`${user.username}:${user.password}`)
+                },
                 body: {
-                    client_id: APP_CLIENT_ID,
-                    client_secret: APP_CLIENT_SECRET,
-                    grant_type: 'password',
-                    username: user.username,
-                    password: user.password
+                    db: APP_HOST,
+                    params: ['lcc_app']
                 }
             });
-            this.token = result.access_token;
-            this.refreshToken = result.refresh_token;
-            this.userId = result.user_id;
+            this.token = result.api_token;
+            this.userId = result.partner_id;
             return result;
         } catch (err) {
             this.token = undefined;
-            this.refreshToken = undefined;
             return Promise.reject(err);
         }
     }
-    async getRefreshToken() {
-        try {
-            const result = await this.request<TokenRequestResult>({
-                apiPath: tokenEndpoint,
-                method: 'POST',
-                canRetry: false,
-                body: {
-                    client_id: APP_CLIENT_ID,
-                    client_secret: APP_CLIENT_SECRET,
-                    grant_type: 'refresh_token',
-                    refresh_token: this.refreshToken
-                }
-            });
-            // console.log('getRefreshToken', result);
-            this.token = result.access_token;
-            this.refreshToken = result.refresh_token;
-            return result;
-        } catch (err) {
-            // for now we try to get a new token there, should we?
-            // Yes, we should !
-            console.log('error getting refresh token', err);
-            if (err.statusCode !== 'not_authorized' && this.loginParams) {
-                return this.getToken(this.loginParams);
-            }
 
-            // this.token = undefined;
-            // this.refreshToken = undefined;
-            // return Promise.reject(err);
-        }
-    }
     async login(user: LoginParams = this.loginParams) {
         if (!user) {
             throw new Error('missing_login_params');
         }
         const wasLoggedin = this.isLoggedIn();
         try {
-            const tokenResult = await this.getToken(user);
-
-            if (tokenResult.first_login) {
-                // we actually ask for a refresh token to see if the user needs
-                // to change its password. The restult contains first_login which tells us.
-                const result = await login({
-                    title: $tc('password_change'),
-                    message: $tc('password_change_required'),
-                    userNameHint: $tc('new_password'),
-                    usernameTextFieldProperties: {
-                        secure: true,
-                        marginBottom: 10
-                    },
-                    passwordHint: $tc('confirm_password')
-                });
-                if (!result || !result.result || result.password !== result.userName) {
-                    this.onLoggedOut();
-                    if (!result) {
-                        return Promise.reject();
-                    }
-                    return Promise.reject($tc('wrong_password_confirmation'));
-                } else {
-                    await this.changePassword(user.password, result.password);
-                    user.password = result.password;
-                }
-            }
+            await this.getToken(user);
             await this.getUserProfile();
             // .then(() => this.getUserProfile())
             // .then(() => {
@@ -1027,7 +933,6 @@ export default class AuthService extends NetworkService {
     onLoggedOut() {
         const wasLoggedin = this.isLoggedIn();
         this.token = undefined;
-        this.refreshToken = undefined;
         this.loginParams = undefined;
         this.userId = undefined;
         if (wasLoggedin) {
@@ -1050,7 +955,7 @@ export default class AuthService extends NetworkService {
 
     async resetPassword(emailOrUsername) {
         return this.request({
-            url: `${APP_URL}/resetting/check-email?username=${emailOrUsername}`,
+            apiPath: `resetting/check-email?username=${emailOrUsername}`,
             method: 'GET'
         });
     }

@@ -48,8 +48,6 @@ const Plugin = {
             return appComponent;
         };
 
-        Vue.prototype.$isAndroid = global.isAndroid;
-        Vue.prototype.$isIOS = global.isIOS;
         // const filters = (Vue.prototype.$filters = Vue['options'].filters);
         Vue.prototype.$t = $t;
 

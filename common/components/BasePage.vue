@@ -51,4 +51,4 @@
     </Page>
 </template>
 
-<script lang="ts" src="./CairnPage.ts" />
+<script lang="ts" src="./BasePage.ts" />

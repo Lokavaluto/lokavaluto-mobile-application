@@ -4,13 +4,11 @@ import dayjs from 'dayjs';
 import { Address, NominatimAddress } from '../services/AuthService';
 export { convertTime, convertDuration } from './locale';
 
-
 // const dayjs: (...args) => Dayjs = require('dayjs');
 // const Duration = require('duration');
 
 // const supportedLanguages = ['en', 'fr'];
 // const deviceLang = Platform.device.language.split('-')[0];
-
 
 // export enum UNITS {
 //     Duration = 'duration',
@@ -29,8 +27,6 @@ export { convertTime, convertDuration } from './locale';
 //     }
 //     return 'en-US';
 // }
-
-
 
 // export function convertValueToUnit(value: any, unit: UNITS, otherParam?): [string, string] {
 //     if (value === undefined || value === null) {
@@ -86,7 +82,7 @@ export function formatAddress(address: Address) {
     return `${address.street} ${address.city}`;
 }
 export function formatOsmAddress(address: NominatimAddress) {
-    return `${address.house_number? `${address.house_number} `: ''} ${address.pedestrian || address.road|| address.street} ${address.postcode} ${address.city || address.village}`;
+    return `${address.house_number ? `${address.house_number} ` : ''} ${address.pedestrian || address.road || address.street} ${address.postcode} ${address.city || address.village}`;
 }
 
 export function formatCurrency(num, showZeroCents = true) {

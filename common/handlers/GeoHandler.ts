@@ -1,7 +1,7 @@
 import { EventData, Observable } from '@nativescript/core/data/observable';
 import * as appSettings from '@nativescript/core/application-settings';
 import { ApplicationEventData, android as androidApp, off as applicationOff, on as applicationOn, exitEvent, launchEvent, resumeEvent, suspendEvent } from '@nativescript/core/application';
-import { Accuracy } from '@nativescript/core/ui/enums/enums';
+import { CoreTypes } from '@nativescript/core';
 import { confirm } from '@nativescript-community/ui-material-dialogs';
 import { $t } from '../helpers/locale';
 import { DEV_LOG } from '../utils/logging';
@@ -9,7 +9,7 @@ import { DEV_LOG } from '../utils/logging';
 import { GPS, GenericGeoLocation, Options as GeolocationOptions, setMockEnabled } from '@nativescript-community/gps';
 let geolocation: GPS;
 
-export const desiredAccuracy = global.isAndroid ? Accuracy.high : kCLLocationAccuracyBestForNavigation;
+export const desiredAccuracy = global.isAndroid ? CoreTypes.Accuracy.high : kCLLocationAccuracyBestForNavigation;
 export const updateDistance = 1;
 export const maximumAge = 3000;
 export const timeout = 20000;
@@ -87,7 +87,6 @@ export class GeoHandler extends Observable {
         }
         if (!geolocation) {
             geolocation = new GPS();
-            geolocation.debug = DEV_LOG;
         }
         if (global.isAndroid) {
             if (androidApp.nativeApp) {
@@ -196,7 +195,7 @@ export class GeoHandler extends Observable {
                 message: $t('gps_not_enabled'),
                 okButtonText: $t('settings'),
                 cancelButtonText: $t('cancel')
-            }).then(result => {
+            }).then((result) => {
                 if (TEST_LOGS) {
                     this.log('askToEnableIfNotEnabled, confirmed', result);
                 }
@@ -210,8 +209,8 @@ export class GeoHandler extends Observable {
     checkEnabledAndAuthorized(always = true) {
         return Promise.resolve()
             .then(() =>
-                geolocation.isAuthorized().then(authorized => {
-                    console.log('isAuthorized' ,authorized);
+                geolocation.isAuthorized().then((authorized) => {
+                    console.log('isAuthorized', authorized);
                     if (!authorized) {
                         return geolocation.authorize(always);
                     } else {
@@ -219,8 +218,8 @@ export class GeoHandler extends Observable {
                     }
                 })
             )
-            .then(didAuthorize => this.askToEnableIfNotEnabled())
-            .catch(err => {
+            .then((didAuthorize) => this.askToEnableIfNotEnabled())
+            .catch((err) => {
                 console.log(err);
                 if (err && /denied/i.test(err.message)) {
                     confirm({
@@ -228,7 +227,7 @@ export class GeoHandler extends Observable {
                         message: $t('gps_not_authorized'),
                         okButtonText: $t('settings'),
                         cancelButtonText: $t('cancel')
-                    }).then(result => {
+                    }).then((result) => {
                         // this.log('stop_session, confirmed', result);
                         if (result) {
                             geolocation.openGPSSettings().catch(() => {});
@@ -267,9 +266,9 @@ export class GeoHandler extends Observable {
         console.log('getLocation');
         return geolocation
             .getCurrentLocation<LatLonKeys>(options || { desiredAccuracy, minimumUpdateTime, timeout, onDeferred: this.onDeferred })
-            .then(r => {
-        console.log('gotLocation', );
-        if (r) {
+            .then((r) => {
+                console.log('gotLocation');
+                if (r) {
                     this.notify({
                         eventName: UserLocationdEvent,
                         object: this,
@@ -279,7 +278,7 @@ export class GeoHandler extends Observable {
 
                 return r;
             })
-            .catch(err => {
+            .catch((err) => {
                 this.notify({
                     eventName: UserLocationdEvent,
                     object: this,
@@ -385,11 +384,7 @@ export class GeoHandler extends Observable {
         // );
 
         // ignore if we haven't moved or if same timestamp
-        if (
-            err ||
-            loc.horizontalAccuracy >= 40 ||
-            (this.lastLoc && ((this.lastLoc.lat === loc.lat && this.lastLoc.lon === loc.lon) || this.lastLoc.timestamp === loc.timestamp))
-        ) {
+        if (err || loc.horizontalAccuracy >= 40 || (this.lastLoc && ((this.lastLoc.lat === loc.lat && this.lastLoc.lon === loc.lon) || this.lastLoc.timestamp === loc.timestamp))) {
             return;
         }
         if (this.lastLoc) {
@@ -480,8 +475,9 @@ export class GeoHandler extends Observable {
             if (TEST_LOGS) {
                 this.log(
                     'onNewLoc',
-                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${this
-                        .currentSession.currentSpeed && this.currentSession.currentSpeed.toFixed(1)}, ${deltaDistance}, ${deltaTime}, ${deltaAlt}`
+                    `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${
+                        this.currentSession.currentSpeed && this.currentSession.currentSpeed.toFixed(1)
+                    }, ${deltaDistance}, ${deltaTime}, ${deltaAlt}`
                 );
             }
 
@@ -506,7 +502,7 @@ export class GeoHandler extends Observable {
         if (this.currentSession) {
             return Promise.reject('already_running');
         }
-        return this.enableLocation().then(r => {
+        return this.enableLocation().then((r) => {
             this.currentSession = {
                 lastLoc: null,
                 state: SessionState.RUNNING,

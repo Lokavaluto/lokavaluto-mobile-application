@@ -5,4 +5,4 @@
     </GridLayout>
 </template>
 
-<script lang="ts" src="./MapComponent.ts"/>
+<script lang="ts" src="./MapComponent.ts" />

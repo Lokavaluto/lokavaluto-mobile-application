@@ -16,7 +16,7 @@ export default class UserPicker extends PageComponent {
         super();
         // this.beneficiaries = this.$authService.beneficiaries;
         if (this.beneficiaries) {
-            this.beneficiaries.forEach(b => {
+            this.beneficiaries.forEach((b) => {
                 this.dataItems.push({ isBeneficiary: true, ...b.user });
             });
         }
@@ -39,7 +39,7 @@ export default class UserPicker extends PageComponent {
     }
 
     get textField() {
-        return this.getRef('textField') as TextField;
+        return this.getRef('textField');
     }
     hasFocus = false;
     onFocus(e) {
@@ -58,7 +58,7 @@ export default class UserPicker extends PageComponent {
         const items = [];
         const addedItemNames = [];
         if (this.beneficiaries) {
-            this.beneficiaries.forEach(b => {
+            this.beneficiaries.forEach((b) => {
                 if (regexp.test(b.autocompleteLabel)) {
                     addedItemNames.push(b.user.name);
                     items.push({ isBeneficiary: true, ...b.user });
@@ -70,7 +70,7 @@ export default class UserPicker extends PageComponent {
                 query,
                 roles: [Roles.PRO, Roles.PERSON]
             })
-            .then(r => {
+            .then((r) => {
                 // r.forEach(user => {
                 //     if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.name) === -1) {
                 items.push(...r);
@@ -109,7 +109,7 @@ export default class UserPicker extends PageComponent {
         } else {
             this.dataItems = [];
             if (this.beneficiaries) {
-                this.beneficiaries.forEach(b => {
+                this.beneficiaries.forEach((b) => {
                     this.dataItems.push({ isBeneficiary: true, ...b.user });
                 });
             }

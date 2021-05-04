@@ -28,7 +28,7 @@ export default class AddressPicker extends PageComponent {
     }
 
     get textField() {
-        return this.getRef('textField') as TextField;
+        return this.getRef('textField');
     }
     hasFocus = false;
     onFocus(e) {

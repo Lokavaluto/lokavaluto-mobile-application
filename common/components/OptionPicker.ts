@@ -12,5 +12,4 @@ export default class OptionPicker extends Vue {
     public constructor() {
         super();
     }
-
 }

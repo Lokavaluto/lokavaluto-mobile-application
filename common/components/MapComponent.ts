@@ -104,7 +104,7 @@ export default class MapComponent extends BaseVueComponent {
         options.setRotatable(false);
 
         cartoMap.setZoom(this.zoom, 0);
-        cartoMap.setFocusPos({ lat: 45, lon:6 }, 0);
+        cartoMap.setFocusPos({ lat: 45, lon: 6 }, 0);
 
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -249,11 +249,14 @@ export default class MapComponent extends BaseVueComponent {
         return this._localVectorTileDataSource;
     }
     addGeoJSONPoints(points: User[]) {
-        const geojson = GeoJSON.parse(points.filter(p=>!!p.coords), {
-            Point: ['coords.partner_latitude', 'coords.partner_longitude'],
-            include: ['name', 'id']
-        }) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
-        geojson.features.forEach(f => (f.properties.id = f.properties.id + ''));
+        const geojson = GeoJSON.parse(
+            points.filter((p) => !!p.coords),
+            {
+                Point: ['coords.partner_latitude', 'coords.partner_longitude'],
+                include: ['name', 'id']
+            }
+        ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
+        geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
         // geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
@@ -262,7 +265,7 @@ export default class MapComponent extends BaseVueComponent {
     onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;
         // console.log('onVectorElementClicked');
-        Object.keys(metaData).forEach(k => {
+        Object.keys(metaData).forEach((k) => {
             metaData[k] = JSON.parse(metaData[k]);
         });
         this.$emit('elementClick', position, metaData);
@@ -278,10 +281,7 @@ export default class MapComponent extends BaseVueComponent {
     updateUserLocation(geoPos: GeoLocation) {
         if (
             !this._cartoMap ||
-            (this.lastUserLocation &&
-                this.lastUserLocation.lat === geoPos.lat &&
-                this.lastUserLocation.lon === geoPos.lon &&
-                this.lastUserLocation.horizontalAccuracy === geoPos.horizontalAccuracy)
+            (this.lastUserLocation && this.lastUserLocation.lat === geoPos.lat && this.lastUserLocation.lon === geoPos.lon && this.lastUserLocation.horizontalAccuracy === geoPos.horizontalAccuracy)
         ) {
             this.lastUserLocation = geoPos;
             return;
@@ -309,7 +309,7 @@ export default class MapComponent extends BaseVueComponent {
                     LOCATION_ANIMATION_DURATION
                 )
                 .easing(TWEEN.Easing.Quadratic.Out)
-                .onUpdate(newPos => {
+                .onUpdate((newPos) => {
                     this.userBackMarker.position = newPos;
                     this.userMarker.position = newPos;
                     this.accuracyMarker.positions = this.getCirclePoints(newPos);

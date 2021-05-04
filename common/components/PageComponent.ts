@@ -2,7 +2,7 @@ import { Frame, NavigationEntry, Page } from '@nativescript/core';
 import { VueConstructor } from 'vue';
 import { Component } from 'vue-property-decorator';
 import BaseVueComponent from './BaseVueComponent';
-import CairnPage from './CairnPage';
+import BasePage from './BasePage';
 
 @Component({})
 export default class PageComponent extends BaseVueComponent {
@@ -22,10 +22,10 @@ export default class PageComponent extends BaseVueComponent {
         }
     }
 
-    page: CairnPage;
+    page: BasePage;
     mounted() {
         super.mounted();
-        this.page = this.$children[0] as CairnPage;
+        this.page = this.$children[0] as BasePage;
         // console.log(this.$children[0].constructor.name, this.navigateUrl);
         this.page.navigateUrl = this.navigateUrl;
     }

@@ -1,5 +1,5 @@
 <template>
-    <CairnPage id="profile" @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
+    <BasePage id="profile" @navigatedTo="onNavigatedTo" :actionBarShowLogo="false">
         <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal" >
             <Button variant="text" class="icon-btn" v-show="!editing" text="mdi-qrcode" @tap="toggleQRCode()" />
             <Button variant="text" class="icon-btn" v-show="editable && canSave" text="mdi-content-save" @tap="saveProfile()" />
@@ -91,7 +91,7 @@
                 </ScrollView>
             </PullToRefresh>
         </GridLayout>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./Profile.ts" />

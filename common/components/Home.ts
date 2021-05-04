@@ -75,7 +75,7 @@ export default class Home extends PageComponent {
     formatAddress = formatAddress;
     DEFAULT_IMAGE_URL = 'res://pro';
     onItemLoading(args) {
-        if (this.$isIOS) {
+        if (global.isIOS) {
             if (args.ios.backgroundView) {
                 const newcolor = new Color(0, 255, 255, 255);
                 args.ios.backgroundView.backgroundColor = newcolor.ios;
@@ -118,7 +118,7 @@ export default class Home extends PageComponent {
                     sortKey: 'creationDate',
                     sortOrder: 'DESC'
                 })
-                .then(r => (this.users = r))
+                .then((r) => (this.users = r))
         ])
             .catch(this.showError)
             .finally(() => {

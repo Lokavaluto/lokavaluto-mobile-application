@@ -1,5 +1,5 @@
 <template>
-    <CairnPage :title="$t('about')">
+    <BasePage :title="$t('about')">
         <ScrollView>
             <StackLayout>
                 <SettingLabelIcon :title="$tc('version')" :subtitle="appVersion" />
@@ -12,7 +12,7 @@
                 <SettingLabelIcon :title="$tc('review_app')" icon="mdi-chevron-right" @tap="onTap('review')" />
             </StackLayout>
         </ScrollView>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./About.ts" />

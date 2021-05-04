@@ -1,5 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
-import { actionBarHeight, appFontFamily } from '../variables';
+import { actionBarHeight, appFontFamily, primaryColor } from '../variables';
 import BaseVueComponent from './BaseVueComponent';
 
 @Component({})
@@ -10,6 +10,7 @@ export default class ActionBar extends BaseVueComponent {
     })
     public title: string;
     public appFontFamily = appFontFamily;
+    public primaryColor = primaryColor;
 
     @Prop({ default: actionBarHeight, type: Number })
     public height: number;
@@ -43,7 +44,7 @@ export default class ActionBar extends BaseVueComponent {
     }
 
     get titleFontSize() {
-        return Math.min(this.height, 200);
+        return Math.min(this.height, 90);
     }
 
     mounted() {
@@ -52,6 +53,10 @@ export default class ActionBar extends BaseVueComponent {
         }, 0);
     }
     onMenuIcon() {
-        this.$getAppComponent().onMenuIcon();
+        if (this.modalWindow && this.$modal) {
+            this.$modal.close();
+        } else {
+            this.$getAppComponent().onMenuIcon();
+        }
     }
 }

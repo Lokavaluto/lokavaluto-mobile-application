@@ -69,7 +69,7 @@ export default class InteractiveMap extends BaseVueComponent {
         this.mapCategories = categories;
         this.mapFilterSlugs = [];
         if (!this.mapCategories) {
-            this.$authService.categories().then(r => {
+            this.$authService.categories().then((r) => {
                 this.mapCategories = categories = r;
             });
         }
@@ -111,7 +111,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     onMapClicked(e) {
         this.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
-        this.unselectItem();;
+        this.unselectItem();
     }
     onMapStable(e) {
         // this.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
@@ -125,15 +125,14 @@ export default class InteractiveMap extends BaseVueComponent {
         }
     }
 
-    onElementClick(...args) {
-    }
+    onElementClick(...args) {}
 
     onVectorTileClicked(data: VectorTileEventData) {
         this.log('onVectorTileClicked', data);
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
-            const user = this.shownUsers.find(u => u.id + '' === (featureData.id as any));
+            const user = this.shownUsers.find((u) => u.id + '' === (featureData.id as any));
             if (user === this.selectedItem) {
                 return false;
             } else if (user) {
@@ -150,7 +149,7 @@ export default class InteractiveMap extends BaseVueComponent {
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds, this.mapFilterSlugs)
-            .then(r => {
+            .then((r) => {
                 // console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {
@@ -167,10 +166,13 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     selectItem(item: User) {
         this.selectedItem = item;
-        this.cartoMap.setFocusPos({
-            lat:item.coords.partner_latitude,
-            lon:item.coords.partner_longitude
-        }, 200);
+        this.cartoMap.setFocusPos(
+            {
+                lat: item.coords.partner_latitude,
+                lon: item.coords.partner_longitude
+            },
+            200
+        );
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
         this.bottomSheetHolder.peek();
     }

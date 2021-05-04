@@ -1,5 +1,5 @@
 <template>
-    <CairnPage id="history" @navigatedTo="onLoaded" :title="$t('account_history')" :subtitle="accountInfo.name">
+    <BasePage id="history" @navigatedTo="onLoaded" :title="$t('account_history')" :subtitle="accountInfo.name">
         <StackLayout slot="actionBarSubView" row="1" col="1" colSpan="2" height="80" marginRight="10">
             <Label :text="$t('balance') | capitalize" verticalAlignment="center" fontSize="14" color="#88ffffff" />
             <Label verticalAlignment="center" fontSize="30" color="white">
@@ -46,7 +46,7 @@
                 </CollectionView>
             </PullToRefresh>
         </GridLayout>
-    </CairnPage>
+    </BasePage>
 </template>
 
 <script lang="ts" src="./AccountHistory.ts" />

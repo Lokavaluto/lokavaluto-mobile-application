@@ -28,7 +28,7 @@ export default class AccountHistory extends PageComponent {
                 accountId: this.accountInfo.id,
                 limit: 100,
                 sortOrder: 'DESC',
-                sortKey: 'submissionDate',
+                sortKey: 'submissionDate'
             })
             .then((r) => {
                 // console.log('getAccountHistory', r);

@@ -16,7 +16,6 @@ Vue.prototype.$crashReportService = crashReportService;
 // import { init } from '@nativescript-community/push';
 // init();
 
-
 import MixinsPlugin from '~/common/vue.mixins';
 Vue.use(MixinsPlugin);
 
@@ -56,9 +55,23 @@ if (global.isIOS) {
     themer.setAccentColor(primaryColor);
 }
 
+
+themer.createShape('main', {
+    cornerFamily: 'rounded' as any,
+    cornerSize: 10
+});
+themer.createShape('round', {
+    cornerFamily: 'rounded' as any,
+    cornerSize: {
+        value: 0.5,
+        unit: '%'
+    }
+});
+
 import App from '~/common/components/App';
 import { setMapPosKeys } from '@nativescript-community/ui-carto/core/index.common';
 import { setGeoLocationKeys } from '@nativescript-community/gps';
+import { Application } from '@nativescript/core';
 new Vue({
-    render: (h) => h(App),
+    render: (h) => h(App)
 }).$start();

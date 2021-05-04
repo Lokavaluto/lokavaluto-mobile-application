@@ -1,20 +1,20 @@
 <template>
     <GridLayout class="actionBar" columns="auto,*, auto" rows="auto,auto">
-        <StackLayout col="1" colSpan="3" orientation="horizontal" :height="height">
-            <StackLayout verticalAlignment="center">
-                <Label class="actionBarTitle" v-if="title" textAlignment="left" :text="title | capitalize" />
-                <Label :visibility="!!subtitle ? 'visible' : 'collapse'" textAlignment="left" class="actionBarSubtitle" :text="subtitle" />
-            </StackLayout>
+        <!-- <StackLayout col="1" colSpan="3" orientation="horizontal" :height="height"> -->
+        <StackLayout verticalAlignment="center" col="1" colSpan="3" :height="height">
+            <Label class="actionBarTitle" v-if="title" :text="title | capitalize" />
+            <Label :visibility="!!subtitle ? 'visible' : 'collapse'" class="actionBarSubtitle" :text="subtitle" />
         </StackLayout>
-        <ContentView col="1" colSpan="2" :height="height">
+        <!-- </StackLayout> -->
+        <ContentView colSpan="3" :height="height">
             <slot name="title">
                 <Label
                     v-if="!!showLogo && !title"
                     :fontFamily="appFontFamily"
                     :fontSize="titleFontSize"
-                    color="white"
+                    :color="primaryColor"
                     text="app-full_logo"
-                    textAlignmen="center"
+                    textAlignment="center"
                     verticalAlignment="center"
                     @tap="$emit('titleTap', $event)"
                 />
@@ -26,7 +26,7 @@
             <slot name="rightButtons" />
         </StackLayout>
         <StackLayout col="0" verticalAlignment="top" :height="height" orientation="horizontal">
-            <Button verticalAlignment="center" rippleColor="white" variant="flat" v-show="menuIconVisible" class="icon-btn" :text="menuIcon" @tap="onMenuIcon" />
+            <Button verticalAlignment="top" variant="flat" v-show="menuIconVisible" class="icon-btn" :text="menuIcon" @tap="onMenuIcon" />
             <slot name="leftButtons" />
         </StackLayout>
         <!-- <StackLayout col="2" orientation="horizontal"> -->

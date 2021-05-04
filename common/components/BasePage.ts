@@ -1,11 +1,11 @@
 import { Page } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { Component, Prop } from 'vue-property-decorator';
-import { actionBarButtonHeight, actionBarHeight, primaryColor } from '../variables';
+import { actionBarButtonHeight, actionBarHeight, backgroundColor, primaryColor } from '../variables';
 import BaseVueComponent from './BaseVueComponent';
 
 @Component({})
-export default class CairnPage extends BaseVueComponent {
+export default class BasePage extends BaseVueComponent {
     @Prop({ default: null, type: String })
     public title: string;
 
@@ -36,7 +36,7 @@ export default class CairnPage extends BaseVueComponent {
     @Prop({ default: true, type: Boolean })
     public actionBarShowLogo: boolean;
 
-    @Prop({ default: ()=>primaryColor, type: Color })
+    @Prop({ default: () => backgroundColor, type: Color })
     public actionBarBackroundColor: string;
 
     @Prop({ default: actionBarHeight, type: Number })

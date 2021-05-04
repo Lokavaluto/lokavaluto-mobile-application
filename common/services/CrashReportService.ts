@@ -7,7 +7,7 @@ import { alert, confirm } from '@nativescript-community/ui-material-dialogs';
 import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from '@nativescript-community/l';
 import { CustomError, HTTPError, MessageError, NoNetworkError } from './NetworkService';
-import { Color } from '@nativescript/core';
+import { Application, Color } from '@nativescript/core';
 import { install } from '../utils/logging';
 
 export default class CrashReportService extends Observable {
@@ -15,6 +15,17 @@ export default class CrashReportService extends Observable {
     sentry: typeof Sentry;
     async start() {
         install();
+
+        Application.on(Application.discardedErrorEvent, function (args) {
+            const error = args.error;
+
+            // console.log('Received discarded exception: ');
+            // console.log(error.message);
+            // console.log(error.stackTrace);
+            // console.log(error.nativeException);
+            this.showError(error);
+            //report the exception in your analytics solution here
+        });
         console.log('CrashReportService', 'start', gVars.sentry, this.sentryEnabled);
         if (gVars.sentry && this.sentryEnabled) {
             const Sentry = await import('@nativescript-community/sentry');
@@ -46,13 +57,12 @@ export default class CrashReportService extends Observable {
     captureException(err: Error | CustomError) {
         if (this.sentryEnabled && this.sentry) {
             if (err instanceof CustomError) {
-                this.withScope(scope => {
-                    scope.setExtra('errorData', JSON.stringify(err.assignedLocalData) );
+                this.withScope((scope) => {
+                    scope.setExtra('errorData', JSON.stringify(err.assignedLocalData));
                     this.sentry.captureException(err);
                 });
             } else {
                 return this.sentry.captureException(err);
-
             }
         }
     }
@@ -96,7 +106,7 @@ export default class CrashReportService extends Observable {
             view: label,
             okButtonText: showSendBugReport ? $tc('send_bug_report') : undefined,
             cancelButtonText: showSendBugReport ? $tc('cancel') : $tc('ok')
-        }).then(result => {
+        }).then((result) => {
             if (result && showSendBugReport) {
                 this.captureException(realError);
                 alert($t('bug_report_sent'));

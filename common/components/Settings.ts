@@ -20,7 +20,7 @@ export default class Settings extends PageComponent {
     userSettings: UserSettings = null;
     mounted() {
         super.mounted();
-        this.$securityService.biometricsAvailable().then(r => {
+        this.$securityService.biometricsAvailable().then((r) => {
             this.biometricsAvailable = r;
         });
         this.innerBiometricsEnabled = this.$securityService.biometricEnabled;
@@ -67,10 +67,10 @@ export default class Settings extends PageComponent {
         if (value) {
             this.$securityService
                 .verifyFingerprint()
-                .then(r => {
+                .then((r) => {
                     this.$securityService.biometricEnabled = this.innerBiometricsEnabled = r;
                 })
-                .catch(err => {
+                .catch((err) => {
                     this.ignoreNextCheckEvent = true;
                     this.innerBiometricsEnabled = false;
                 });
@@ -78,10 +78,10 @@ export default class Settings extends PageComponent {
             if (this.$securityService.biometricEnabled) {
                 this.$securityService
                     .verifyFingerprint()
-                    .then(r => {
+                    .then((r) => {
                         this.$securityService.biometricEnabled = this.innerBiometricsEnabled = false;
                     })
-                    .catch(err => {
+                    .catch((err) => {
                         this.ignoreNextCheckEvent = true;
                         this.innerBiometricsEnabled = true;
                     });
@@ -106,7 +106,7 @@ export default class Settings extends PageComponent {
     }
 
     changePinCode() {
-        this.$securityService.changePasscode(this).then(result => {
+        this.$securityService.changePasscode(this).then((result) => {
             if (result) {
                 showSnack({
                     message: this.$t('pin_changed')

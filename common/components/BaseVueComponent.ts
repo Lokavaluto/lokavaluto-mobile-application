@@ -5,7 +5,7 @@ import { Color } from '@nativescript/core/color';
 import { Progress } from '@nativescript/core/ui';
 import { openUrl } from '@nativescript/core/utils/utils';
 import { bind } from 'helpful-decorators';
-import {InAppBrowser} from 'nativescript-inappbrowser';
+import { InAppBrowser } from 'nativescript-inappbrowser';
 import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
@@ -13,7 +13,7 @@ import { $t } from '../helpers/locale';
 import { accentColor, appFontFamily, darkColor, primaryColor } from '../variables';
 
 function timeout(ms) {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 export interface BaseVueComponentRefs {
@@ -24,11 +24,11 @@ export interface BaseVueComponentRefs {
 export default class BaseVueComponent extends Vue {
     protected loadingIndicator: AlertDialog & { label?: Label; indicator?: ActivityIndicator; progress?: Progress };
     $refs: BaseVueComponentRefs;
-    @Prop({ type: Color, default: ()=>primaryColor })
+    @Prop({ type: Color, default: () => primaryColor })
     public themeColor;
-    @Prop({ type: Color, default: ()=>darkColor })
+    @Prop({ type: Color, default: () => darkColor })
     public darkColor;
-    @Prop({ type: Color, default: ()=> accentColor })
+    @Prop({ type: Color, default: () => accentColor })
     public accentColor;
     public appFontFamily = appFontFamily;
     needsRoundedWatchesHandle = false;
@@ -59,7 +59,7 @@ export default class BaseVueComponent extends Vue {
             // stack.addChild(label);
             this.loadingIndicator = new AlertDialog({
                 view,
-                cancelable: false,
+                cancelable: false
             });
             this.loadingIndicator.indicator = view.getChildAt(0) as ActivityIndicator;
             this.loadingIndicator.label = view.getChildAt(1) as Label;
@@ -131,7 +131,7 @@ export default class BaseVueComponent extends Vue {
                     enableBarCollapsing: false,
                     // Android Properties
                     showTitle: true,
-                    toolbarColor: primaryColor  as any,
+                    toolbarColor: primaryColor as any,
                     secondaryToolbarColor: 'white',
                     enableUrlBarHiding: true,
                     enableDefaultShare: true,

@@ -12,15 +12,7 @@ import Vue from 'nativescript-vue';
 import { sprintf } from 'sprintf-js';
 import { Component, Prop } from 'vue-property-decorator';
 import { formatAddress } from '../helpers/formatter';
-import {
-    Address,
-
-    PhoneNumber,
-    UpdateUserProfile,
-    UserProfile,
-    UserProfileEvent,
-    UserProfileEventData
-} from '../services/AuthService';
+import { Address, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '../services/AuthService';
 import AddressPicker from './AddressPicker';
 import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
@@ -31,6 +23,7 @@ const ImageComp = Vue.component('ImageComp', {
     props: ['src'],
     template: '<nsimg :src="src" height="300" backgroundColor="black" stretch="center" noCache/>'
 });
+
 @Component({
     components: {
         InteractiveMap,
@@ -160,7 +153,7 @@ export default class Profile extends PageComponent {
             okButtonText: this.$tc('delete'),
             cancelButtonText: this.$tc('cancel')
         })
-            .then(r => {
+            .then((r) => {
                 if (r) {
                     return this.$authService.deletePhone(phoneNumber);
                 }
@@ -207,7 +200,7 @@ export default class Profile extends PageComponent {
             //a valid result is either a valid confirmation code or "cancel button clicked"
             let isValidConfirmResult = false;
             while (!isValidConfirmResult) {
-                let resultPConfirm = await prompt({
+                const resultPConfirm = await prompt({
                     message: this.$tc('enter_add_phone_confirmation', phoneNumber),
                     okButtonText: this.$tc('confirm'),
                     cancelButtonText: this.$tc('cancel'),
@@ -222,11 +215,7 @@ export default class Profile extends PageComponent {
                     //confirm button
                     if (resultPConfirm.text && resultPConfirm.text.length > 0) {
                         try {
-                            const result = await this.$authService.confirmPhone(
-                                addResult.validation_url,
-                                resultPConfirm.text,
-                                true
-                            );
+                            const result = await this.$authService.confirmPhone(addResult.validation_url, resultPConfirm.text, true);
                             isValidConfirmResult = true;
                             await this.$authService.getUserProfile();
                             showSnack({
@@ -234,14 +223,14 @@ export default class Profile extends PageComponent {
                             });
                         } catch (err) {
                             //TODO: if err key contains 'too_many_errors', break while loop
-                            if (err == 'too_many_errors_block') {
-                            } else {
-                                await alert({
-                                    title: 'Attention',
-                                    message: this.$t(err),
-                                    okButtonText: 'Compris'
-                                });
-                            }
+                            // if (err === 'too_many_errors_block') {
+                            // } else {
+                            //     await alert({
+                            //         title: 'Attention',
+                            //         message: this.$t(err),
+                            //         okButtonText: 'Compris'
+                            //     });
+                            // }
                         }
                     }
                 } else {
@@ -303,8 +292,8 @@ export default class Profile extends PageComponent {
                     .present()
                     .catch(() => [])
             )
-            .then(selection => {
-                 if (selection.length > 0) {
+            .then((selection) => {
+                if (selection.length > 0) {
                     return new Promise((resolve, reject) => {
                         selection[0].getImageAsync((image, error) => {
                             if (error) {

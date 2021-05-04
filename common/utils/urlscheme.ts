@@ -1,9 +1,5 @@
 import XRegExp from 'xregexp';
-const QR_CODE_TRANSFER_REGEXP_STR =
-    APP_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
-    '(?:' +
-    APP_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') +
-    ')?';
+const QR_CODE_TRANSFER_REGEXP_STR = APP_TRANSFER_QRCODE_PARAMS.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + '(?:' + APP_TRANSFER_QRCODE_AMOUNT_PARAM.replace(/%\((.*?)\)s/g, '(?<$1>[^#]*)') + ')?';
 const QR_CODE_TRANSFER_REGEXP = XRegExp(QR_CODE_TRANSFER_REGEXP_STR);
 export function parseUrlScheme(url: string) {
     if (!url || !url.startsWith(CUSTOM_URL_SCHEME)) {
@@ -16,7 +12,7 @@ export function parseUrlScheme(url: string) {
         case 'transfer': {
             const data = XRegExp.exec(array[1], QR_CODE_TRANSFER_REGEXP);
             result = {};
-            Object.keys(data).forEach(k => {
+            Object.keys(data).forEach((k) => {
                 if (isNaN(parseFloat(k)) && k !== 'index' && k !== 'input' && k !== 'groups') {
                     result[k] = data[k];
                 }

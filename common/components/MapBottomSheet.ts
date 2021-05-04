@@ -23,11 +23,10 @@ export default class MapBottomSheet extends BottomSheetBase {
     steps;
     @Prop() item: User;
 
-
     showProfile(item: User) {
         this.navigateTo(Profile, {
-            transition:{
-                name:'slide', 
+            transition: {
+                name: 'slide'
                 // duration:2000
             },
             props: {

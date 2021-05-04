@@ -4,7 +4,8 @@ import { TextField } from '@nativescript-community/ui-material-textfield';
 import { getString, setString } from '@nativescript/core/application-settings';
 import { PropertyChangeData } from '@nativescript/core/data/observable';
 import { NavigatedData } from '@nativescript/core/ui/page';
-import { Component, Watch } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
+import { LoggedinEvent } from '../services/AuthService';
 import { actionBarHeight, screenHeightDips } from '../variables';
 import About from './About';
 import { ComponentIds } from './App';
@@ -17,6 +18,7 @@ import PageComponent from './PageComponent';
     }
 })
 export default class Login extends PageComponent {
+    @Prop({ default: false, type: Boolean }) modal: boolean;
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
@@ -32,73 +34,41 @@ export default class Login extends PageComponent {
     passwordError?: string = null;
     canLoginOrRegister = false;
 
-    showLogin = false;
-    showLoginAlpha = 0;
     destroyed() {
+        this.$authService.off(LoggedinEvent, this.onLoggedIn, this);
         super.destroyed();
     }
     mounted() {
+        this.$authService.on(LoggedinEvent, this.onLoggedIn, this);
+        console.log('modal', this.modal);
         super.mounted();
     }
     onNavigatedTo(args: NavigatedData) {
         if (!args.isBackNavigation) {
             this.checkForm();
-
         }
         // if (!args.isBackNavigation) {
         //     setTimeout(this.animateLogoView, 300); // delay for now as the first run is "jumping"
         // }
     }
-    hideMap() {
-        this.showLogin = true;
-        // this.animateLogoView();
-        // return new Promise(resolve => {
-            this.getRef('scrollView').animate({
-                opacity:1,
-                duration:300
-            })
-        //     new TWEEN.Tween({ opacity: this.showLoginAlpha })
-        //         .to({ opacity: 1 }, 300)
-        //         .onComplete(resolve)
-        //         .onUpdate(object => {
-        //             this.showLoginAlpha = object.opacity;
-        //             // console.log('showLoginAlpha', object.opacity);
-        //             // Object.assign(view.style, object)
-        //         })
-        //         .start(0);
-        // })
-            .then(() => {
-                if (this.user && this.user.username) {
-                    if (this.user && this.user.username && this.user.username.length > 0 && this.user.password.length === 0) {
-                        this.focusPassword();
-                    } else if (this.user.username.length === 0) {
-                        this.focusUsername();
-                    }
-                }
-            })
-            .catch(this.showError);
+    async goToMain() {
+        this.$getAppComponent().navigateToUrl(ComponentIds.Situation, {
+            clearHistory: true
+        });
     }
+    onLoggedIn(e?) {
+        if (this.modal) {
+            this.$modal.close();
+        } else if (e) {
+            // means received as event
+            this.goToMain();
+        }
+    }
+
     showAbout() {
         this.navigateTo(About);
     }
-    showMap() {
-        // this.animateLogoViewOut();
-        this.getRef('scrollView').animate({
-            opacity:0,
-            duration:300
-        })
-        // return new Promise(resolve => {
-        //     new TWEEN.Tween({ opacity: this.showLoginAlpha })
-        //         .to({ opacity: 0 }, 300)
-        //         .onComplete(resolve)
-        //         .onUpdate(object => {
-        //             this.showLoginAlpha = object.opacity;
-        //         })
-        //         .start(0);
-        // })
-            .then(() => (this.showLogin = false))
-            .catch(this.showError);
-    }
+
     @Watch('user', { deep: true })
     onUserChange() {
         // console.log('onUserChange', this.user);
@@ -106,12 +76,12 @@ export default class Login extends PageComponent {
 
     animateLogoView() {
         // const view = this.getRef('logoView');
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             new TWEEN.Tween({ height: this.logoViewHeight })
                 .to({ height: 200 }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
-                .onUpdate(object => {
+                .onUpdate((object) => {
                     this.logoViewHeight = object.height;
                     // Object.assign(view.style, object)
                 })
@@ -120,12 +90,12 @@ export default class Login extends PageComponent {
     }
     animateLogoViewOut() {
         // const view = this.getRef('logoView');
-        return new Promise(resolve => {
+        return new Promise((resolve) => {
             new TWEEN.Tween({ height: this.logoViewHeight }) // ratio 2.94
                 .to({ height: actionBarHeight }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
-                .onUpdate(object => {
+                .onUpdate((object) => {
                     this.logoViewHeight = object.height;
                     // Object.assign(view.style, object)
                 })
@@ -182,7 +152,7 @@ export default class Login extends PageComponent {
         return this.$authService
             .login(this.user)
             .then(() => setString('last.login', this.user.username))
-            .catch(err => {
+            .catch((err) => {
                 // this.animateLogoView();
                 this.showError(err);
             })
@@ -216,7 +186,7 @@ export default class Login extends PageComponent {
             defaultText: this.user.username || '',
             okButtonText: this.$tu('ok'),
             cancelButtonText: this.$tu('cancel')
-        }).then(data => {
+        }).then((data) => {
             if (data.result) {
                 this.$authService
                     .resetPassword(data.text.trim())
@@ -228,13 +198,13 @@ export default class Login extends PageComponent {
         });
     }
     get usernameTF() {
-        return this.getRef('username') as TextField;
+        return this.getRef('username');
     }
     get passwordTF() {
-        return this.getRef('password') as TextField;
+        return this.getRef('password');
     }
     get confirmPasswordTF() {
-        return this.getRef('confirmPassword') as TextField;
+        return this.getRef('confirmPassword');
     }
 
     focusUsername() {
