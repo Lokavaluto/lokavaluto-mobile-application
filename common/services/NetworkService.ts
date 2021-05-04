@@ -15,7 +15,8 @@ export function base64Encode(value) {
     if (global.isAndroid) {
         const text = new java.lang.String(value);
         const data = text.getBytes('UTF-8');
-        return android.util.Base64.encodeToString(data, android.util.Base64.DEFAULT);
+        const result = android.util.Base64.encodeToString(data, android.util.Base64.NO_WRAP);
+        return result;
     }
 }
 
@@ -299,9 +300,6 @@ export class NetworkService extends Observable {
     constructor() {
         super();
     }
-    log(...args) {
-        console.log(`[${this.constructor.name}]`, ...args);
-    }
     start() {
         connectivity.startMonitoring(this.onConnectionStateChange.bind(this));
         this.connectionType = connectivity.getConnectionType();
@@ -326,9 +324,9 @@ export class NetworkService extends Observable {
         if (!headers['Content-Type']) {
             headers['Content-Type'] = 'application/json';
         }
-        if (!headers['Connection']) {
-            headers['Connection'] = 'Keep-Alive';
-        }
+        // if (!headers['Connection']) {
+        //     headers['Connection'] = 'Keep-Alive';
+        // }
         // if (requestParams.cachePolicy) {
         //     switch (requestParams.cachePolicy) {
         //         case 'noCache':
@@ -345,8 +343,9 @@ export class NetworkService extends Observable {
         //     }
         // }
         // const signature = this.buildAuthorization(requestParams);
-
-        headers['Authorization'] = `Bearer ${this.token}`;
+        if (this.token) {
+            headers['API-KEY'] = this.token;
+        }
         // headers['Authorization'] = `HMAC-SHA256 ${this.token ? `Bearer ${this.token} ` : ''}Signature=${signature[0]}:${signature[1]}`;
         return headers;
     }
@@ -385,12 +384,7 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
-        // console.log('request ', requestParams);
-
-        // log for VSCode http plugin
-        // console.log(requestParams.method, requestParams.url);
-        // requestParams.headers && Object.keys(requestParams.headers).forEach(k => console.log(k + ':', requestParams.headers[k]));
-        // console.log(requestParams.body);
+        console.log('request ', requestParams);
 
         return https.request(requestParams as HttpRequestOptions).then((response) => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
@@ -398,7 +392,7 @@ export class NetworkService extends Observable {
     async handleRequestResponse(response: https.HttpsResponse, requestParams: HttpRequestOptions, requestStartTime, retry) {
         const statusCode = response.statusCode;
         let content: {
-            data?: any;
+            response?: any;
             errors: ReturnMessageFormat[];
             messages: ReturnMessageFormat[];
         };
@@ -411,7 +405,7 @@ export class NetworkService extends Observable {
             content = await response.content.toStringAsync();
         }
         const isString = typeof content === 'string';
-        this.log('handleRequestResponse response', statusCode, response.reason, response.headers, isString, typeof content, content);
+        console.log('handleRequestResponse response', statusCode, response.reason, response.headers, isString, typeof content, content);
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn: {
                 data?: any;
@@ -456,7 +450,7 @@ export class NetworkService extends Observable {
                 // if (error.exception && error.exception.length > 0) {
                 //     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 // }
-                this.log('throwing http error', statusCode, message, requestParams.url);
+                console.log('throwing http error', statusCode, message, requestParams.url);
                 throw new HTTPError({
                     statusCode,
                     responseHeaders: response.headers,
@@ -476,16 +470,17 @@ export class NetworkService extends Observable {
                     message: messageObj ? getMessageFromErrorMessageObject(messageObj) : message
                 });
             }
-            if (content.data) {
+            if (content.response) {
                 //our API returns content in "data" object field, but not your localization API
-                return content.data;
+                return content.response;
             }
             return content;
             //return content && content.data;
         }
         try {
             // we should never go there anymore
-            return JSON.parse((content as any) as string);
+            const result = JSON.parse((content as any) as string);
+            return result.response || response;
         } catch (e) {
             // console.log('failed to parse result to JSON', e);
             return undefined;

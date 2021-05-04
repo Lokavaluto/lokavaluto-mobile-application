@@ -499,7 +499,8 @@ export default class AuthService extends NetworkService {
     async getUserProfile(userId?: number) {
         const profile = await this.request<UserProfile>({
             apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}`,
-            method: 'GET'
+            method: 'GET',
+            content:'{}'
         });
         if (!profile) {
             return null;
@@ -882,19 +883,20 @@ export default class AuthService extends NetworkService {
     async getToken(user: LoginParams) {
         try {
             const result = await this.request<TokenRequestResult>({
-                cachePolicy: 'noCache',
-                apiPath: 'lokavaluto_api/public/auth/authenticate',
+                apiPath: '/lokavaluto_api/public/auth/authenticate',
                 canRetry: false,
                 method: 'POST',
                 headers: {
+                    'Cache-Control': 'no-cache',
                     'Content-Type': 'application/json',
-                    Autorization: base64Encode(`${user.username}:${user.password}`)
+                    Authorization: `Basic ${base64Encode(`${user.username}:${user.password}`)}`
                 },
                 body: {
                     db: APP_DB,
                     params: ['lcc_app']
                 }
             });
+            console.log('getToken done', result);
             this.token = result.api_token;
             this.userId = result.partner_id;
             return result;

@@ -169,7 +169,6 @@ module.exports = (env, params = {}) => {
 
     // @ts-ignore
     const scssLoaderRuleIndex = config.module.rules.findIndex((r) => r.test && r.test.toString().indexOf('scss') !== -1);
-    console.log('scssLoaderRuleIndex', scssLoaderRuleIndex);
     config.module.rules.splice(
         scssLoaderRuleIndex,
         1,
