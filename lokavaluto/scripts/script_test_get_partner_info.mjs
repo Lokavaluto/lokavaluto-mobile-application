@@ -1,7 +1,7 @@
 import https from 'https';
 
-const URL_PARTNER = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/private/partner/?name=a patons rompus';
-const URL_AUTH = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate';
+const URL_PARTNER = 'https://odoo12.dev.lokavaluto.fr/lokavaluto_api/private/partner/?name=a patons rompus';
+const URL_AUTH = 'https://odoo12.dev.lokavaluto.fr/lokavaluto_api/public/auth/authenticate';
 
 function runPost(url, jsonData, options) {
     const data = JSON.stringify(jsonData);
@@ -59,11 +59,11 @@ try {
     let res = await runPost(
         `${URL_AUTH}`,
         {
-            db: 'laroue.v12.dev.myceliandre.fr',
+            db: 'odoodev12',
             params: ['lcc_app']
         },
         {
-            auth: 'martin.guillon@akylas.fr:1234'
+            auth: 'gestion@lokavaluto.fr:#v3#5HK$Qe!4'
         }
     );
     console.log('token info : ', res);
