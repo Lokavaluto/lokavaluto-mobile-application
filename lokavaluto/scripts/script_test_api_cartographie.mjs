@@ -1,28 +1,85 @@
+_get_partner_info.mjs
 import https from 'https';
 
-const URL_TAXONOMY = "https://lokavaluto.dev.myceliandre.fr/web/get_application_taxonomy"
-const URL_ELEMENTS = "https://lokavaluto.dev.myceliandre.fr/web/get_application_elements"
+const URL_MAP = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate';
+const LAT_MIN = '0.0';
+const LAT_MAX = '0.0';
+const LON_MIN = '0.0';
+const LON_MAX = '0.0';
 
-function runRequest(url, options) {
-    console.log('runRequest', url, options);
-    return new Promise((resolve, reject)=>{
-        https.get(url, options, (err, res, body) => {
-            if (err) { 
-                reject(err);
-            } else {
-                 resolve(body);
+function runPost(url, jsonData, options) {
+    const data = JSON.stringify(jsonData);
+    console.log('runRequest', url, data, options);
+    return new Promise((resolve, reject) => {
+        const req = https.request(
+            url,
+            {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Content-Length': data.length
+                },
+                ...options
+            },
+            (res) => {
+                let data = '';
+                
+                res.on('data', chunk => {
+                  data += chunk.toString('utf8');
+                });
+                res.on('end', () => {
+                  resolve(JSON.parse(data));
+                });
             }
+        );
+
+        req.on('error', (error) => {
+            reject(error);
         });
-    })
+
+        req.write(data);
+        req.end();
+    });
+}
+function runGet(url, options) {
+    console.log('runRequest', encodeURI(url), options);
+    return new Promise((resolve, reject) => {
+        https.get(encodeURI(url), options, (res) => {
+          let data = '';
+          res.on('data', chunk => {
+            data += chunk.toString('utf8');
+          });
+          res.on('end', () => {
+            resolve(JSON.parse(data));
+          });
+          res.on('error', (error) => {
+              reject(error);
+          });
+        });
+    });
 }
 
 try {
-    const map_taxonomy = await runRequest(`${URL_TAXONOMY}`, {});
-    console.log('Map taxonomy', map_taxonomy);
-    
-    const map_elements = await runRequest(`${URL_ELEMENTS}`, {});
-    console.log('Map elements', map_elements);
+    let res = await runPost(
+        `${URL_AUTH}`,
+        {
+            db: 'laroue.v12.dev.myceliandre.fr',
+            params: ['lcc_app']
+        },
+        {
+            auth: 'martin.guillon@akylas.fr:1234'
+        }
+    );
+    console.log('token info : ', res);
+    const api_token = res.response.api_token;
+    console.log('api_token : ', api_token);
+    res = await runGet(`${URL_PARTNER}`, { method: 'GET', headers:{
 
-} catch(err) {
-    console.error(err.statusCode, err.statusMessage, err.toString());
+      'API-KEY': api_token
+    }
+    });
+    console.log('Partner info : ', res);
+} catch (err) {
+    console.error(err.statusCode, err.statusMessage, err.toString(), err.stack);
 }
+
