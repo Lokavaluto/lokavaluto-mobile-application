@@ -891,7 +891,7 @@ export default class AuthService extends NetworkService {
                     Autorization: base64Encode(`${user.username}:${user.password}`)
                 },
                 body: {
-                    db: APP_HOST,
+                    db: APP_DB,
                     params: ['lcc_app']
                 }
             });

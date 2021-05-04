@@ -125,6 +125,7 @@ module.exports = (env, params = {}) => {
         'gVars.sentry': !!sentry,
         SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
         APP_HOST: `"${process.env.APP_HOST}"`,
+        APP_DB: `"${process.env.APP_DB}"`,
         APP_CLIENT_ID: `"${process.env.APP_CLIENT_ID}"`,
         APP_CLIENT_SECRET: `"${process.env.APP_CLIENT_SECRET}"`,
         APP_SMS_NUMBER: `"${process.env.APP_SMS_NUMBER}"`,
@@ -233,7 +234,6 @@ module.exports = (env, params = {}) => {
                     search: 'app-([a-zA-Z0-9-_]+)',
                     // @ts-ignore
                     replace: (match, p1, offset) => {
-                        console.log('test', p1, appIcons[p1]);
                         if (appIcons[p1]) {
                             return appIcons[p1];
                         }

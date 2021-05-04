@@ -22,9 +22,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: getString('last.login', PRODUCTION ? '' : 'mguillon'),
+        username: getString('last.login', PRODUCTION ? '' : 'gestion@lokavaluto.fr'),
         email: '',
-        password: PRODUCTION ? '' : ':;3q#3;A55h52/6Up56!',
+        password: PRODUCTION ? '' : '#v3#5HK$Qe!4',
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;
@@ -40,7 +40,6 @@ export default class Login extends PageComponent {
     }
     mounted() {
         this.$authService.on(LoggedinEvent, this.onLoggedIn, this);
-        console.log('modal', this.modal);
         super.mounted();
     }
     onNavigatedTo(args: NavigatedData) {
