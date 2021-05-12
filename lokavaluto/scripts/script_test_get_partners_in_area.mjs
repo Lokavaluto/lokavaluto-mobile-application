@@ -1,7 +1,6 @@
-_get_partner_info.mjs
 import https from 'https';
 
-const URL_MAP = 'https://laroue.v12.dev.myceliandre.fr/lokavaluto_api/public/auth/authenticate';
+const URL_MAP = 'https://odoo12.dev1.elabore.coop/lokavaluto_api/public/partner_map/search_in_area';
 const LAT_MIN = '0.0';
 const LAT_MAX = '0.0';
 const LON_MIN = '0.0';
@@ -61,24 +60,18 @@ function runGet(url, options) {
 
 try {
     let res = await runPost(
-        `${URL_AUTH}`,
+        `${URL_MAP}`,
         {
-            db: 'laroue.v12.dev.myceliandre.fr',
-            params: ['lcc_app']
+	    bounding_box: {
+  	        minLat: "${LAT_MIN}"
+	        maxLat: "${LAT_MAX}",
+                minLon: "${LON_MIN}",
+                maxLon: "${LON_MAX}"
+            }
         },
-        {
-            auth: 'martin.guillon@akylas.fr:1234'
-        }
     );
-    console.log('token info : ', res);
-    const api_token = res.response.api_token;
-    console.log('api_token : ', api_token);
-    res = await runGet(`${URL_PARTNER}`, { method: 'GET', headers:{
+    console.log('partner info : ', res);
 
-      'API-KEY': api_token
-    }
-    });
-    console.log('Partner info : ', res);
 } catch (err) {
     console.error(err.statusCode, err.statusMessage, err.toString(), err.stack);
 }
