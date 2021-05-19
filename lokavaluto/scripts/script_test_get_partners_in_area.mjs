@@ -1,10 +1,10 @@
 import https from 'https';
 
 const URL_MAP = 'https://odoo12.dev.lokavaluto.fr/lokavaluto_api/public/partner_map/search_in_area';
-const LAT_MIN = '0.5';
-const LAT_MAX = '1.5';
-const LON_MIN = '0.5';
-const LON_MAX = '1.5';
+const LAT_MIN = '11.0';
+const LAT_MAX = '12.0';
+const LON_MIN = '-55.5';
+const LON_MAX = '-50.5';
 
 function runPost(url, jsonData, options) {
     const data = JSON.stringify(jsonData);
