@@ -5,6 +5,7 @@ const LAT_MIN = '11.0';
 const LAT_MAX = '12.0';
 const LON_MIN = '-55.5';
 const LON_MAX = '-50.5';
+const CATEGORY = 'Agriculture';
 
 function runPost(url, jsonData, options) {
     const data = JSON.stringify(jsonData);
@@ -59,6 +60,7 @@ function runGet(url, options) {
 }
 
 try {
+    console.log('NO CATEGORY FILTER');
     let res = await runPost(
         `${URL_MAP}`,
         {
@@ -67,7 +69,23 @@ try {
 	        maxLat: `${LAT_MAX}`,
                 minLon: `${LON_MIN}`,
                 maxLon: `${LON_MAX}`
-            }
+            },
+	    category: ``
+        },
+    );
+    console.log('partner info : ', res);
+    console.log('===================== ');
+    console.log('FILTER ON A CATEGORY');
+    let res = await runPost(
+        `${URL_MAP}`,
+        {
+            bounding_box: {
+                minLat: `${LAT_MIN}`,
+                maxLat: `${LAT_MAX}`,
+                minLon: `${LON_MIN}`,
+                maxLon: `${LON_MAX}`
+            },
+            category: `${CATEGORY}`
         },
     );
     console.log('partner info : ', res);
