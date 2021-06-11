@@ -11,11 +11,13 @@ import { Label as HTMLLabel, enableIOSDTCoreText } from '@nativescript-community
 
 import ActivityIndicatorPlugin from '@nativescript-community/ui-material-activityindicator/vue';
 import BottomSheetPlugin from '@nativescript-community/ui-material-bottomsheet/vue';
+import PersistentBottomSheetPlugin from '@nativescript-community/ui-persistent-bottomsheet/vue';
 import CartoPlugin from '@nativescript-community/ui-carto/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import CardViewPlugin from '@nativescript-community/ui-material-cardview/vue';
 import ImagePlugin from '@nativescript-community/ui-image/vue';
 import DrawerPlugin from '@nativescript-community/ui-drawer/vue';
+import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
 import CActionBar from '~/common/components/CActionBar';
 import ListItem from '~/common/components/ListItem';
 import EditableListItem from '~/common/components/EditableListItem';
@@ -39,7 +41,8 @@ const Plugin = {
         Vue.use(DrawerPlugin);
         Vue.use(SVGPlugin);
         Vue.use(CardViewPlugin);
-        // Vue.use(CanvasLabelPlugin)
+        Vue.use(CanvasLabelPlugin);
+        Vue.use(PersistentBottomSheetPlugin);
         Vue.use(Pager);
 
         Vue.registerElement('Button', () => require('@nativescript-community/ui-material-button').Button);

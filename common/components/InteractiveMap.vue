@@ -1,5 +1,5 @@
 <template>
-    <GridLayout :opacity="opacity" @layoutChanged="onLayoutChange">
+    <BottomSheet :opacity="opacity" @layoutChanged="onLayoutChange" :panGestureOptions="{ bottomSheetPanGestureOptions }" :steps="[0, 80]" :stepIndex="bottomSheetStepIndex">
         <MapComponent
             ref="mapComp"
             rowSpan="2"
@@ -24,11 +24,9 @@
                 verticalAlignment="bottom"
             />
         </GridLayout>
-        <BottomSheetHolder rowSpan="2" ref="bottomSheetHolder" :peekerSteps="bottomSheetSteps" isPassThroughParentEnabled="true" @close="unselectItem" @scroll="onBottomSheetScroll">
-            <MapBottomSheet slot="bottomSheet" :item="selectedItem" :steps="bottomSheetSteps" />
-        </BottomSheetHolder>
+        <MapBottomSheet ~bottomSheet :item="selectedItem" />
         <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
-    </GridLayout>
+    </BottomSheet>
 </template>
 
 <script lang="ts" src="./InteractiveMap.ts" />

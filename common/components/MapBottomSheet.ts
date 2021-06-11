@@ -4,6 +4,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import Profile from './Profile';
 import { User } from '../services/AuthService';
 import BottomSheetBase from './BottomSheet/BottomSheetBase';
+import BaseVueComponent from './BaseVueComponent';
 
 function getViewTop(view: View) {
     if (global.isAndroid) {
@@ -16,14 +17,11 @@ function getViewTop(view: View) {
 @Component({
     components: {}
 })
-export default class MapBottomSheet extends BottomSheetBase {
-    @Prop({
-        default: () => [80]
-    })
-    steps;
+export default class MapBottomSheet extends BaseVueComponent {
     @Prop() item: User;
 
     showProfile(item: User) {
+        console.log('showProfile', item);
         this.navigateTo(Profile, {
             transition: {
                 name: 'slide'
@@ -42,23 +40,5 @@ export default class MapBottomSheet extends BottomSheetBase {
     }
     destroyed() {
         super.destroyed();
-    }
-
-    get bottomSheet() {
-        return this.$refs['bottomSheet'] && (this.$refs['bottomSheet'].nativeView as GridLayout);
-    }
-
-    get rows() {
-        let result = '';
-        this.steps.forEach((step, i) => {
-            if (i === 0) {
-                result += step;
-            } else {
-                result += ',' + (step - this.steps[i - 1]);
-            }
-        });
-        // const result = this.steps.join(',');
-        console.log('rows', result);
-        return result;
     }
 }

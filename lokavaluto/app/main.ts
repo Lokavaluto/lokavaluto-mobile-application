@@ -55,10 +55,12 @@ if (global.isIOS) {
     themer.setAccentColor(colorPrimary);
 }
 
-
 themer.createShape('main', {
     cornerFamily: 'rounded' as any,
-    cornerSize: 10
+    cornerSize: {
+        value: 20,
+        unit: 'dp'
+    }
 });
 themer.createShape('round', {
     cornerFamily: 'rounded' as any,

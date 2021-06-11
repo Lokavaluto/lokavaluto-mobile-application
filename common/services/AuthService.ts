@@ -499,7 +499,7 @@ export default class AuthService extends NetworkService {
 
     async getUserProfile(userId?: number) {
         const profile = await this.request<UserProfile>({
-            apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}`,
+            apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}/get`,
             method: 'GET'
         });
         if (!profile) {
@@ -902,10 +902,11 @@ export default class AuthService extends NetworkService {
         });
     }
     async categories() {
-        return this.request({
-            apiPath: '/categories',
-            method: 'GET'
+        const res = await this.request<{ rows: { id: number; name: string }[] }>({
+            apiPath: '/lokavaluto_api/public/partner_industry/get_all',
+            method: 'POST'
         });
+        return res.rows.map((c) => c.name);
     }
     async getToken(user: LoginParams) {
         try {

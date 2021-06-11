@@ -50,11 +50,12 @@ export default class Profile extends PageComponent {
     userProfile: UserProfile = null;
     myProfile = false;
     // get image() {
-    //     console.log('get image');
-    //     if (!!this.updateUserProfile && !!this.updateUserProfile.image) {
-    //         return this.updateUserProfile.image;
-    //     }
-    //     return this.userProfile.image;
+    // return null;
+    // console.log('get image');
+    // if (!!this.updateUserProfile && !!this.updateUserProfile.image) {
+    //     return this.updateUserProfile.image;
+    // }
+    // return this.userProfile.image;
     // }
 
     constructor() {

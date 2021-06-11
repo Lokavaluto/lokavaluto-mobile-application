@@ -161,5 +161,7 @@
   "fill_email_or_username": "fill e-mail or username",
   "credit_account": "credit your account",
   "next": "next",
-  "transaction_successful": "you successfuly transfered %1$s to %2$s"
+  "transaction_successful": "you successfuly transfered %1$s to %2$s",
+  "send_request_money": "Send/Request of money",
+  "apy_my_purchases": "Pay my purchases"
 }

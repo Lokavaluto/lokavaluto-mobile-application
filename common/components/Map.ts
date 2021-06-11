@@ -4,6 +4,7 @@ import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
 import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
+import { mdiFontFamily } from '../variables';
 
 @Component({
     components: {
@@ -12,6 +13,7 @@ import { LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
 })
 export default class Map extends PageComponent {
     navigateUrl = ComponentIds.Map;
+    mdiFontFamily = mdiFontFamily;
     public currentlyLoggedIn = Vue.prototype.$authService.isLoggedIn();
 
     mounted(): void {

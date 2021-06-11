@@ -11,7 +11,7 @@ import FilterCategories from './FilterCategories';
 import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
 
-const categories = [];
+let categories = [];
 
 @Component({
     components: {
@@ -24,13 +24,14 @@ export default class InteractiveMap extends BaseVueComponent {
     _cartoMap: CartoMap<LatLonKeys>;
     currentBounds: MapBounds<LatLonKeys>;
     selectedItem: User = null;
-
+    bottomSheetStepIndex = 0;
     bottomSheetTranslation = 0;
     bottomSheetPercentage = 0;
     shownUsers: User[] = [];
     loading = false;
-    mapCategories = [];
+    mapCategories = null;
     mapFilterSlugs: string[] = [];
+    bottomSheetPanGestureOptions = { failOffsetXEnd: 20, minDist: 40 };
 
     @Prop({ default: 1 }) opacity: number;
 
@@ -45,34 +46,22 @@ export default class InteractiveMap extends BaseVueComponent {
         this.bottomSheetPercentage = e.percentage;
     }
 
-    get bottomSheetSteps() {
-        const result = [80];
-
-        return result;
-    }
-    get bottomSheetHolder() {
-        return this.$refs['bottomSheetHolder'] as BottomSheetHolder;
-    }
-
     get mapComp() {
         return this.$refs['mapComp'] as MapComponent;
     }
 
-    get bottomSheet() {
-        return this.bottomSheetHolder.bottomSheet;
-    }
     get cartoMap() {
         return this.mapComp.cartoMap;
     }
     mounted() {
         super.mounted();
-        this.mapCategories = categories;
         this.mapFilterSlugs = [];
-        // if (!this.mapCategories) {
-        //     this.$authService.categories().then((r) => {
-        //         this.mapCategories = categories = r;
-        //     });
-        // }
+        if (!this.mapCategories) {
+            this.$authService.categories().then((r) => {
+                console.log('categories', r);
+                this.mapCategories = categories = r;
+            });
+        }
     }
     destroyed() {
         super.destroyed();
@@ -145,7 +134,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     @throttle(2000)
     refresh(mapBounds: MapBounds<LatLonKeys>) {
-        // console.log('refresh', this._cartoMap.zoom, mapBounds, this.mapFilterSlugs);
+        console.log('refresh', this._cartoMap.zoom, mapBounds, this.mapFilterSlugs);
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds, this.mapFilterSlugs)
@@ -174,13 +163,13 @@ export default class InteractiveMap extends BaseVueComponent {
             200
         );
         this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', item.id + '');
-        this.bottomSheetHolder.peek();
+        this.bottomSheetStepIndex = 1;
     }
     async unselectItem() {
         if (!!this.selectedItem) {
             this.mapComp.localVectorTileLayer.getTileDecoder().setStyleParameter('selected_id', '');
 
-            await this.bottomSheetHolder.close();
+            this.bottomSheetStepIndex = 0;
             this.selectedItem = null;
         }
     }

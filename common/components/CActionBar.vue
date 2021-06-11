@@ -2,18 +2,20 @@
     <GridLayout class="actionBar" columns="auto,*, auto" rows="auto,auto">
         <!-- <StackLayout col="1" colSpan="3" orientation="horizontal" :height="height"> -->
         <StackLayout verticalAlignment="center" col="1" colSpan="3" :height="height">
-            <Label class="actionBarTitle" v-if="title" :text="title | capitalize" />
+            <Label class="actionBarTitle" v-if="!showLogo && title" :text="title | capitalize" />
             <Label :visibility="!!subtitle ? 'visible' : 'collapse'" class="actionBarSubtitle" :text="subtitle" />
         </StackLayout>
         <!-- </StackLayout> -->
         <ContentView colSpan="3" :height="height">
             <slot name="title">
                 <Label
-                    v-if="!!showLogo && !title"
+                    v-if="!!showLogo || !title"
                     :fontFamily="appFontFamily"
                     :fontSize="titleFontSize"
                     :color="colorPrimary"
                     text="app-full_logo"
+                    padding="10"
+                    :autoFontSize="true"
                     textAlignment="center"
                     verticalAlignment="center"
                     @tap="$emit('titleTap', $event)"
