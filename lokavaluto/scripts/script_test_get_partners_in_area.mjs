@@ -70,13 +70,13 @@ try {
                 minLon: `${LON_MIN}`,
                 maxLon: `${LON_MAX}`
             },
-	    category: ``
+	    categories: []
         },
     );
-    console.log('partner info : ', res);
+    console.log('partner info : ', JSON.stringify(res));
     console.log('===================== ');
     console.log('FILTER ON A CATEGORY');
-    let res = await runPost(
+    res = await runPost(
         `${URL_MAP}`,
         {
             bounding_box: {
@@ -85,7 +85,7 @@ try {
                 minLon: `${LON_MIN}`,
                 maxLon: `${LON_MAX}`
             },
-            category: `${CATEGORY}`
+            categories: ['Manufacturing', 'Agriculture']
         },
     );
     console.log('partner info : ', res);
