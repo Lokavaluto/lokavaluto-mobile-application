@@ -1,7 +1,7 @@
 import { Page } from '@nativescript/core';
 import { Color } from '@nativescript/core/color';
 import { Component, Prop } from 'vue-property-decorator';
-import { actionBarButtonHeight, actionBarHeight, backgroundColor, primaryColor } from '../variables';
+import { actionBarButtonHeight, actionBarHeight, backgroundColor, colorPrimary } from '../variables';
 import BaseVueComponent from './BaseVueComponent';
 
 @Component({})
@@ -76,9 +76,9 @@ export default class BasePage extends BaseVueComponent {
             //     });
             // } else {
             //     page.androidStatusBarBackground = null;
-            //     page.androidStatusBarBackground = new Color(this.darkColor);
+            //     page.androidStatusBarBackground = new Color(this.colorPrimaryDark);
             // }
-            // page.backgroundColor = this.darkColor;
+            // page.backgroundColor = this.colorPrimaryDark;
             // page.backgroundColor = this.themeColor;
             // page.on(Page.navigatingToEvent, () => {
 

@@ -31,9 +31,17 @@ const TerserPlugin = require('terser-webpack-plugin');
 // @ts-ignore
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 // @ts-ignore
-const Fontmin = require('fontmin');
+const Fontmin = require('@akylas/fontmin');
 const IgnoreNotFoundExportPlugin = require('./IgnoreNotFoundExportPlugin');
-
+const camelCase = require('camelcase');
+function fixedFromCharCode(codePt) {
+    if (codePt > 0xffff) {
+        codePt -= 0x10000;
+        return String.fromCharCode(0xd800 + (codePt >> 10), 0xdc00 + (codePt & 0x3ff));
+    } else {
+        return String.fromCharCode(codePt);
+    }
+}
 module.exports = (env, params = {}) => {
     if (env.adhoc) {
         env = Object.assign(
@@ -157,15 +165,20 @@ module.exports = (env, params = {}) => {
     const mdiSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'node_modules/@mdi/font/scss/_variables.scss')).toString());
     const mdiIcons = JSON.parse(`{${mdiSymbols.variables[mdiSymbols.variables.length - 1].value.replace(/" (F|0)(.*?)([,\n]|$)/g, '": "$1$2"$3')}}`);
     const appSymbols = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, 'css/variables.scss')).toString());
+    const appVariables = symbolsParser.parseSymbols(readFileSync(resolve(projectRoot, appPath, 'common/variables.scss')).toString()).variables.reduce(function (acc, current) {
+        acc[camelCase(current.name.slice(1))] = current.value;
+        return acc;
+    }, {});
+    console.log('appVariables', appVariables);
     const appIcons = {};
     appSymbols.variables
         .filter((v) => v.name.startsWith('$icon-'))
         .forEach((v) => {
             appIcons[v.name.replace('$icon-', '')] = String.fromCharCode(parseInt(v.value.slice(2), 16));
         });
-    const scssPrepend = `$lato-fontFamily: ${platform === 'android' ? 'res/lato' : 'Lato'};
+    const scssPrepend = `$lato-fontFamily: ${isAndroid ? 'res/lato' : 'Lato'};
     $app-fontFamily: app;
-    $mdi-fontFamily: ${platform === 'android' ? 'materialdesignicons-webfont' : 'Material Design Icons'};`;
+    $mdi-fontFamily: ${isAndroid ? 'materialdesignicons-webfont' : 'Material Design Icons'};`;
 
     // @ts-ignore
     const scssLoaderRuleIndex = config.module.rules.findIndex((r) => r.test && r.test.toString().indexOf('scss') !== -1);
@@ -214,13 +227,15 @@ module.exports = (env, params = {}) => {
             {
                 loader: 'string-replace-loader',
                 options: {
-                    search: 'mdi-([a-z-]+)',
+                    search: 'mdi-([a-z0-9-_]+)',
                     // @ts-ignore
                     replace: (match, p1, offset, str) => {
                         if (mdiIcons[p1]) {
-                            const res = String.fromCharCode(parseInt(mdiIcons[p1], 16));
-                            usedMDIICons.push(res);
-                            return res;
+                            const unicodeHex = mdiIcons[p1];
+                            const numericValue = parseInt(unicodeHex, 16);
+                            const character = fixedFromCharCode(numericValue);
+                            usedMDIICons.push(numericValue);
+                            return character;
                         }
                         return match;
                     },
@@ -228,7 +243,7 @@ module.exports = (env, params = {}) => {
                 }
             },
             {
-                loader: resolve(__dirname, 'node_modules', 'string-replace-loader'),
+                loader: 'string-replace-loader',
                 options: {
                     search: 'app-([a-zA-Z0-9-_]+)',
                     // @ts-ignore
@@ -305,14 +320,12 @@ module.exports = (env, params = {}) => {
             to: 'fonts',
             globOptions,
             transform: {
-                cache: { keys: { key: usedMDIICons.join('') } },
-                // @ts-ignore
                 transformer(content, path) {
                     return new Promise((resolve, reject) => {
                         new Fontmin()
                             .src(content)
                             // @ts-ignore
-                            .use(Fontmin.glyph({ text: usedMDIICons.join('') }))
+                            .use(Fontmin.glyph({ subset: usedMDIICons }))
                             .run(function (err, files) {
                                 if (err) {
                                     reject(err);
@@ -325,6 +338,24 @@ module.exports = (env, params = {}) => {
             }
         }
     ];
+    if (isAndroid) {
+        copyPatterns.push({
+            context: `${appResourcesPath}/Android/src/main/res`,
+            from: '**/colors.xml',
+            to: '../../res',
+            globOptions: { dot: false },
+            transform: {
+                transformer(content, path) {
+                    return content.toString().replace(/<color name="(.*)">(.*)<\/color>/gm, function (match, p1, p2, offset, str) {
+                        if (appVariables[p1]) {
+                            return `<color name="${p1}">${appVariables[p1]}<\/color>`;
+                        }
+                        return match;
+                    });
+                }
+            }
+        });
+    }
     config.plugins.unshift(new CopyWebpackPlugin({ patterns: copyPatterns }));
     config.plugins.push(new IgnoreNotFoundExportPlugin());
     // @ts-ignore
@@ -346,12 +377,16 @@ module.exports = (env, params = {}) => {
             );
             let appVersion;
             let buildNumber;
-            if (platform === 'android') {
-                appVersion = readFileSync('app/App_Resources/Android/app.gradle', 'utf8').match(/versionName "((?:[0-9]+\.?)+)"/)[1];
-                buildNumber = readFileSync('app/App_Resources/Android/app.gradle', 'utf8').match(/versionCode ([0-9]+)/)[1];
-            } else if (platform === 'ios') {
-                appVersion = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleShortVersionString<\/key>[\s\n]*<string>(.*?)<\/string>/)[1];
-                buildNumber = readFileSync('app/App_Resources/iOS/Info.plist', 'utf8').match(/<key>CFBundleVersion<\/key>[\s\n]*<string>([0-9]*)<\/string>/)[1];
+            if (isAndroid) {
+                const gradlePath = `${appResourcesPath}/Android/app.gradle`;
+                const gradleData = readFileSync(gradlePath, 'utf8');
+                appVersion = gradleData.match(/versionName "((?:[0-9]+\.?)+)"/)[1];
+                buildNumber = gradleData.match(/versionCode ([0-9]+)/)[1];
+            } else if (isIOS) {
+                const plistPath = `${appResourcesPath}/iOS/Info.plist`;
+                const plistData = readFileSync(plistPath, 'utf8');
+                appVersion = plistData.match(/<key>CFBundleShortVersionString<\/key>[\s\n]*<string>(.*?)<\/string>/)[1];
+                buildNumber = plistData.match(/<key>CFBundleVersion<\/key>[\s\n]*<string>([0-9]*)<\/string>/)[1];
             }
             console.log('appVersion', appVersion, buildNumber);
 
@@ -388,8 +423,6 @@ module.exports = (env, params = {}) => {
     config.optimization.minimizer = [
         new TerserPlugin({
             parallel: true,
-            // cache: true,
-            // sourceMap: isAnySourceMapEnabled,
             terserOptions: {
                 ecma: 2017,
                 module: true,

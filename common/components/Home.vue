@@ -30,7 +30,7 @@
                         <StackLayout>
                             <GridLayout class="cardView" margin="20" padding="10" columns="*, auto" rows="auto, *" @tap="onItemTap(item)">
                                 <Label row="0" :text="item.name | capitalize" fontWeight="bold" fontSize="18" />
-                                <Label row="1" class="balance" paddingTop="20" :color="item.balance === 0 ? 'red' : accentColor">
+                                <Label row="1" class="balance" paddingTop="20" :color="item.balance === 0 ? 'red' : colorAccent">
                                     <Span :text="item.balance | currency(true)" />
                                     <Span :fontFamily="appFontFamily" text="app-currency" />
                                 </Label>
@@ -41,8 +41,8 @@
                                     col="1"
                                     verticalAlignment="top"
                                     text="mdi-credit-card-plus-outline"
-                                    :color="accentColor"
-                                    :rippleColor="accentColor"
+                                    :color="colorAccent"
+                                    :rippleColor="colorAccent"
                                     @tap="creditAccount"
                                     :visibility="isPro ? 'hidden' : 'visible'"
                                 />
@@ -51,7 +51,7 @@
                     </v-template>
                 </CollectionView>
             </PullToRefresh>
-            <!-- <Fab colSpan="3" rowSpan="3" iconClass="mdi" icon="mdi-plus" iconOn="mdi-close" :backgroundColor="accentColor" color="white" paddingTop='-60'>
+            <!-- <Fab colSpan="3" rowSpan="3" iconClass="mdi" icon="mdi-plus" iconOn="mdi-close" :backgroundColor="colorAccent" color="white" paddingTop='-60'>
                 <FabItem :title="$t('transfer') | capitalize" iconClass="mdi" icon="mdi-bank-transfer" @tap="openTransferWindow" />
                 <FabItem :title="$t('add_beneficiary') | capitalize" iconClass="mdi" icon="mdi-account-plus" @tap="addBeneficiary" />
             </Fab> -->

@@ -93,7 +93,8 @@ export class User {
     mobile: string;
     email: string;
     phone: string;
-
+    partner_latitude: number;
+    partner_longitude: number;
     [k: string]: any;
     // webPushSubscriptions: string[] = null;
     // phoneNumbers: PhoneNumber[] = null;
@@ -499,8 +500,7 @@ export default class AuthService extends NetworkService {
     async getUserProfile(userId?: number) {
         const profile = await this.request<UserProfile>({
             apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}`,
-            method: 'GET',
-            content:'{}'
+            method: 'GET'
         });
         if (!profile) {
             return null;
@@ -768,7 +768,7 @@ export default class AuthService extends NetworkService {
 
         const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         let result = await this.request<User[]>({
-            url: 'https://lokavaluto.dev.myceliandre.fr/web/get_application_elements',
+            apiPath: '/lokavaluto_api/public/partner_map',
             method: 'POST',
             body: {
                 limit: limit || 100,
@@ -789,6 +789,36 @@ export default class AuthService extends NetworkService {
             result = [result];
         }
         return result.filter((b) => !!b);
+    }
+    async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
+        let boundingBox = {
+            minLon: '',
+            maxLon: '',
+            minLat: '',
+            maxLat: ''
+        };
+        if (mapBounds) {
+            boundingBox = {
+                minLon: mapBounds.southwest.lon + '',
+                maxLon: mapBounds.northeast.lon + '',
+                minLat: mapBounds.southwest.lat + '',
+                maxLat: mapBounds.northeast.lat + ''
+            };
+        }
+
+        const result = await this.request<{ rows: User[] }>({
+            apiPath: '/lokavaluto_api/public/partner_map/search_in_area',
+            method: 'POST',
+            body: {
+                bounding_box: boundingBox,
+                categories
+            }
+        });
+        // result = (result as any).result || result;
+        // if (!Array.isArray(result)) {
+        //     result = [result];
+        // }
+        return result?.rows.filter((b) => !!b);
     }
     async addBeneficiary(cairn_user_email: string): Promise<TransactionConfirmation> {
         // this.lastBenificiariesUpdateTime = undefined;
@@ -828,9 +858,6 @@ export default class AuthService extends NetworkService {
         });
         await this.getAccounts();
         return result;
-    }
-    async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
-        return this.getUsers({ mapBounds, payment_context: false, categories });
     }
     accountHistory: {
         [k: string]: Transaction[];

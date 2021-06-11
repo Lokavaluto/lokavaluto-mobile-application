@@ -48,7 +48,7 @@ export default class AccountHistory extends PageComponent {
         // if (isAndroid) {
         //     const page = this.page
         //     // page.androidStatusBarBackground = null;
-        //     // page.androidStatusBarBackground = new Color(this.darkColor);
+        //     // page.androidStatusBarBackground = new Color(this.colorPrimaryDark);
         // }
     }
     // openMain() {

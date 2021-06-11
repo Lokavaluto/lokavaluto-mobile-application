@@ -48,11 +48,11 @@ Vue.config.warnHandler = function (msg, vm, trace) {
     console.warn(msg, trace);
 };
 
-import { accentColor, primaryColor } from '~/common/variables';
+import { colorAccent, colorPrimary } from '~/common/variables';
 import { themer } from '@nativescript-community/ui-material-core';
 if (global.isIOS) {
-    themer.setPrimaryColor(accentColor);
-    themer.setAccentColor(primaryColor);
+    themer.setPrimaryColor(colorAccent);
+    themer.setAccentColor(colorPrimary);
 }
 
 

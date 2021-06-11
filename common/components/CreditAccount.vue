@@ -9,7 +9,7 @@
                         :strokeColor="themeColor"
                         textAlignment="right"
                         width="60%"
-                        :color="accentColor"
+                        :color="colorAccent"
                         ref="amountTF"
                         fontSize="40"
                         :hint="$t('amount') | capitalize"
@@ -19,7 +19,7 @@
                         @loaded="onAmountTFLoaded"
                         @textChange="validateAmount"
                     />
-                    <Label class="app" text="app-currency" fontSize="42" :color="accentColor" verticalAlignment="bottom" paddingBottom="20" />
+                    <Label class="app" text="app-currency" fontSize="42" :color="colorAccent" verticalAlignment="bottom" paddingBottom="20" />
                 </StackLayout>
                 <Image src="https://www.helloasso.com/Areas/HelloAsso/img/helloasso-logo.png" width="20%" paddingTop="10" />
                 <Button width="80%" :isEnabled="canStartTransfer" @tap="goToHelloAsso">

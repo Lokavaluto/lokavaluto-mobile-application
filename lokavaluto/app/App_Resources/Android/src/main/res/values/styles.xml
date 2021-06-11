@@ -2,33 +2,25 @@
 <resources
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" >
-    <!-- theme to use FOR launch screen-->
-    <style name="LaunchScreenThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <item name="toolbarStyle">@style/NativeScriptToolbarStyle</item>
-        <item name="colorPrimary">@color/ns_primary</item>
-        <item name="colorPrimaryDark">@color/ns_primaryDark</item>
-        <item name="colorSecondary">@color/ns_secondary</item>
-        <item name="colorAccent">@color/ns_accent</item>
-        <item name="android:statusBarColor">@color/ns_primaryDark</item>
-        <item name="android:windowBackground">@drawable/splash_screen</item>
-        <item name="android:windowActionBarOverlay">true</item>
-        <item name="android:windowTranslucentStatus">true</item>
-        <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:statusBarColor">@android:color/transparent</item>
-    </style>
-    <style name="LaunchScreenTheme" parent="LaunchScreenThemeBase"></style>
     <!-- theme to use AFTER launch screen is loaded-->
     <style name="AppThemeBase" parent="Theme.MaterialComponents.Light.NoActionBar">
         <item name="toolbarStyle">@style/NativeScriptToolbarStyle</item>
         <item name="android:navigationBarColor" tools:targetApi="27">@android:color/white</item>
-        <!-- <item name="android:statusBarColor">@color/ns_primaryDark</item> -->
-        <item name="colorPrimary">@color/ns_primary</item>
-        <item name="colorPrimaryDark">@color/ns_primaryDark</item>
-        <item name="colorSecondary">@color/ns_secondary</item>
-        <item name="colorAccent">@color/ns_accent</item>
+        <!-- <item name="android:statusBarColor">@color/colorPrimaryDark</item> -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+    </style>
+    <style name="LaunchScreenTheme" parent="AppThemeBase">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@drawable/splash_screen</item>
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
     </style>
     <style name="AppTheme" parent="AppThemeBase"></style>
-    <style name="FloatingActivityTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="FloatingActivityTheme" parent="AppThemeBase">
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
@@ -40,10 +32,6 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowActionModeOverlay">true</item>
-        <item name="colorPrimary">@color/ns_primary</item>
-        <item name="colorPrimaryDark">@color/ns_primaryDark</item>
-        <item name="colorSecondary">@color/ns_secondary</item>
-        <item name="colorAccent">@color/ns_accent</item>
         <!-- specify enter and exit transitions -->
         <item name="android:windowAnimationStyle">@null</item>
     </style>
@@ -53,7 +41,7 @@
     </style>
     <!-- theme for action-bar -->
     <style name="NativeScriptToolbarStyleBase" parent="Widget.AppCompat.Toolbar">
-        <item name="android:background">@color/ns_primary</item>
+        <item name="android:background">@color/colorPrimary</item>
         <item name="theme">@style/ThemeOverlay.AppCompat.ActionBar</item>
         <item name="popupTheme">@style/ThemeOverlay.AppCompat</item>
     </style>

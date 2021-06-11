@@ -6,9 +6,9 @@ import { Color } from '@nativescript/core/color';
 
 const locals = CSSLoader.locals;
 // console.log('loading variables', locals);
-export const primaryColor: Color = new Color(locals.primaryColor);
-export const accentColor: Color = new Color(locals.accentColor);
-export const darkColor: Color = new Color(locals.darkColor);
+export const colorPrimary: Color = new Color(locals.colorPrimary);
+export const colorAccent: Color = new Color(locals.colorAccent);
+export const colorPrimaryDark: Color = new Color(locals.colorPrimaryDark);
 export const backgroundColor: Color = new Color(locals.backgroundColor);
 export const subtitleColor: Color = new Color(locals.subtitleColor);
 export const listBorderColor: Color = new Color(locals.listBorderColor);

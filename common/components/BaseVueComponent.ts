@@ -10,7 +10,7 @@ import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
 import { $t } from '../helpers/locale';
-import { accentColor, appFontFamily, darkColor, primaryColor } from '../variables';
+import { colorAccent, appFontFamily, colorPrimaryDark, colorPrimary } from '../variables';
 
 function timeout(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));
@@ -24,12 +24,12 @@ export interface BaseVueComponentRefs {
 export default class BaseVueComponent extends Vue {
     protected loadingIndicator: AlertDialog & { label?: Label; indicator?: ActivityIndicator; progress?: Progress };
     $refs: BaseVueComponentRefs;
-    @Prop({ type: Color, default: () => primaryColor })
+    @Prop({ type: Color, default: () => colorPrimary })
     public themeColor;
-    @Prop({ type: Color, default: () => darkColor })
-    public darkColor;
-    @Prop({ type: Color, default: () => accentColor })
-    public accentColor;
+    @Prop({ type: Color, default: () => colorPrimaryDark })
+    public colorPrimaryDark;
+    @Prop({ type: Color, default: () => colorAccent })
+    public colorAccent;
     public appFontFamily = appFontFamily;
     needsRoundedWatchesHandle = false;
     debug = false;
@@ -124,14 +124,14 @@ export default class BaseVueComponent extends Vue {
                 const result = await InAppBrowser.open(url, {
                     // iOS Properties
                     dismissButtonStyle: 'close',
-                    preferredBarTintColor: primaryColor as any,
+                    preferredBarTintColor: colorPrimary as any,
                     preferredControlTintColor: 'white',
                     readerMode: false,
                     animated: true,
                     enableBarCollapsing: false,
                     // Android Properties
                     showTitle: true,
-                    toolbarColor: primaryColor as any,
+                    toolbarColor: colorPrimary as any,
                     secondaryToolbarColor: 'white',
                     enableUrlBarHiding: true,
                     enableDefaultShare: true,

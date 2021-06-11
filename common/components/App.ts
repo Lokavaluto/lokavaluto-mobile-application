@@ -28,7 +28,7 @@ import { $t, $tc } from '../helpers/locale';
 import { LoggedinEvent, LoggedoutEvent, UserProfile } from '../services/AuthService';
 import { NetworkConnectionStateEvent, NetworkConnectionStateEventData, base64Encode } from '../services/NetworkService';
 import { parseUrlScheme } from '../utils/urlscheme';
-import { primaryColor, screenHeightDips, screenWidthDips } from '../variables';
+import { colorPrimary, screenHeightDips, screenWidthDips } from '../variables';
 import BaseVueComponent, { BaseVueComponentRefs } from './BaseVueComponent';
 import Floating from './Floating';
 import Home from './Home';
@@ -194,7 +194,7 @@ export default class App extends BaseVueComponent {
         //     console.log('Registered for push', result);
         //     if (global.isAndroid) {
         //         if (android.os.Build.VERSION.SDK_INT >= 26) {
-        //             const color = android.graphics.Color.parseColor(primaryColor);
+        //             const color = android.graphics.Color.parseColor(colorPrimary);
         //             const context = androidApp.context;
         //             // API level 26 ("Android O") supports notification channels.
         //             const service = context.getSystemService(

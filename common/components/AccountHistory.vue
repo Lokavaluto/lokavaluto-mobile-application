@@ -35,7 +35,7 @@
                                 fontWeight="bold"
                                 :text="item.amount | currency"
                                 fontSize="16"
-                                :color="item.credit ? accentColor : '#FC5457'"
+                                :color="item.credit ? colorAccent : '#FC5457'"
                             >
                                 <Span :text="item.credit ? '+' : '-'"></Span>
                                 <Span :text="item.amount | currency"></Span>

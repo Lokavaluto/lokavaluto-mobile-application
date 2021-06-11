@@ -1,8 +1,8 @@
 @import './variables';
 :export {
-    accentColor: $accent-color;
-    primaryColor: $primary-color;
-    darkColor: $dark-color;
+    colorAccent: $color-accent;
+    colorPrimary: $color-primary;
+    colorPrimaryDark: $color-primary-dark;
     backgroundColor: $background-color;
     subtitleColor: $subtitle-color;
     iconColor: $icon-color;

@@ -250,13 +250,14 @@ export default class MapComponent extends BaseVueComponent {
     }
     addGeoJSONPoints(points: User[]) {
         const geojson = GeoJSON.parse(
-            points.filter((p) => !!p.coords),
+            points.filter((p) => !!p.name),
             {
-                Point: ['coords.partner_latitude', 'coords.partner_longitude'],
-                include: ['name', 'id']
+                Point: ['partner_latitude', 'partner_longitude'],
+                include: ['name', 'id', 'opening_time', 'industry_id']
             }
         ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
+        // console.log('geojson', points, geojson);
         // geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;

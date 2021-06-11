@@ -17,7 +17,7 @@
                 v-show="mapCategories && mapCategories.length > 0"
                 class="floating-btn"
                 backgroundColor="white"
-                :color="accentColor"
+                :color="colorAccent"
                 margin="8"
                 text="mdi-filter"
                 horizontalAlignment="left"

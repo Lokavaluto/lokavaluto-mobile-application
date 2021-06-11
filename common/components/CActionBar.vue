@@ -12,7 +12,7 @@
                     v-if="!!showLogo && !title"
                     :fontFamily="appFontFamily"
                     :fontSize="titleFontSize"
-                    :color="primaryColor"
+                    :color="colorPrimary"
                     text="app-full_logo"
                     textAlignment="center"
                     verticalAlignment="center"

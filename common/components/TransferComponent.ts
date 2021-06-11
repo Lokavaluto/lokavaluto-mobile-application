@@ -168,7 +168,7 @@ export default class TransferComponent extends BaseVueComponent {
 
     get accountBalanceText() {
         if (this.account) {
-            const color = this.account.balance === 0 ? 'red' : this.accentColor;
+            const color = this.account.balance === 0 ? 'red' : this.colorAccent;
             return `<span style="color:${color};">${formatCurrency(this.account.balance, true)}</span><span style="color:${color}; font-family:${this.appFontFamily};">app-currency</span>`;
         }
     }

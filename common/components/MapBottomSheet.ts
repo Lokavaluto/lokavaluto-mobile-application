@@ -18,7 +18,7 @@ function getViewTop(view: View) {
 })
 export default class MapBottomSheet extends BottomSheetBase {
     @Prop({
-        default: () => [50]
+        default: () => [80]
     })
     steps;
     @Prop() item: User;
@@ -58,7 +58,7 @@ export default class MapBottomSheet extends BottomSheetBase {
             }
         });
         // const result = this.steps.join(',');
-        // this.log('rows', result);
+        console.log('rows', result);
         return result;
     }
 }

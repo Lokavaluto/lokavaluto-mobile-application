@@ -13,6 +13,7 @@ import ActivityIndicatorPlugin from '@nativescript-community/ui-material-activit
 import BottomSheetPlugin from '@nativescript-community/ui-material-bottomsheet/vue';
 import CartoPlugin from '@nativescript-community/ui-carto/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
+import CardViewPlugin from '@nativescript-community/ui-material-cardview/vue';
 import ImagePlugin from '@nativescript-community/ui-image/vue';
 import DrawerPlugin from '@nativescript-community/ui-drawer/vue';
 import CActionBar from '~/common/components/CActionBar';
@@ -37,6 +38,7 @@ const Plugin = {
         Vue.use(CollectionViewPlugin);
         Vue.use(DrawerPlugin);
         Vue.use(SVGPlugin);
+        Vue.use(CardViewPlugin);
         // Vue.use(CanvasLabelPlugin)
         Vue.use(Pager);
 

@@ -1,5 +1,5 @@
 import { Component, Prop } from 'vue-property-decorator';
-import { actionBarHeight, appFontFamily, primaryColor } from '../variables';
+import { actionBarHeight, appFontFamily, colorPrimary } from '../variables';
 import BaseVueComponent from './BaseVueComponent';
 
 @Component({})
@@ -10,7 +10,7 @@ export default class ActionBar extends BaseVueComponent {
     })
     public title: string;
     public appFontFamily = appFontFamily;
-    public primaryColor = primaryColor;
+    public colorPrimary = colorPrimary;
 
     @Prop({ default: actionBarHeight, type: Number })
     public height: number;

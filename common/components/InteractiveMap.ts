@@ -11,7 +11,7 @@ import FilterCategories from './FilterCategories';
 import MapBottomSheet from './MapBottomSheet';
 import MapComponent from './MapComponent';
 
-let categories = null;
+const categories = [];
 
 @Component({
     components: {
@@ -68,11 +68,11 @@ export default class InteractiveMap extends BaseVueComponent {
         super.mounted();
         this.mapCategories = categories;
         this.mapFilterSlugs = [];
-        if (!this.mapCategories) {
-            this.$authService.categories().then((r) => {
-                this.mapCategories = categories = r;
-            });
-        }
+        // if (!this.mapCategories) {
+        //     this.$authService.categories().then((r) => {
+        //         this.mapCategories = categories = r;
+        //     });
+        // }
     }
     destroyed() {
         super.destroyed();
@@ -168,8 +168,8 @@ export default class InteractiveMap extends BaseVueComponent {
         this.selectedItem = item;
         this.cartoMap.setFocusPos(
             {
-                lat: item.coords.partner_latitude,
-                lon: item.coords.partner_longitude
+                lat: item.partner_latitude,
+                lon: item.partner_longitude
             },
             200
         );

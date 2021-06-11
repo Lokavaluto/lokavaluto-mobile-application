@@ -1,11 +1,11 @@
 import { Color } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component, Prop } from 'vue-property-decorator';
-import { iconColor, listBorderColor, mdiFontFamily, primaryColor, subtitleColor } from '../variables';
+import { iconColor, listBorderColor, mdiFontFamily, colorPrimary, subtitleColor } from '../variables';
 
 @Component({
     template: /*html*/ `
-    <GridLayout columns="16,*,auto,16" backgroundColor="white" rippleColor=${primaryColor} @tap="$emit('tap', $event)" rows="12,auto,12">
+    <GridLayout columns="16,*,auto,16" backgroundColor="white" rippleColor=${colorPrimary} @tap="$emit('tap', $event)" rows="12,auto,12">
         <StackLayout row="1" col="1" verticalAlignment="center">
             <Label fontSize="17" :text="title" textWrap="true" verticalTextAlignment="top" maxLines="2" lineBreak="end" />
             <Label v-show="!!subtitle" fontSize="14" :text="subtitle" verticalTextAlignment="top" :color="subtitleColor" :maxLines="subtitleMaxLines" lineBreak="end" />
