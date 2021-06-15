@@ -1,6 +1,6 @@
 import https from 'https';
 
-const URL_INDUSTRY = 'https://odoo12.dev.lokavaluto.fr/lokavaluto_api/public/partner_industry/get_all';
+const URL_INDUSTRY = 'https://odoo12.dev.lokavaluto.fr/lokavaluto_api/public/partner_industry/';
 
 function runPost(url, jsonData, options) {
     const data = JSON.stringify(jsonData);
@@ -55,12 +55,20 @@ function runGet(url, options) {
 }
 
 try {
-    let res = await runPost(
-        `${URL_INDUSTRY}`,
+    console.log('GET ALL CATEGORIES');
+    let res = await runGet(
+    	`${URL_INDUSTRY}`,
         {},
     );
-    console.log('partner info : ', res);
-
+    console.log('industries info : ', res);
+    console.log('GET CATEGORIES 1,4,12 and 20');
+    res = await runGet(
+	`${URL_INDUSTRY}`,
+	{
+            'ids': `[1,4,12,20]`
+	},
+    );
+    console.log('industries info : ', res); 
 } catch (err) {
     console.error(err.statusCode, err.statusMessage, err.toString(), err.stack);
 }
