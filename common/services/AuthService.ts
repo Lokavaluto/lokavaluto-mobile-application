@@ -8,6 +8,10 @@ import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source';
 import { alert, login } from '@nativescript-community/ui-material-dialogs';
 import { $t, $tc, $tt, $tu } from '../helpers/locale';
+import * as https from '@nativescript-community/https';
+
+import { LokAPI, e as LokAPIExc, t as LokAPIType } from "lokapi"
+
 
 const tokenEndpoint = 'lokavaluto_api/public/auth/authenticate';
 
@@ -432,6 +436,56 @@ export default class AuthService extends NetworkService {
     @stringProperty pushToken: string;
     authority = `https://${APP_HOST}`;
 
+    constructor() {
+        super()
+
+        let nativeHttpRequest: LokAPIType.IHttpRequest = {
+            request: async (opts: LokAPIType.coreHttpOpts) => {
+                const nativeRequestOpts = {
+                    url: "https://" + opts.host + opts.path,
+                    method: opts.method,
+                    headers: opts.headers,
+                    body: opts.data,
+                    useLegacy: true,
+                }
+                let response
+                try {
+                    response = await https.request(nativeRequestOpts)
+                } catch (err) {
+                    console.error(
+                        `Encountered an error trying to make a request: ${err.message}`);
+                    reject(new LokAPIExc.RequestFailed(err.message))
+                }
+
+                const statusCode = response.statusCode;
+                let rawData = await response.content.toStringAsync();
+
+                if (!statusCode || statusCode.toString().slice(0, 1) !== '2') {
+                    throw new LokAPIExc.HttpError(statusCode, response.reason, "", response)
+                }
+
+                let outputJSON
+                try {
+                    outputJSON = JSON.parse(rawData)
+                } catch (err) {
+                    outputJSON = null
+                }
+                console.log('HTTP Response status:', statusCode, response.reason)
+                console.log('== HEADERS:', response.headers)
+                if (!outputJSON) {
+                    console.log('== BODY (ascii):', rawData);
+                } else {
+                    console.log('== BODY (json):', outputJSON);
+                }
+                return rawData
+            },
+        }
+        this.lokAPI = new LokAPI(APP_HOST, APP_DB, {
+            httpRequest: nativeHttpRequest,
+            base64encode: base64Encode
+        })
+    }
+
     isLoggedIn() {
         return !!this.token && !!this.loginParams && !!this.userId;
     }
@@ -482,26 +536,9 @@ export default class AuthService extends NetworkService {
         return true;
         // return profile.roles.indexOf(Roles.PRO) !== -1;
     }
-    async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
-        // console.log('handleRequestRetry ', retry, requestParams);
-        // refresh token
-        if (requestParams.canRetry === false || retry === 2) {
-            this.logout();
-            throw new HTTPError({
-                statusCode: 401,
-                message: 'not_authorized',
-                requestParams
-            });
-        }
-        await this.getToken(this.loginParams);
-        return this.request(requestParams, retry + 1);
-    }
 
     async getUserProfile(userId?: number) {
-        const profile = await this.request<UserProfile>({
-            apiPath: `/lokavaluto_api/private/partner/${userId || this.userId}/get`,
-            method: 'GET'
-        });
+        const profile = await this.lokAPI.getUserProfile(this.userId)
         if (!profile) {
             return null;
         }
@@ -908,31 +945,6 @@ export default class AuthService extends NetworkService {
         });
         return res.rows.map((c) => c.name);
     }
-    async getToken(user: LoginParams) {
-        try {
-            const result = await this.request<TokenRequestResult>({
-                apiPath: '/lokavaluto_api/public/auth/authenticate',
-                canRetry: false,
-                method: 'POST',
-                headers: {
-                    'Cache-Control': 'no-cache',
-                    'Content-Type': 'application/json',
-                    Authorization: `Basic ${base64Encode(`${user.username}:${user.password}`)}`
-                },
-                body: {
-                    db: APP_DB,
-                    params: ['lcc_app']
-                }
-            });
-            console.log('getToken done', result);
-            this.token = result.api_token;
-            this.userId = result.partner_id;
-            return result;
-        } catch (err) {
-            this.token = undefined;
-            return Promise.reject(err);
-        }
-    }
 
     async login(user: LoginParams = this.loginParams) {
         if (!user) {
@@ -940,10 +952,17 @@ export default class AuthService extends NetworkService {
         }
         const wasLoggedin = this.isLoggedIn();
         try {
-            await this.getToken(user);
-            await this.getUserProfile();
-            // .then(() => this.getUserProfile())
-            // .then(() => {
+            await this.lokAPI.login(user.username, user.password)
+
+            this.token = this.lokAPI.apiToken;
+            this.userId = this.lokAPI.userData.partner_id;
+
+            this.notify({
+                eventName: UserProfileEvent,
+                object: this,
+                data: this.lokAPI.userProfile
+            } as UserProfileEventData);
+
             this.loginParams = user;
             if (!wasLoggedin) {
                 // console.log('emitting loggedin event', new Error().stack);
