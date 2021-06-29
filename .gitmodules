@@ -1,0 +1,4 @@
+[submodule "lokavaluto/lokapi"]
+	path = lokavaluto/lokapi
+	url = git@github.com:Lokavaluto/lokapi.git
+	branch = mobile_app

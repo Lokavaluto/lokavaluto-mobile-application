@@ -10,8 +10,7 @@ import { alert, login } from '@nativescript-community/ui-material-dialogs';
 import { $t, $tc, $tt, $tu } from '../helpers/locale';
 import * as https from '@nativescript-community/https';
 
-import { LokAPI, e as LokAPIExc, t as LokAPIType } from "lokapi"
-
+import { LokAPI, e as LokAPIExc, t as LokAPIType } from '../../../lokapi/src';
 
 const tokenEndpoint = 'lokavaluto_api/public/auth/authenticate';
 
@@ -435,55 +434,25 @@ export default class AuthService extends NetworkService {
     @objectProperty loginParams: LoginParams;
     @stringProperty pushToken: string;
     authority = `https://${APP_HOST}`;
-
+    lokAPI: LokAPI;
     constructor() {
-        super()
+        super();
 
-        let nativeHttpRequest: LokAPIType.IHttpRequest = {
-            request: async (opts: LokAPIType.coreHttpOpts) => {
-                const nativeRequestOpts = {
-                    url: "https://" + opts.host + opts.path,
-                    method: opts.method,
-                    headers: opts.headers,
-                    body: opts.data,
-                    useLegacy: true,
-                }
-                let response
-                try {
-                    response = await https.request(nativeRequestOpts)
-                } catch (err) {
-                    console.error(
-                        `Encountered an error trying to make a request: ${err.message}`);
-                    reject(new LokAPIExc.RequestFailed(err.message))
-                }
-
-                const statusCode = response.statusCode;
-                let rawData = await response.content.toStringAsync();
-
-                if (!statusCode || statusCode.toString().slice(0, 1) !== '2') {
-                    throw new LokAPIExc.HttpError(statusCode, response.reason, "", response)
-                }
-
-                let outputJSON
-                try {
-                    outputJSON = JSON.parse(rawData)
-                } catch (err) {
-                    outputJSON = null
-                }
-                console.log('HTTP Response status:', statusCode, response.reason)
-                console.log('== HEADERS:', response.headers)
-                if (!outputJSON) {
-                    console.log('== BODY (ascii):', rawData);
-                } else {
-                    console.log('== BODY (json):', outputJSON);
-                }
-                return rawData
-            },
-        }
         this.lokAPI = new LokAPI(APP_HOST, APP_DB, {
-            httpRequest: nativeHttpRequest,
+            httpRequest: this.lokAPIRequest,
             base64encode: base64Encode
-        })
+        });
+    }
+
+    async lokAPIRequest<T = any>(opts: LokAPIType.coreHttpOpts) {
+        const nativeRequestOpts = {
+            url: 'https://' + opts.host + opts.path,
+            method: opts.method,
+            headers: opts.headers,
+            body: opts.data,
+            useLegacy: true
+        };
+        return super.request<T>(nativeRequestOpts);
     }
 
     isLoggedIn() {
@@ -538,7 +507,7 @@ export default class AuthService extends NetworkService {
     }
 
     async getUserProfile(userId?: number) {
-        const profile = await this.lokAPI.getUserProfile(this.userId)
+        const profile = await this.lokAPI.getUserProfile(this.userId);
         if (!profile) {
             return null;
         }
@@ -803,7 +772,6 @@ export default class AuthService extends NetworkService {
             };
         }
 
-        const apiPath = this.isLoggedIn() ? '/mobile/users' : '/mapUsers';
         let result = await this.request<User[]>({
             apiPath: '/lokavaluto_api/public/partner_map',
             method: 'POST',
@@ -821,7 +789,7 @@ export default class AuthService extends NetworkService {
                 categories
             }
         });
-        result = (result as any).result || result;
+        // result = result.result || result;
         if (!Array.isArray(result)) {
             result = [result];
         }
@@ -952,7 +920,7 @@ export default class AuthService extends NetworkService {
         }
         const wasLoggedin = this.isLoggedIn();
         try {
-            await this.lokAPI.login(user.username, user.password)
+            await this.lokAPI.login(user.username, user.password);
 
             this.token = this.lokAPI.apiToken;
             this.userId = this.lokAPI.userData.partner_id;
