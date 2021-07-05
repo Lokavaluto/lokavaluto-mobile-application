@@ -9,7 +9,7 @@
   "amount": "amount",
   "amount_required": "an amount is required",
   "app": {
-    "name": "lokavaluto"
+    "name": "Monujo"
   },
   "balance": "balance",
   "beneficiaries": "beneficiaries",
@@ -26,7 +26,7 @@
   "confirmation": "confirmation",
   "confirmation_code": "confirmation code",
   "confirmation_code_description": "enter the confirmation code using your security card",
-  "default_reason": "lokavaluto Mobile payment",
+  "default_reason": "Monujo Mobile payment",
   "delete": "remove",
   "delete_phone": "delete phone% s?",
   "description": "description",
@@ -38,17 +38,17 @@
   "error": "error",
   "fill_email": "fill e-mail",
   "forgot_password": "forgot your password",
-  "gps_not_authorized": "activate the GPS and authorize \"lokavaluto\" to use it to locate you",
-  "gps_not_enabled": "activate the GPS to allow \"lokavaluto\" to locate you",
+  "gps_not_authorized": "activate the GPS and authorize \"Monujo\" to use it to locate you",
+  "gps_not_enabled": "activate the GPS to allow \"Monujo\" to locate you",
   "home": "home",
   "httpError": "$ {localize (errorMessage)} ($ {statusCode})",
   "invalid_grant": "username or password incorrect",
   "ios": {
     "info": {
       "plist": {
-        "NSFaceIDUsageDescription": "lokavaluto uses biometric services to secure your transactions",
-        "NSLocationWhenInUseUsageDescription": "lokavaluto needs your location",
-        "NSCameraUsageDescription": "lokavaluto needs your camera to scan QRCodes"
+        "NSFaceIDUsageDescription": "Monujo uses biometric services to secure your transactions",
+        "NSLocationWhenInUseUsageDescription": "Monujo needs your location",
+        "NSCameraUsageDescription": "Monujo needs your camera to scan QRCodes"
       }
     }
   },
@@ -82,7 +82,7 @@
   "username": "username/email",
   "username_required": "username/email required",
   "wrong_confirmation_code": "wrong confirmation code",
-  "wrong_scancode": "the scanning code is not an lokavaluto code",
+  "wrong_scancode": "the scanning code is not an Monujo code",
   "zipcode": "postal code",
   "auto_lock": "automatic locking",
   "auto_lock_desc": "request your PIN / Fingerprint / FaceID each time you open the application",
@@ -131,7 +131,7 @@
   "newpro_channel_name": "notifications for new pros around you",
   "newpro_channel_description": "default channel description",
   "received_paiement_title": "Nouveau paiement",
-  "received_paiement_body": "You received a paiement from %1$s of %2$s lokavalutos!",
+  "received_paiement_body": "You received a paiement from %1$s of %2$s Monujos!",
   "password_change": "Password change",
   "password_change_required": "for security reasons it is necessary for you to change the temporary password which was given to you during your account creation",
   "new_password": "New Password",

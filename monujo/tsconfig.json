@@ -26,6 +26,6 @@
             "~/*": ["app/*"]
         }
     },
-    "include": ["app/**/*", "references.d.ts"],
+    "include": ["app/**/*", "lokapi/**/*", "references.d.ts"],
     "exclude": ["node_modules", "platforms", "**/angular"]
 }

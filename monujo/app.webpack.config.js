@@ -131,6 +131,8 @@ module.exports = (env, params = {}) => {
         SUPPORTED_LOCALES: JSON.stringify(locales),
         TNS_ENV: JSON.stringify(mode),
         'gVars.sentry': !!sentry,
+        DEV_LOGIN_MAIL: `"${process.env.MONUJO_DEV_LOGIN_MAIL}"`,
+        DEV_LOGIN_PASSWORD: `"${process.env.MONUJO_DEV_LOGIN_PASSWORD}"`,
         SENTRY_DSN: `"${process.env.SENTRY_DSN}"`,
         APP_HOST: `"${process.env.APP_HOST}"`,
         APP_DB: `"${process.env.APP_DB}"`,
@@ -169,7 +171,6 @@ module.exports = (env, params = {}) => {
         acc[camelCase(current.name.slice(1))] = current.value;
         return acc;
     }, {});
-    console.log('appVariables', appVariables);
     const appIcons = {};
     appSymbols.variables
         .filter((v) => v.name.startsWith('$icon-'))

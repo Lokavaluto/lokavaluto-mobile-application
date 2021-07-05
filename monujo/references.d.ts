@@ -43,6 +43,9 @@ declare const WITH_PUSH_NOTIFICATIONS: boolean;
 declare const FAKE_ALL: boolean;
 declare const SUPPORTED_LOCALES: string[];
 
+declare const DEV_LOGIN_MAIL: string;
+declare const DEV_LOGIN_PASSWORD: string;
+
 
 interface LatLonKeys {
     lat: number;

@@ -10,9 +10,15 @@ import { alert, login } from '@nativescript-community/ui-material-dialogs';
 import { $t, $tc, $tt, $tu } from '../helpers/locale';
 import * as https from '@nativescript-community/https';
 
-import { LokAPI, e as LokAPIExc, t as LokAPIType } from '../../../lokapi/src';
+import { LokAPIAbstract, e as LokAPIExc, t as LokAPIType } from '~/lokapi/src/index';
 
-const tokenEndpoint = 'lokavaluto_api/public/auth/authenticate';
+class NativeLokAPI extends LokAPIAbstract {
+    constructor(host: string, dbName: string, private apiService: AuthService) {
+        super(host, dbName);
+    }
+    httpRequest = async (opts: LokAPIType.coreHttpOpts) => this.apiService.lokAPIRequest(opts);
+    base64Encode = base64Encode;
+}
 
 export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
@@ -238,18 +244,9 @@ export class Phone {
     paymentEnabled: boolean;
 }
 
-export class AccountInfo {
-    balance?: number;
-    id: string;
-    number: string;
-    name: string;
-    status?: {
-        balance: string;
-        creditLimit: string;
-    };
-    type?: {
-        name: string;
-    };
+declare class AccountInfo {
+    getBalance(): Promise<number>;
+    getSymbol(): Promise<string>;
 }
 
 export interface UserProfile extends User {}
@@ -434,14 +431,12 @@ export default class AuthService extends NetworkService {
     @objectProperty loginParams: LoginParams;
     @stringProperty pushToken: string;
     authority = `https://${APP_HOST}`;
-    lokAPI: LokAPI;
+    lokAPI: NativeLokAPI;
     constructor() {
         super();
 
-        this.lokAPI = new LokAPI(APP_HOST, APP_DB, {
-            httpRequest: this.lokAPIRequest,
-            base64encode: base64Encode
-        });
+        this.lokAPI = new NativeLokAPI(APP_HOST, APP_DB, this);
+        this.lokAPI.apiToken = this.token;
     }
 
     async lokAPIRequest<T = any>(opts: LokAPIType.coreHttpOpts) {
@@ -449,8 +444,7 @@ export default class AuthService extends NetworkService {
             url: 'https://' + opts.host + opts.path,
             method: opts.method,
             headers: opts.headers,
-            body: opts.data,
-            useLegacy: true
+            body: opts.data
         };
         return super.request<T>(nativeRequestOpts);
     }
@@ -694,22 +688,23 @@ export default class AuthService extends NetworkService {
     accounts: AccountInfo[];
     // lastAccountsUpdateTime: number;
     async getAccounts() {
+        this.accounts = (await this.lokAPI.getAccounts()) as any;
         // if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
-        let result = await this.request<AccountInfo[]>({
-            apiPath: '/mobile/accounts.json',
-            method: 'GET'
-        });
+        // let result = await this.request<AccountInfo[]>({
+        //     apiPath: '/mobile/accounts.json',
+        //     method: 'GET'
+        // });
 
-        result = result.map((a) => ({
-            balance: parseFloat(a.status.balance),
-            creditLimit: parseFloat(a.status.creditLimit),
-            number: a.number,
-            id: a.id,
-            name: a.type.name
-        }));
-        // this.lastAccountsUpdateTime = Date.now();
-        this.accounts = result;
-        // }
+        // result = result.map((a) => ({
+        //     balance: parseFloat(a.status.balance),
+        //     creditLimit: parseFloat(a.status.creditLimit),
+        //     number: a.number,
+        //     id: a.id,
+        //     name: a.type.name
+        // }));
+        // // this.lastAccountsUpdateTime = Date.now();
+        // this.accounts = result;
+        // // }
         this.notify({
             eventName: AccountInfoEvent,
             object: this,
@@ -838,7 +833,7 @@ export default class AuthService extends NetworkService {
     async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
         const body = {
-            fromAccount: account.number,
+            fromAccount: (account as any).number,
             toAccount: user.email || user.mainICC,
             amount,
             executionDate: date,

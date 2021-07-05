@@ -22,9 +22,9 @@ export default class Login extends PageComponent {
     navigateUrl = ComponentIds.Login;
     isLoggingIn = true;
     user = {
-        username: getString('last.login', PRODUCTION ? '' : 'gestion@lokavaluto.fr'),
+        username: getString('last.login', PRODUCTION ? '' : DEV_LOGIN_MAIL),
         email: '',
-        password: PRODUCTION ? '' : '#v3#5HK$Qe!4',
+        password: PRODUCTION ? '' : DEV_LOGIN_PASSWORD,
         confirmPassword: ''
     };
     // logoViewHeight = logoViewHeight;

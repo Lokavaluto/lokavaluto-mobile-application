@@ -1,4 +1,8 @@
-[submodule "lokavaluto/lokapi"]
-	path = lokavaluto/lokapi
+[submodule "monujo/lokapi"]
+	path = monujo/lokapi
+	url = git@github.com:Lokavaluto/lokapi.git
+	branch = mobile_app
+[submodule "monujo/app/lokapi"]
+	path = monujo/app/lokapi
 	url = git@github.com:Lokavaluto/lokapi.git
 	branch = mobile_app

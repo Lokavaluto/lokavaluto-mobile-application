@@ -11,7 +11,7 @@ module.exports = {
         warnOnUnsupportedTypeScriptVersion: false,
         tsconfigRootDir: __dirname
     },
-    ignorePatterns: ['scripts', 'config', 'node_modules'],
+    ignorePatterns: ['scripts', 'config', 'node_modules', 'lokapi'],
     plugins: ['prettier', '@typescript-eslint'],
     rules: {
         'prettier/prettier': 'warn',

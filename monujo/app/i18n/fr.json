@@ -1,13 +1,13 @@
 {
   "app": {
-    "name": "lokavaluto"
+    "name": "Monujo"
   },
   "ios": {
     "info": {
       "plist": {
-        "NSLocationWhenInUseUsageDescription": "lokavaluto a besoin de votre localisation",
-        "NSFaceIDUsageDescription": "lokavaluto utilise les services de biométrie pour sécuriser vos transactions",
-        "NSCameraUsageDescription": "lokavaluto utilise votre caméra pour lire des QRCodes"
+        "NSLocationWhenInUseUsageDescription": "Monujo a besoin de votre localisation",
+        "NSFaceIDUsageDescription": "Monujo utilise les services de biométrie pour sécuriser vos transactions",
+        "NSCameraUsageDescription": "Monujo utilise votre caméra pour lire des QRCodes"
       }
     }
   },
@@ -70,8 +70,8 @@
   "reason": "motif",
   "recipient": "destinataire",
   "no_network": "pas de connexion internet",
-  "gps_not_enabled": "activez le GPS pour permettre à «lokavaluto» de vous localiser",
-  "gps_not_authorized": "activez le GPS et autorisez «lokavaluto» à l'utiliser pour vous localiser",
+  "gps_not_enabled": "activez le GPS pour permettre à «Monujo» de vous localiser",
+  "gps_not_authorized": "activez le GPS et autorisez «Monujo» à l'utiliser pour vous localiser",
   "add_phone": "ajouter un téléphone",
   "add": "ajouter",
   "delete": "supprimer",
@@ -79,11 +79,11 @@
   "sms_received": "recu \"%1$s\" de %2$s",
   "description_optional": "description (optionnel)",
   "close": "fermer",
-  "wrong_scancode": "le code scanne n'est pas un code lokavaluto",
+  "wrong_scancode": "le code scanne n'est pas un code Monujo",
   "wrong_confirmation_code": "code de confirmation érroné",
   "enter_password": "rentrez votre PIN",
   "password_creation": "Créez un PIN",
-  "default_reason": "paiement lokavaluto Mobile",
+  "default_reason": "paiement Monujo Mobile",
   "map": "carte",
   "loading": "chargement",
   "settings": "paramètres",
@@ -131,7 +131,7 @@
   "newpro_channel_name": "notifications de nouveau pro près de chez vous",
   "newpro_channel_description": "default channel description",
   "received_paiement_title": "Nouveau paiement",
-  "received_paiement_body": "Vous avez reçu un paiement de %1$s lokavalutos de %2$s!",
+  "received_paiement_body": "Vous avez reçu un paiement de %1$s Monujos de %2$s!",
   "newpro_notifications_desc": "Recevez une notification concernant les professionnels près de chez vous. Vous pouvez limiter ces notifications par la distance à votre adresse",
   "webpush_notifications": "notifications dans le navigateur",
   "sms_notifications": "notifications sms",
@@ -183,8 +183,8 @@
   "not_pro": "%1$s n'est pas un professionnel",
   "reserved_for_members": "Cette action est réservée aux professionnels",
   "user_account_disabled": "Le compte utilisateur d'identifiant %1$s est bloqué",
-  "unique_amount_threshold": "Le montant maximum d'un paiement unique a été dépassé(%1$i lokavalutos)",
-  "cumulated_amount_threshold": "Le plafond du montant cumulé quotidien a été dépassé (%1$i lokavalutos)",
+  "unique_amount_threshold": "Le montant maximum d'un paiement unique a été dépassé(%1$i Monujos)",
+  "cumulated_amount_threshold": "Le plafond du montant cumulé quotidien a été dépassé (%1$i Monujos)",
   "cumulated_quantity_threshold": "Le plafond du nombre de paiements quotidien a été dépassé (%1$i paiements)",
   "not_referent": "Vous n'êtes ni propriétaire ni référent de ce compte. Vous ne pouvez pas poursuivre",
   "not_access_rights": "Vous n'avez pas les accès nécessaires pour continuer",
