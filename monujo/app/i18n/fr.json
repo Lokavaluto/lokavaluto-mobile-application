@@ -60,7 +60,7 @@
   "beneficiary_added": "bénéficiaire enregistré",
   "favorite_added": "favori enregistré",
   "profile": "profil",
-  "balance": "balance",
+  "balance": "solde",
   "account_history": "historique du compte",
   "beneficiaries": "bénéficiaires",
   "account": "compte",
@@ -215,5 +215,8 @@
   "credit_account": "créditer votre compte",
   "next": "suivant",
   "apy_my_purchases": "Payer mes achats",
-  "send_request_money": "Envoyer/Demander de l’argent"
+  "send_request_money": "Envoyer/Demander de l’argent",
+  "credit": "crediter",
+  "pay_my_purchases": "payer mes achats",
+  "send_ask": "envoyer / demander"
 }

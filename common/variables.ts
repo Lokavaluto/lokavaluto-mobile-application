@@ -31,7 +31,7 @@ if (global.isAndroid) {
     }
 } else {
     navigationBarHeight = 0;
-    const onAppLaunch = function() {
+    const onAppLaunch = function () {
         navigationBarHeight = iosApp.window.safeAreaInsets.bottom;
         appOff(launchEvent, onAppLaunch);
     };

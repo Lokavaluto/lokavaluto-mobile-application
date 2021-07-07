@@ -7,7 +7,6 @@ dayjs.extend(relativeTime);
 
 const Plugin = {
     install(Vue) {
-
         Vue.use(VueStringFilter);
 
         Vue.filter('concat', (value, ln) => `${value} ${ln}`);

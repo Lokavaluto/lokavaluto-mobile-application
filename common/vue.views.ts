@@ -7,7 +7,8 @@ installBottomSheets();
 import { install as installGestures } from '@nativescript-community/gesturehandler';
 installGestures();
 import { Label as HTMLLabel, enableIOSDTCoreText } from '@nativescript-community/ui-label'; // require first to get Font res loading override
-// enableIOSDTCoreText();
+import { overrideSpanAndFormattedString } from '@nativescript-community/text'; // require first to get Font res loading override
+overrideSpanAndFormattedString();
 
 import ActivityIndicatorPlugin from '@nativescript-community/ui-material-activityindicator/vue';
 import BottomSheetPlugin from '@nativescript-community/ui-material-bottomsheet/vue';
@@ -22,6 +23,7 @@ import CActionBar from '~/common/components/CActionBar';
 import ListItem from '~/common/components/ListItem';
 import EditableListItem from '~/common/components/EditableListItem';
 import BasePage from '~/common/components/BasePage';
+import ButtonWithIcon from '~/common/components/ButtonWithIcon.vue';
 
 //@ts-ignore
 import Pager from '@nativescript-community/ui-pager/vue';
@@ -29,6 +31,7 @@ import SVGPlugin from '@nativescript-community/ui-svg/vue';
 
 const Plugin = {
     install(Vue) {
+        Vue.component('ButtonWithIcon', ButtonWithIcon);
         Vue.component('CActionBar', CActionBar);
         Vue.component('ListItem', ListItem);
         Vue.component('EditableListItem', EditableListItem);

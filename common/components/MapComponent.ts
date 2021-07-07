@@ -102,6 +102,8 @@ export default class MapComponent extends BaseVueComponent {
         options.setTileThreadPoolSize(2);
         options.setZoomGestures(true);
         options.setRotatable(false);
+        // console.log('this.isUserInteraction', this.isUserInteraction, options)
+        options.setUserInput(this.isUserInteractionEnabled);
 
         cartoMap.setZoom(this.zoom, 0);
         cartoMap.setFocusPos({ lat: 45, lon: 6 }, 0);

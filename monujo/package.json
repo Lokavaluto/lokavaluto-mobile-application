@@ -28,6 +28,7 @@
         "@nativescript-community/preferences": "1.2.6",
         "@nativescript-community/sentry": "2.1.0",
         "@nativescript-community/systemui": "1.1.8",
+        "@nativescript-community/text": "^1.4.12",
         "@nativescript-community/tween": "0.0.14",
         "@nativescript-community/ui-barcodeview": "3.5.3",
         "@nativescript-community/ui-canvaslabel": "^1.0.56",

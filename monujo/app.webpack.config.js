@@ -179,7 +179,9 @@ module.exports = (env, params = {}) => {
         });
     const scssPrepend = `$lato-fontFamily: ${isAndroid ? 'res/lato' : 'Lato'};
     $app-fontFamily: app;
-    $mdi-fontFamily: ${isAndroid ? 'materialdesignicons-webfont' : 'Material Design Icons'};`;
+    $roboto-fontFamily: ${isAndroid ? 'roboto' : 'Roboto'};
+    $mdi-fontFamily: ${isAndroid ? 'materialdesignicons-webfont' : 'Material Design Icons'};
+    `;
 
     // @ts-ignore
     const scssLoaderRuleIndex = config.module.rules.findIndex((r) => r.test && r.test.toString().indexOf('scss') !== -1);

@@ -18,6 +18,7 @@ export default class Home extends PageComponent {
     amountError: string = null;
     mdiFontFamily = mdiFontFamily;
     totalSold: number = 0;
+    symbol: string = 'U';
     constructor() {
         super();
         // this.showMenuIcon = true;
@@ -79,7 +80,8 @@ export default class Home extends PageComponent {
         }
         this.loading = true;
         try {
-            await this.$authService.getAccounts();
+            const accounts = await this.$authService.getAccounts();
+            this.symbol = await accounts[0].getSymbol();
         } catch (err) {
             this.showError(err);
         } finally {
@@ -101,7 +103,11 @@ export default class Home extends PageComponent {
         // .catch(this.showError);
     }
 
-    goToLogin() {
-        this.$getAppComponent().goToLogin();
+    async goToLogin() {
+        try {
+            await this.$getAppComponent().goToLogin();
+        } catch (error) {
+            this.showError(error);
+        }
     }
 }

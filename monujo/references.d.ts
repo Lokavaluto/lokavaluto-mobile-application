@@ -6,6 +6,10 @@
 // import { SmsListener } from '~/common/receivers/SMSReceiver';
 
 declare module '*.scss';
+declare module '*.vue' {
+    import Vue from 'vue';
+    export default Vue;
+}
 
 declare const gVars: {
     sentry: boolean;
@@ -46,12 +50,11 @@ declare const SUPPORTED_LOCALES: string[];
 declare const DEV_LOGIN_MAIL: string;
 declare const DEV_LOGIN_PASSWORD: string;
 
-
 interface LatLonKeys {
     lat: number;
     lon: number;
     altitude?: number;
-};
+}
 declare namespace com {
     export namespace lokavaluto {
         export namespace lokavaluto {

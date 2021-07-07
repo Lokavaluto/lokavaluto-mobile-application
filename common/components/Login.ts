@@ -9,13 +9,10 @@ import { LoggedinEvent } from '../services/AuthService';
 import { actionBarHeight, screenHeightDips } from '../variables';
 import About from './About';
 import { ComponentIds } from './App';
-import InteractiveMap from './InteractiveMap';
 import PageComponent from './PageComponent';
 
 @Component({
-    components: {
-        InteractiveMap
-    }
+    components: {}
 })
 export default class Login extends PageComponent {
     @Prop({ default: false, type: Boolean }) modal: boolean;

@@ -8,6 +8,9 @@
 .mdi {
     font-family: $mdi-fontFamily;
 }
+.roboto {
+    font-family: $roboto-fontFamily;
+}
 .app {
     font-family: $app-fontFamily;
 }
@@ -17,14 +20,14 @@ label {
     color: $text-color;
 }
 
-// label,
-// htmllabel,
-// button,
-// tabview,
-// tabviewitem,
-// mdbutton {
-//     @extend .lato;
-// }
+label,
+htmllabel,
+button,
+tabview,
+tabviewitem,
+mdbutton {
+    @extend .roboto;
+}
 
 mdactivityindicator {
     color: $color-primary;
