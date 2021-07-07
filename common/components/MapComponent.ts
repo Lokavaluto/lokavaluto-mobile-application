@@ -59,6 +59,7 @@ export default class MapComponent extends BaseVueComponent {
 
     // @Prop() session: Session;
     // @Prop({ default: false }) readonly licenseRegistered!: boolean;
+    @Prop({ default: true }) isUserInteractionEnabled: boolean;
     @Prop({ default: false }) readonly showLocationButton!: boolean;
     @Prop({ default: 16 }) readonly zoom!: number;
     @Prop({ default: 1 }) readonly layerOpacity!: number;
