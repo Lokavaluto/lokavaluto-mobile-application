@@ -11,7 +11,7 @@
             @mapClicked="onMapClicked"
         />
         <GridLayout verticalAlignment="bottom" :translateY="-bottomSheetTranslation" :opacity="scrollingWidgetsOpacity">
-            <Button @tap="askUserLocation" class="floating-btn" margin="8" text="mdi-crosshairs-gps" horizontalAlignment="right" verticalAlignment="bottom" />
+            <Button v-show="locationButton" @tap="askUserLocation" class="floating-btn" margin="8" text="mdi-crosshairs-gps" horizontalAlignment="right" verticalAlignment="bottom" />
             <Button
                 @tap="selectCategories"
                 v-show="mapCategories && mapCategories.length > 0"

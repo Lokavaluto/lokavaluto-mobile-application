@@ -1,6 +1,6 @@
 <template>
     <Page ref="page" @navigatingTo="onNavigatingTo" actionBarHidden="true" @loaded="onLoaded">
-        <Drawer ref="drawer" >
+        <Drawer ref="drawer">
             <GridLayout ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
                     <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
@@ -44,8 +44,7 @@
             </GridLayout>
             <!-- <GridLayout> -->
             <Frame ~mainContent ref="innerFrame" id="innerFrame">
-                <Home v-if="loggedInOnStart" />
-                <Map v-else />
+                <Home />
             </Frame>
             <!-- <Label :text="$t('no_network_desc')"  verticalAlignment="bottom" textAlignment="center" color="white" backgroundColor="red" padding="10"/> -->
             <!-- </GridLayout> -->

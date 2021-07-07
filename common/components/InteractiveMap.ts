@@ -34,6 +34,7 @@ export default class InteractiveMap extends BaseVueComponent {
     bottomSheetPanGestureOptions = { failOffsetXEnd: 20, minDist: 40 };
 
     @Prop({ default: 1 }) opacity: number;
+    @Prop({ default: false }) locationButton: boolean;
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
