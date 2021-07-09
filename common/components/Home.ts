@@ -1,7 +1,8 @@
+import { showSnack } from '@nativescript-community/ui-material-snackbar';
 import { NavigatedData } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
-import { AccountInfoEventData, LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
+import { AccountInfoEvent, AccountInfoEventData, LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
 import { mdiFontFamily } from '../variables';
 import { ComponentIds } from './App';
 import CreditAccount from './CreditAccount';
@@ -17,7 +18,7 @@ export default class Home extends PageComponent {
     navigateUrl = ComponentIds.Situation;
     amountError: string = null;
     mdiFontFamily = mdiFontFamily;
-    totalSold: number = 0;
+    totalSold: number | string = '-';
     symbol: string = 'U';
     constructor() {
         super();
@@ -30,14 +31,18 @@ export default class Home extends PageComponent {
         super.mounted();
         this.$authService.on(LoggedinEvent, this.onLoggedIn, this);
         this.$authService.on(LoggedoutEvent, this.onLoggedOut, this);
+        this.$authService.on(AccountInfoEvent, this.onAccountsData, this);
     }
     destroyed(): void {
         super.destroyed();
-        this.$authService.on(LoggedinEvent, this.onLoggedIn, this);
-        this.$authService.on(LoggedoutEvent, this.onLoggedOut, this);
+        this.$authService.off(LoggedinEvent, this.onLoggedIn, this);
+        this.$authService.off(LoggedoutEvent, this.onLoggedOut, this);
+        this.$authService.off(AccountInfoEvent, this.onAccountsData, this);
     }
     onLoggedIn(e?) {
         this.currentlyLoggedIn = true;
+        // we need to enforce a refresh here to ensure lokapi works correctly
+        this.refresh();
     }
     onLoggedOut() {
         this.currentlyLoggedIn = false;
@@ -51,6 +56,7 @@ export default class Home extends PageComponent {
 
     async onNavigatedTo(args: NavigatedData) {
         const loggedInOnStart = this.$authService.isLoggedIn();
+        // console.log('onNavigatedTo', loggedInOnStart);
         if (!args.isBackNavigation && loggedInOnStart) {
             this.refresh();
         }
@@ -72,7 +78,17 @@ export default class Home extends PageComponent {
 
     onAccountsData(e: AccountInfoEventData) {
         // this.totalSold = e.data.;
+        this.updateBalance(e.data);
         this.loading = false;
+    }
+
+    async updateBalance(accounts) {
+        let totalSold = 0;
+        for (let index = 0; index < accounts.length; index++) {
+            totalSold += parseFloat(await accounts[index].getBalance());
+        }
+        this.totalSold = totalSold;
+        this.symbol = await accounts[0].getSymbol();
     }
     async refresh(args?) {
         if (args && args.object) {
@@ -81,7 +97,7 @@ export default class Home extends PageComponent {
         this.loading = true;
         try {
             const accounts = await this.$authService.getAccounts();
-            this.symbol = await accounts[0].getSymbol();
+            await this.updateBalance(accounts);
         } catch (err) {
             this.showError(err);
         } finally {
@@ -106,6 +122,28 @@ export default class Home extends PageComponent {
     async goToLogin() {
         try {
             await this.$getAppComponent().goToLogin();
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+    async goToSendRequest() {
+        try {
+            this.$getAppComponent().navigateToUrl(ComponentIds.SendReceive, {
+                props: {
+                    startPageIndex: 1
+                }
+            });
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+    async goToPay() {
+        try {
+            const result = await this.$scanQRCode(true);
+            if (result ) {
+                showSnack({ message: result });
+
+            }
         } catch (error) {
             this.showError(error);
         }

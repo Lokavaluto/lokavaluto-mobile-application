@@ -39,19 +39,27 @@
 
         <StackLayout col="2" row="1" rowSpan="2" verticalAlignment="center">
             <Label col="2" row="1" :fontSize="10 * sizeFactor" v-show="!!overText" :text="overText | uppercase" verticalAlignment="center" :color="overlineColor" />
-            <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="top"  maxLines="2" lineBreak="end" />
+            <Label :fontSize="17 * sizeFactor" :text="title" textWrap="true" verticalTextAlignment="top" maxLines="2" lineBreak="end" />
             <Label v-show="!!subtitle" :fontSize="14 * sizeFactor" :html="subtitle" verticalTextAlignment="top" :color="subtitleColor" :maxLines="subtitleMaxLines" lineBreak="end" />
         </StackLayout>
 
         <Label col="3" row="1" :fontSize="10 * sizeFactor" v-show="!!date" :text="date" verticalAlignment="top" />
-        <GridLayout col="3" row="1" rowSpan="2" verticalAlignment="center" >
+        <GridLayout col="3" row="1" rowSpan="2" verticalAlignment="center">
             <slot name="rightView">
                 <Label v-show="!!rightIcon" class="mdi" :fontSize="24 * sizeFactor" textAlignment="right" :color="iconColor" :text="rightIcon" verticalAlignment="center" />
                 <Button variant="flat" v-show="!!rightButton" class="icon-themed-btn" :text="rightButton" verticalAlignment="center" @tap="$emit('rightTap')" />
             </slot>
         </GridLayout>
 
-        <AbsoluteLayout row="3" colSpan="5"  :marginTop="topBottomPadding * sizeFactor" marginLeft="20" :backgroundColor="listBorderColor" :height="!!showBottomLine ? 1 : 0" verticalAlignment="bottom" />
+        <AbsoluteLayout
+            row="3"
+            colSpan="5"
+            :marginTop="topBottomPadding * sizeFactor"
+            marginLeft="20"
+            :backgroundColor="listBorderColor"
+            :height="!!showBottomLine ? 1 : 0"
+            verticalAlignment="bottom"
+        />
     </GridLayout>
 </template>
 

@@ -31,6 +31,9 @@ Vue.use(PrototypePlugin);
 Vue.config.silent = true;
 Vue.config['debug'] = false;
 
+global.URLSearchParams = require('urlsearchparams').URLSearchParams;
+console.log('global.URLSearchParams', global.URLSearchParams);
+
 function throwVueError(err) {
     crashReportService.showError(err);
 }
@@ -59,7 +62,7 @@ themer.createShape('main', {
     cornerFamily: 'rounded' as any,
     cornerSize: {
         value: 20,
-        unit: 'dp'
+        unit: 'dip'
     }
 });
 themer.createShape('round', {

@@ -13,6 +13,7 @@ export const backgroundColor: Color = new Color(locals.backgroundColor);
 export const subtitleColor: Color = new Color(locals.subtitleColor);
 export const listBorderColor: Color = new Color(locals.listBorderColor);
 export const iconColor: Color = new Color(locals.iconColor);
+export const textColor: Color = new Color(locals.textColor);
 export const latoFontFamily: string = locals.latoFontFamily;
 export const appFontFamily: string = locals.appFontFamily;
 export const mdiFontFamily: string = locals.mdiFontFamily;

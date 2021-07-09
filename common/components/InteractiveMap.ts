@@ -135,7 +135,6 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     @throttle(2000)
     refresh(mapBounds: MapBounds<LatLonKeys>) {
-        console.log('refresh', this._cartoMap.zoom, mapBounds, this.mapFilterSlugs);
         this.loading = true;
         this.$authService
             .getUsersForMap(mapBounds, this.mapFilterSlugs)

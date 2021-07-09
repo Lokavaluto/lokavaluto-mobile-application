@@ -16,14 +16,17 @@ import PersistentBottomSheetPlugin from '@nativescript-community/ui-persistent-b
 import CartoPlugin from '@nativescript-community/ui-carto/vue';
 import CollectionViewPlugin from '@nativescript-community/ui-collectionview/vue';
 import CardViewPlugin from '@nativescript-community/ui-material-cardview/vue';
+import ProgressPlugin from '@nativescript-community/ui-material-progress/vue';
 import ImagePlugin from '@nativescript-community/ui-image/vue';
 import DrawerPlugin from '@nativescript-community/ui-drawer/vue';
 import CanvasLabelPlugin from '@nativescript-community/ui-canvaslabel/vue';
+import CanvasPlugin from '@nativescript-community/ui-canvas/vue';
 import CActionBar from '~/common/components/CActionBar';
 import ListItem from '~/common/components/ListItem';
 import EditableListItem from '~/common/components/EditableListItem';
 import BasePage from '~/common/components/BasePage';
 import ButtonWithIcon from '~/common/components/ButtonWithIcon.vue';
+import TabsBar from '~/common/components/TabsBar.vue';
 
 //@ts-ignore
 import Pager from '@nativescript-community/ui-pager/vue';
@@ -36,15 +39,18 @@ const Plugin = {
         Vue.component('ListItem', ListItem);
         Vue.component('EditableListItem', EditableListItem);
         Vue.component('BasePage', BasePage);
+        Vue.component('TabsBar', TabsBar);
         Vue.use(ActivityIndicatorPlugin);
         Vue.use(ImagePlugin);
         Vue.use(BottomSheetPlugin);
         Vue.use(CartoPlugin);
         Vue.use(CollectionViewPlugin);
         Vue.use(DrawerPlugin);
+        Vue.use(ProgressPlugin);
         Vue.use(SVGPlugin);
         Vue.use(CardViewPlugin);
         Vue.use(CanvasLabelPlugin);
+        Vue.use(CanvasPlugin);
         Vue.use(PersistentBottomSheetPlugin);
         Vue.use(Pager);
 

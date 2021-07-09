@@ -5,6 +5,7 @@ import { stringProperty } from './BackendService';
 import { BaseError } from 'make-error';
 import { Headers } from '@nativescript/core/http';
 import * as https from '@nativescript-community/https';
+import { DEV_LOG } from '../utils/logging';
 
 export function base64Encode(value) {
     if (global.isIOS) {
@@ -404,7 +405,10 @@ export class NetworkService extends Observable {
             content = await response.content.toStringAsync();
         }
         const isString = typeof content === 'string';
-        console.log('handleRequestResponse response', statusCode, response.reason, response.headers, isString, typeof content, content);
+        if (DEV_LOG) {
+            console.log('handleRequestResponse response', requestParams.url, statusCode, response.reason, response.headers, isString, typeof content, content);
+
+        }
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn: {
                 data?: any;
@@ -415,7 +419,7 @@ export class NetworkService extends Observable {
             if (!isString) {
                 jsonReturn = content as any;
             } else {
-                const responseStr = ((content as any) as string).replace('=>', ':');
+                const responseStr = (content as any as string).replace('=>', ':');
                 try {
                     jsonReturn = JSON.parse(responseStr);
                 } catch (err) {
@@ -478,7 +482,7 @@ export class NetworkService extends Observable {
         }
         try {
             // we should never go there anymore
-            const result = JSON.parse((content as any) as string);
+            const result = JSON.parse(content as any as string);
             return result.response || response;
         } catch (e) {
             // console.log('failed to parse result to JSON', e);

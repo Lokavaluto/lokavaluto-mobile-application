@@ -21,6 +21,9 @@ export default class BasePage extends BaseVueComponent {
     @Prop({ default: false, type: Boolean })
     public actionBarHidden: boolean;
 
+    @Prop({ default: false, type: Boolean })
+    public actionBarThemed: boolean;
+
     @Prop({ default: true, type: Boolean })
     public bottomActionBarHidden: boolean;
 
@@ -36,7 +39,7 @@ export default class BasePage extends BaseVueComponent {
     @Prop({ default: true, type: Boolean })
     public actionBarShowLogo: boolean;
 
-    @Prop({ default: () => backgroundColor, type: Color })
+    @Prop({ default: () => undefined, type: Color })
     public actionBarBackroundColor: string;
 
     @Prop({ default: actionBarHeight, type: Number })
@@ -47,8 +50,11 @@ export default class BasePage extends BaseVueComponent {
 
     public actionBarButtonHeight = actionBarButtonHeight;
 
-    @Prop({ type: Number })
+    @Prop({ type: Number, default: 3 })
     public actionBarElevation: number;
+
+    @Prop({ default: undefined })
+    public backgroundColor: string | Color;
 
     public navigateUrl = null;
 

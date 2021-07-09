@@ -1,5 +1,5 @@
 <template>
-    <Page :id="id" ref="page" class="app-page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)">
+    <Page :id="id" ref="page" class="app-page" :navigateUrl="navigateUrl" @navigatedTo="$emit('navigatedTo', $event)" @loaded="$emit('loaded', $event)" >
         <GridLayout rows="auto,*,auto,auto">
             <GridLayout row="1" rowSpan="2" class="pageContent">
                 <slot />
@@ -10,10 +10,10 @@
                 :title="title"
                 :subtitle="subtitle"
                 :showMenuIcon="showMenuIcon"
-                :backgroundColor="actionBarBackroundColor"
                 :height="actionBarHeight"
                 :elevation="actionBarElevation"
                 :showLogo="actionBarShowLogo"
+                :themed="actionBarThemed"
                 :modalWindow="modal"
                 @titleTap="$emit('actionBarTitleTap', $event)"
             >
@@ -45,7 +45,6 @@
                 verticalAlignment="top"
                 @tap="$emit('actionTap', $event)"
             />
-
             <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
         </GridLayout>
     </Page>

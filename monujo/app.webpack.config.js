@@ -305,6 +305,12 @@ module.exports = (env, params = {}) => {
     config.resolve.fallback = config.resolve.fallback || {};
     config.resolve.fallback.buffer = require.resolve('url/');
 
+    // config.plugins.push(
+    //     new webpack.ProvidePlugin({
+    //         URLSearchParams: '@ungap/url-search-params'
+    //     })
+    // );
+
     // we remove default rules
     config.plugins = config.plugins.filter((p) => ['CopyPlugin', 'ForkTsCheckerWebpackPlugin'].indexOf(p.constructor.name) === -1);
     // we add our rules

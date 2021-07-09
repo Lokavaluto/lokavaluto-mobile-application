@@ -1,5 +1,5 @@
 <template>
-    <Button @tap="$emit('tap', $event)" paddingTop="6">
+    <Button @tap="$emit('tap', $event)" textAlignment="center" verticalTextAlignment="center" paddingTop="7">
         <Span fontSize="26" :fontFamily="mdiFontFamily" :text="icon" :visibility="icon ? 'visible' : 'collapsed'" verticalAlignment="center" />
         <Span :text="('  ' + text) | uppercase" verticalAlignment="center" />
     </Button>

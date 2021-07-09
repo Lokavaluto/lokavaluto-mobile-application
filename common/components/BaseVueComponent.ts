@@ -10,7 +10,7 @@ import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
 import { VueConstructor } from 'vue';
 import { Prop } from 'vue-property-decorator';
 import { $t } from '../helpers/locale';
-import { colorAccent, appFontFamily, colorPrimaryDark, colorPrimary } from '../variables';
+import { appFontFamily, colorAccent, colorPrimary, colorPrimaryDark } from '../variables';
 
 function timeout(ms) {
     return new Promise((resolve) => setTimeout(resolve, ms));

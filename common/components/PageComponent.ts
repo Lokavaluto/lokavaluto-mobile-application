@@ -26,7 +26,6 @@ export default class PageComponent extends BaseVueComponent {
     mounted() {
         super.mounted();
         this.page = this.$children[0] as BasePage;
-        // console.log(this.$children[0].constructor.name, this.navigateUrl);
         this.page.navigateUrl = this.navigateUrl;
     }
     destroyed() {

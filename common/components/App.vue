@@ -4,9 +4,9 @@
             <GridLayout ~leftDrawer rows="auto,*,auto" height="100%" width="80%" backgroundColor="white">
                 <GridLayout v-if="userProfile" height="130" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" rows="50,4,*,*" columns="50,*" marginBottom="4">
                     <Button variant="flat" class="menu-btn" row="0" col="1" horizontalAlignment="right" text="mdi-logout" @tap="onTap('logout')" />
-                    <Label class="mdi" borderRadius="25" borderWidth="1" color="#888" borderColor="#888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
+                    <Label class="mdi" borderRadius="25" borderWidth="1" color="#888888" borderColor="#888888" fontSize="40" textAlignment="center" text="mdi-account" v-show="!userProfile.image" />
                     <NSImg :src="userProfile.image" v-show="!!userProfile.image" noCache />
-                    <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" />
+                    <Label row="2" colSpan="2" fontSize="20" fontWeight="500" verticalAlignment="bottom" :text="userProfile.name" :color="textColor" />
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />
                 </GridLayout>
                 <GridLayout v-if="!userProfile" height="150" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" marginBottom="4" columns="50,*">
@@ -30,7 +30,7 @@
                 </GridLayout>
                 <ScrollView row="1" @tap="noop">
                     <StackLayout ref="menu" @tap="noop">
-                        <GridLayout v-for="item in menuItems" :key="item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)" @tap="onNavItemTap(item.url)">
+                        <GridLayout v-for="item in menuItems" :key="item.id || item.url" columns="50, *" class="menu" :active="isActiveUrl(item.url)" @tap="onNavItemTap(item)">
                             <Label col="0" class="menuIcon" :text="item.icon" verticalAlignment="center" :active="activatedUrl === item.url" />
                             <Label col="1" class="menuText" :text="item.title | capitalize" verticalAlignment="center" :active="activatedUrl === item.url" />
                         </GridLayout>

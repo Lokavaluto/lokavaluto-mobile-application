@@ -24,6 +24,9 @@ export default class ActionBar extends BaseVueComponent {
     @Prop({ default: false, type: Boolean })
     public modalWindow: boolean;
 
+    @Prop({ default: true, type: Boolean })
+    public themed: boolean;
+
     // @Prop({ default: false })
     public canGoBack = false;
 

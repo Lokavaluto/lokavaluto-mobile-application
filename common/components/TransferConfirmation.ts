@@ -11,43 +11,50 @@ import {
 } from '@nativescript-community/gesturehandler/gesturehandler';
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
-import { AccountInfo, Benificiary, Roles, User } from '../services/AuthService';
+import { Benificiary, Roles, User } from '../services/AuthService';
 import PageComponent from './PageComponent';
+import { t as LokAPIType } from '~/lokapi/src/index';
+import { appFontFamily, mdiFontFamily } from '../variables';
+import BaseVueComponent from './BaseVueComponent';
 
 interface Recipient extends User {
     isBeneficiary?: boolean;
 }
 
 @Component({})
-export default class TransferConfirmation extends PageComponent {
-    @Prop() account: AccountInfo;
-    @Prop() recipient: User;
+export default class TransferConfirmation extends BaseVueComponent {
+    mdiFontFamily = mdiFontFamily;
+    appFontFamily = appFontFamily;
+    @Prop() account: any;
+    @Prop() recipient: LokAPIType.IRecipient;
     @Prop() amount: number;
-    @Prop() reason: string;
     @Prop() description: string;
 
-    panGestureHandler: PanGestureHandler;
+    symbol = null;
+
+    // panGestureHandler: PanGestureHandler;
     destroyed() {
         super.destroyed();
-        const gestureHandler = this.panGestureHandler;
-        if (gestureHandler) {
-            gestureHandler.detachFromView(this.nativeView);
-            gestureHandler.off(GestureHandlerTouchEvent, this.onGestureTouch, this);
-            gestureHandler.off(GestureHandlerStateEvent, this.onGestureState, this);
-            this.panGestureHandler = null;
-        }
+        // const gestureHandler = this.panGestureHandler;
+        // if (gestureHandler) {
+        //     gestureHandler.detachFromView(this.nativeView);
+        //     gestureHandler.off(GestureHandlerTouchEvent, this.onGestureTouch, this);
+        //     gestureHandler.off(GestureHandlerStateEvent, this.onGestureState, this);
+        //     this.panGestureHandler = null;
+        // }
     }
     mounted() {
         super.mounted();
-        const manager = Manager.getInstance();
-        const gestureHandler = (this.panGestureHandler = manager.createGestureHandler(HandlerType.PAN, 12512, {
-            shouldCancelWhenOutside: false,
-            activeOffsetY: 5,
-            failOffsetY: -5
-        }));
-        gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
-        gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
-        gestureHandler.attachToView(this.nativeView);
+        this.account.getSymbol().then((s) => (this.symbol = s));
+        // const manager = Manager.getInstance();
+        // const gestureHandler = (this.panGestureHandler = manager.createGestureHandler(HandlerType.PAN, 12512, {
+        //     shouldCancelWhenOutside: false,
+        //     activeOffsetY: 5,
+        //     failOffsetY: -5
+        // }));
+        // gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
+        // gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
+        // gestureHandler.attachToView(this.nativeView);
     }
     close() {
         this.$modal.close();

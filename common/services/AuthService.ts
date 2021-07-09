@@ -12,12 +12,27 @@ import * as https from '@nativescript-community/https';
 
 import { LokAPIAbstract, e as LokAPIExc, t as LokAPIType } from '~/lokapi/src/index';
 
+import { getString, remove as removeSetting, setString } from '@nativescript/core/application-settings';
+
+class PersistentStore implements LokAPIType.IPersistentStore {
+    get(key: string, defaultValue?: string): string {
+        return getString('lokapi_' + key, defaultValue);
+    }
+    set(key: string, value: string): void {
+        setString('lokapi_' + key, value);
+    }
+    del(key: string): void {
+        removeSetting(key);
+    }
+}
+
 class NativeLokAPI extends LokAPIAbstract {
     constructor(host: string, dbName: string, private apiService: AuthService) {
         super(host, dbName);
     }
     httpRequest = async (opts: LokAPIType.coreHttpOpts) => this.apiService.lokAPIRequest(opts);
     base64Encode = base64Encode;
+    persistentStore = new PersistentStore();
 }
 
 export const LoggedinEvent = 'loggedin';
@@ -99,9 +114,9 @@ export class User {
     street2: string;
     zip: number;
     city: string;
+    phone: string;
     mobile: string;
     email: string;
-    phone: string;
     partner_latitude: number;
     partner_longitude: number;
     [k: string]: any;
@@ -245,7 +260,7 @@ export class Phone {
 }
 
 declare class AccountInfo {
-    getBalance(): Promise<number>;
+    getBalance(): Promise<string>;
     getSymbol(): Promise<string>;
 }
 
@@ -316,7 +331,7 @@ export interface TransactionConfirmation {
 interface TokenRequestResult {
     api_token: string;
     status: string;
-    partner_id: number;
+    id: number;
     uid: number;
 }
 
@@ -428,7 +443,9 @@ function getFormData(actualData, prefix?: string) {
 export default class AuthService extends NetworkService {
     @numberProperty userId: number;
     @objectProperty userProfile: UserProfile;
-    @objectProperty loginParams: LoginParams;
+    // @objectProperty loginParams: LoginParams;
+    @objectProperty recipientHistory: User[];
+    @objectProperty recipientfavorites: User[];
     @stringProperty pushToken: string;
     authority = `https://${APP_HOST}`;
     lokAPI: NativeLokAPI;
@@ -437,6 +454,7 @@ export default class AuthService extends NetworkService {
 
         this.lokAPI = new NativeLokAPI(APP_HOST, APP_DB, this);
         this.lokAPI.apiToken = this.token;
+        console.log('AuthService', this.token, this.userProfile);
     }
 
     async lokAPIRequest<T = any>(opts: LokAPIType.coreHttpOpts) {
@@ -450,7 +468,8 @@ export default class AuthService extends NetworkService {
     }
 
     isLoggedIn() {
-        return !!this.token && !!this.loginParams && !!this.userId;
+        // return !!this.token && !!this.loginParams && !!this.userId;
+        return !!this.token && !!this.userId;
     }
 
     // registerPushToken(pushToken: string) {
@@ -556,9 +575,9 @@ export default class AuthService extends NetworkService {
                 }
             }
         });
-        if (this.loginParams) {
-            this.loginParams.password = newPassword;
-        }
+        // if (this.loginParams) {
+        //     this.loginParams.password = newPassword;
+        // }
         return result;
     }
 
@@ -688,7 +707,7 @@ export default class AuthService extends NetworkService {
     accounts: AccountInfo[];
     // lastAccountsUpdateTime: number;
     async getAccounts() {
-        this.accounts = (await this.lokAPI.getAccounts()) as any;
+        this.accounts = await this.lokAPI.getAccounts();
         // if (!this.accounts || !this.lastAccountsUpdateTime || Date.now() - this.lastAccountsUpdateTime >= 3600 * 1000) {
         // let result = await this.request<AccountInfo[]>({
         //     apiPath: '/mobile/accounts.json',
@@ -737,7 +756,6 @@ export default class AuthService extends NetworkService {
         limit,
         offset,
         query,
-        mapBounds,
         categories,
         roles,
         payment_context = false
@@ -747,48 +765,11 @@ export default class AuthService extends NetworkService {
         limit?: number;
         offset?: number;
         query?: string;
-        mapBounds?: MapBounds<LatLonKeys>;
         roles?: string[];
         categories?: string[];
         payment_context?: boolean;
     }) {
-        let boundingBox = {
-            minLon: '',
-            maxLon: '',
-            minLat: '',
-            maxLat: ''
-        };
-        if (mapBounds) {
-            boundingBox = {
-                minLon: mapBounds.southwest.lon + '',
-                maxLon: mapBounds.northeast.lon + '',
-                minLat: mapBounds.southwest.lat + '',
-                maxLat: mapBounds.northeast.lat + ''
-            };
-        }
-
-        let result = await this.request<User[]>({
-            apiPath: '/lokavaluto_api/public/partner_map',
-            method: 'POST',
-            body: {
-                limit: limit || 100,
-                offset: offset || 0,
-                orderBy: {
-                    key: sortKey || '',
-                    order: sortOrder || ''
-                },
-                bounding_box: boundingBox,
-                name: query || '',
-                roles: roles || ['ROLE_PRO'],
-                payment_context,
-                categories
-            }
-        });
-        // result = result.result || result;
-        if (!Array.isArray(result)) {
-            result = [result];
-        }
-        return result.filter((b) => !!b);
+        return this.lokAPI.searchRecipient(query);
     }
     async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
         let boundingBox = {
@@ -829,6 +810,19 @@ export default class AuthService extends NetworkService {
                 cairn_user: cairn_user_email
             }
         });
+    }
+
+    public async transfer(fromAccount: any, recipient: LokAPIType.IRecipient, amount: number, description: string): Promise<LokAPIType.IPayment> {
+        const result = await this.lokAPI.transfer(fromAccount, recipient, amount, description);
+
+        // call getAccounts to update accounts balance after transfer
+        this.getAccounts();
+        // XXXvlab: this check is not working yet and need to be more
+        // thought through
+        // if (fromAccount.backend.internalId !== recipient.backend.internalId) {
+        //     throw new Error("Transfer across backends is not supported.")
+        // }
+        return result;
     }
     async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
         const date = Date.now();
@@ -909,7 +903,7 @@ export default class AuthService extends NetworkService {
         return res.rows.map((c) => c.name);
     }
 
-    async login(user: LoginParams = this.loginParams) {
+    async login(user: LoginParams) {
         if (!user) {
             throw new Error('missing_login_params');
         }
@@ -918,15 +912,17 @@ export default class AuthService extends NetworkService {
             await this.lokAPI.login(user.username, user.password);
 
             this.token = this.lokAPI.apiToken;
-            this.userId = this.lokAPI.userData.partner_id;
+            this.userProfile = this.lokAPI.userProfile;
+            console.log('userProfile', this.token, this.userProfile);
+            this.userId = this.userProfile.id;
 
             this.notify({
                 eventName: UserProfileEvent,
                 object: this,
-                data: this.lokAPI.userProfile
+                data: this.userProfile
             } as UserProfileEventData);
 
-            this.loginParams = user;
+            // this.loginParams = user;
             if (!wasLoggedin) {
                 // console.log('emitting loggedin event', new Error().stack);
                 this.notify({
@@ -944,9 +940,12 @@ export default class AuthService extends NetworkService {
 
     onLoggedOut() {
         const wasLoggedin = this.isLoggedIn();
-        this.token = undefined;
-        this.loginParams = undefined;
-        this.userId = undefined;
+        this.lokAPI.logout();
+        this.token = null;
+        // this.loginParams = null;
+        this.recipientHistory = null;
+        this.recipientfavorites = null;
+        this.userId = null;
         if (wasLoggedin) {
             this.notify({
                 eventName: LoggedoutEvent,
@@ -971,7 +970,14 @@ export default class AuthService extends NetworkService {
             method: 'GET'
         });
     }
-
+    async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
+        this.logout();
+        throw new HTTPError({
+            statusCode: 401,
+            message: 'HTTP error',
+            requestParams
+        });
+    }
     logout() {
         this.onLoggedOut();
         // backendService.token = "";

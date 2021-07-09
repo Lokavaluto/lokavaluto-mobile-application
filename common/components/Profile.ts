@@ -13,6 +13,7 @@ import { sprintf } from 'sprintf-js';
 import { Component, Prop } from 'vue-property-decorator';
 import { formatAddress } from '../helpers/formatter';
 import { Address, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '../services/AuthService';
+import { textColor } from '../variables';
 import AddressPicker from './AddressPicker';
 import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
@@ -21,7 +22,7 @@ import PageComponent from './PageComponent';
 
 const ImageComp = Vue.component('ImageComp', {
     props: ['src'],
-    template: '<nsimg :src="src" height="300" backgroundColor="black" stretch="center" noCache/>'
+    template: '<nsimg :src="src" height="300" backgroundColor="black" stretch="aspectFit" noCache/>'
 });
 
 @Component({
@@ -32,6 +33,7 @@ const ImageComp = Vue.component('ImageComp', {
 })
 export default class Profile extends PageComponent {
     navigateUrl = ComponentIds.Profile;
+    textColor = textColor;
     editing = false;
     @Prop({ default: true }) editable;
     // canSave = false;

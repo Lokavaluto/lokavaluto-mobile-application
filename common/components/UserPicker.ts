@@ -1,34 +1,91 @@
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
+import { $tc } from '../helpers/locale';
 import { Benificiary, Roles, User } from '../services/AuthService';
+import { backgroundColor, colorPrimary, subtitleColor, textColor } from '../variables';
 import PageComponent from './PageComponent';
 
 interface Recipient extends User {
-    isBeneficiary?: boolean;
+    isFavorite?: boolean;
 }
 
 @Component({})
 export default class UserPicker extends PageComponent {
-    @Prop() beneficiaries: Benificiary[];
+    backgroundColor = backgroundColor;
+    subtitleColor = subtitleColor;
+    textColor = textColor;
+    colorPrimary = colorPrimary;
+    @Prop({ default: () => [] }) favorites: User[];
+    @Prop({ default: true }) pro: boolean;
+    @Prop({ default: $tc('pick_a_recipient') }) title: string;
 
-    dataItems: Recipient[] = [];
+    selectionIndex: number = 0;
+
+    _dataItems: Recipient[] = [];
+    filteredDataItems: Recipient[] = [];
+    historyAndFavsItems: Recipient[] = [];
+
+    get dataItems() {
+        return this._dataItems;
+    }
+    set dataItems(value) {
+        this._dataItems = value;
+        this.updateFilteredItems();
+    }
+
     constructor() {
         super();
         // this.beneficiaries = this.$authService.beneficiaries;
-        if (this.beneficiaries) {
-            this.beneficiaries.forEach((b) => {
-                this.dataItems.push({ isBeneficiary: true, ...b.user });
-            });
-        }
     }
-    get menuIcon() {
-        return global.isIOS ? 'mdi-chevron-left' : 'mdi-arrow-left';
+    updateFilteredItems() {
+        if (this.selectionIndex === 1) {
+            this.filteredDataItems = this._dataItems.filter((s) => s.isFavorite === true);
+        } else {
+            this.filteredDataItems = this._dataItems;
+        }
     }
     destroyed() {
         super.destroyed();
     }
     mounted() {
         super.mounted();
+        this.buildHistoryFavs();
+    }
+    async buildHistoryFavs() {
+        try {
+            const historyAndFavsItems = [];
+            const history = this.$authService.recipientHistory;
+            const favorites = this.$authService.recipientfavorites?.slice(0);
+            if (history) {
+                for (let index = 0; index < history.length; index++) {
+                    const data = history[index];
+                    let isFavorite = false;
+                    const favIndex = favorites ? favorites.findIndex((f) => f.id === data.id) : -1;
+                    if (favIndex >= 0) {
+                        favorites.splice(favIndex, 1);
+                        isFavorite = true;
+                    }
+                    const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
+                    recipients.forEach((r) => {
+                        r['isHistory'] = true;
+                        r['isFavorite'] = isFavorite;
+                        historyAndFavsItems.push(r);
+                    });
+                }
+            }
+            if (favorites) {
+                for (let index = 0; index < favorites.length; index++) {
+                    const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
+                    recipients.forEach((r) => {
+                        r['isFavorite'] = true;
+                        historyAndFavsItems.push(r);
+                    });
+                }
+            }
+            this.dataItems = this.historyAndFavsItems = historyAndFavsItems;
+        } catch (error) {
+            this.showError(error);
+        }
     }
     onTFLoaded() {
         this.textField.requestFocus();
@@ -52,48 +109,36 @@ export default class UserPicker extends PageComponent {
     onBlur(e) {
         this.hasFocus = false;
     }
-    searchUsers(query: string) {
+    onTabSelectionChanged(index) {
+        this.selectionIndex = index;
+        this.updateFilteredItems();
+    }
+    async searchUsers(query: string) {
         this.loading = true;
         const regexp = new RegExp(query, 'i');
         const items = [];
-        const addedItemNames = [];
-        if (this.beneficiaries) {
-            this.beneficiaries.forEach((b) => {
-                if (regexp.test(b.autocompleteLabel)) {
-                    addedItemNames.push(b.user.name);
-                    items.push({ isBeneficiary: true, ...b.user });
+        if (this.historyAndFavsItems) {
+            this.historyAndFavsItems.forEach((b) => {
+                if (regexp.test(b.name) || regexp.test(b.email) || regexp.test(b.phone) || regexp.test(b.mobile)) {
+                    items.push(b);
                 }
             });
         }
-        this.$authService
-            .getUsers({
-                query,
-                roles: [Roles.PRO, Roles.PERSON]
-            })
-            .then((r) => {
-                // r.forEach(user => {
-                //     if (user.id !== this.$authService.userId && regexp.test(user.name) && addedItemNames.indexOf(user.name) === -1) {
-                items.push(...r);
-                // }
-                // });
-                // return r;
-                // return r.reduce((accumulator: User[], currentValue) => {
-                //     console.log('test user', query, regexp, currentValue.name, currentValue.username);
-                //     if (regexp.test(currentValue.name) && addedItemNames.indexOf(currentValue.username) === -1) {
-                //         accumulator.push({
-                //             name: currentValue.name,
-                //             isBeneficiary: false,
-                //             id: currentValue.username
-                //         });
-                //     }
-                //     return accumulator;
-                // }, items);
-            })
-            .catch(this.showError)
-            .finally(() => {
-                this.loading = false;
-                this.dataItems = items;
+        try {
+            const users = await this.$authService.getUsers({
+                query
             });
+            users.forEach((u) => {
+                if (items.findIndex((i) => i.id === u.id) === -1) {
+                    items.push(u);
+                }
+            });
+        } catch (error) {
+            this.showError(error);
+        } finally {
+            this.loading = false;
+            this.dataItems = items;
+        }
     }
     onTextChange(e) {
         const query = e.value;
@@ -107,16 +152,24 @@ export default class UserPicker extends PageComponent {
                 this.searchUsers(query);
             }, 500);
         } else {
-            this.dataItems = [];
-            if (this.beneficiaries) {
-                this.beneficiaries.forEach((b) => {
-                    this.dataItems.push({ isBeneficiary: true, ...b.user });
+            const items = [];
+            if (this.historyAndFavsItems) {
+                this.historyAndFavsItems.forEach((b) => {
+                    // if (regexp.test(b.name) || regexp.test(b.email) || regexp.test(b.phone) || regexp.test(b.mobile)) {
+                    items.push(b);
+                    // }
                 });
             }
+            this.dataItems = items;
         }
         // this.currentSearchText = query;
     }
     chooseRecipient(item: Recipient) {
+        const history = this.$authService.recipientHistory || [];
+        if (history.findIndex((h) => h.id === item.id) === -1) {
+            history.push(item.jsonData);
+            this.$authService.recipientHistory = history;
+        }
         this.$modal.close(item);
     }
 }

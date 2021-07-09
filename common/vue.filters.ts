@@ -14,7 +14,7 @@ const Plugin = {
         Vue.filter('L', $t);
 
         Vue.filter('currency', function (value: number, showZeroCents = true) {
-            if (value === null || value === undefined) {
+            if (value === null || value === undefined || typeof value === 'string') {
                 return value;
             }
             return formatCurrency(value, showZeroCents);

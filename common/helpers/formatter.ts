@@ -106,7 +106,7 @@ export function formatCurrency(num, showZeroCents = true) {
 
     let result = (sign ? '' : '-') + num;
     if (cents !== '00' || showZeroCents) {
-        result += '.' + cents;
+        result += ',' + cents;
     }
 
     return result;

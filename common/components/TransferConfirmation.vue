@@ -1,23 +1,39 @@
 <template>
     <!-- <Frame> -->
-    <BasePage actionBarHidden backgroundColor="transparent">
-        <GridLayout :backgroundColor="themeColor">
-            <Button variant="text" color="white" class="icon-btn" text="mdi-close" @tap="close()" horizontalAlignment="left" verticalAlignment="top" />
-            <StackLayout horizontalAlignment="center" marginTop="40" widhth="80%">
-                <GridLayout width="160" height="160" borderRadius="80" backgroundColor="white" horizontalAlignment="center">
-                    <NSImg :src="recipient.image" stretch="aspectFill" width="140" height="140" borderRadius="70" />
-                </GridLayout>
-
-                <Label textAlignment="center" :text="recipient.name" fontSize="30" color="white" />
-                <Label class="mdi" text="mdi-check" fontSize="100" horizontalAlignment="center" color="green" />
-
-                <Label horizontalAlignment="center" fontSize="50" color="white">
-                    <Span :text="amount | currency"></Span>
-                    <Span :fontFamily="appFontFamily" text="app-currency" />
-                </Label>
-            </StackLayout>
-        </GridLayout>
-    </BasePage>
+    <!-- <BasePage modal backgroundColor="transparent" actionBarHidden> -->
+    <StackLayout padding="30 30 0 30" rows="*,*,*" height="400">
+        <!-- <StackLayout verticalAlignment="center"> -->
+        <Label :text="$tc('transaction_done')" textAlignment="center" fontSize="20" />
+        <Label text="mdi-check" color="#46B020" fontSize="50" :fontFamily="mdiFontFamily" textAlignment="center" />
+        <!-- </StackLayout> -->
+        <!-- <StackLayout row="1" verticalAlignment="center"> -->
+        <Label :text="$tc('recipient')" fontSize="16" color="#A0A0A0" textAlignment="center" marginTop="20" />
+        <Label
+            class="mdi"
+            marginTop="5"
+            borderRadius="44"
+            borderWidth="1"
+            color="#888888"
+            borderColor="#888888"
+            fontSize="50"
+            textAlignment="center"
+            verticalTextAlignment="center"
+            text="mdi-account"
+            v-show="!recipient.image"
+            width="88"
+            height="88"
+        />
+        <Label :text="recipient.name" fontSize="24" fontWeight="bold" textAlignment="center" marginTop="10" />
+        <!-- </StackLayout> -->
+        <!-- <StackLayout row="2" verticalAlignment="center"> -->
+        <Label :text="$tc('amount')" fontSize="16" color="#A0A0A0" textAlignment="center" marginTop="30" />
+        <Label textAlignment="center" fontSize="40" fontWeight="bold">
+            <Span :text="amount | currency" />
+            <Span :text="' ' + symbol" />
+        </Label>
+        <!-- </StackLayout> -->
+    </StackLayout>
+    <!-- </BasePage> -->
     <!-- </Frame> -->
 </template>
 
