@@ -1,5 +1,5 @@
 module.exports = {
-    id: 'com.lokavaluto.monujo',
+    id: 'com.lokavaluto.lokavaluto',
     appResourcesPath: 'app/App_Resources',
     webpackConfigPath: './app.webpack.config.js',
     appPath: 'app',
