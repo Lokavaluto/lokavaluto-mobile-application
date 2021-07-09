@@ -16,7 +16,7 @@ import { Address, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent,
 import { textColor } from '../variables';
 import AddressPicker from './AddressPicker';
 import { ComponentIds } from './App';
-import InteractiveMap from './InteractiveMap';
+// import InteractiveMap from './InteractiveMap';
 import MapComponent from './MapComponent';
 import PageComponent from './PageComponent';
 
@@ -27,7 +27,7 @@ const ImageComp = Vue.component('ImageComp', {
 
 @Component({
     components: {
-        InteractiveMap,
+        // InteractiveMap,
         MapComponent
     }
 })
