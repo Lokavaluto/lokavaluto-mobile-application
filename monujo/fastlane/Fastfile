@@ -255,9 +255,9 @@ end
       sh("rm", "-fr", "platforms/android")
       sh("tns", "build", "android", "--release", "--clean",  "--env.adhoc", "--aab",
           "--key-store-path", "../" + ENV["KEYSTORE_PATH"],
-          "--key-store-password", ENV["KEYSTORE_PASS"],
+          "--key-store-password", ENV["KEYSTORE_PASSWORD"],
           "--key-store-alias", ENV["KEYSTORE_ALIAS"],
-          "--key-store-alias-password", ENV["KEYSTORE_PASS"]
+          "--key-store-alias-password", ENV["KEYSTORE_ALIAS_PASSWORD"]
         )
   end
 
