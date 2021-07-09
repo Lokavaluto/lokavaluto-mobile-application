@@ -121,11 +121,11 @@ export default class SendAmountWindow extends PageComponent {
             //     throw new Error(this.$t('wrong_security'));
             // }
             let r;
-            // if (!FAKE_ALL) {
-            this.showLoading(this.$t('loading'));
-            r = await this.$authService.transfer(this.account, this.recipient, this.amount, this.description);
-            this.hideLoading();
-            // }
+            if (!FAKE_ALL) {
+                this.showLoading(this.$t('loading'));
+                r = await this.$authService.transfer(this.account, this.recipient, this.amount, this.description);
+                this.hideLoading();
+            }
 
             this.close();
             this.$getAppComponent().navigateBackToRoot();
