@@ -32,7 +32,6 @@ Vue.config.silent = true;
 Vue.config['debug'] = false;
 
 global.URLSearchParams = require('urlsearchparams').URLSearchParams;
-console.log('global.URLSearchParams', global.URLSearchParams);
 
 function throwVueError(err) {
     crashReportService.showError(err);
