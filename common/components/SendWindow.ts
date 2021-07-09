@@ -4,6 +4,7 @@ import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
 import { mdiFontFamily } from '../variables';
 import { $tc } from '../helpers/locale';
+import { showSnack } from '@nativescript-community/ui-material-snackbar';
 
 @Component({
     components: {}
@@ -28,6 +29,9 @@ export default class SendWindow extends PageComponent {
                 },
                 fullscreen: true
             });
+            if (!recipient) {
+                return;
+            }
             const component2 = (await import('~/common/components/SendAmountWindow')).default;
             this.navigateTo(component2, {
                 props: {
@@ -48,6 +52,9 @@ export default class SendWindow extends PageComponent {
                 },
                 fullscreen: true
             });
+            if (!recipient) {
+                return;
+            }
             const component2 = (await import('~/common/components/SendAmountWindow')).default;
             this.navigateTo(component2, {
                 props: {
@@ -59,5 +66,14 @@ export default class SendWindow extends PageComponent {
         }
     }
 
-    async scanQRCode() {}
+    async scanQRCode() {
+        try {
+            const result = await this.$scanQRCode(true);
+            if (result) {
+                showSnack({ message: result });
+            }
+        } catch (error) {
+            this.showError(error);
+        }
+    }
 }
