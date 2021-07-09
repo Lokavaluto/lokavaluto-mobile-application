@@ -1,21 +1,24 @@
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
-import { mdiFontFamily } from '../variables';
+import { mdiFontFamily, subtitleColor } from '../variables';
 import { $tc } from '../helpers/locale';
 import { showSnack } from '@nativescript-community/ui-material-snackbar';
+import { PullToRefresh } from '@akylas/nativescript-pulltorefresh';
 
 @Component({
     components: {}
 })
 export default class SendReceiveWindow extends PageComponent {
-    navigateUrl = ComponentIds.Map;
     mdiFontFamily = mdiFontFamily;
+    subtitleColor = subtitleColor;
     @Prop({ default: 0 }) startPageIndex: number;
     pageIndex = 0;
     totalSold: number = 0;
     symbol: string = 'U';
+
+    historyLoaded = false;
 
     mounted(): void {
         super.mounted();
@@ -24,6 +27,35 @@ export default class SendReceiveWindow extends PageComponent {
     }
     destroyed(): void {
         super.destroyed();
+    }
+
+    @Watch('pageIndex')
+    onPageIndexChange() {
+        if (this.pageIndex === 2 && !this.historyLoaded) {
+            this.refreshHistory();
+        }
+    }
+
+    transactions = null;
+
+    get pullRefresh() {
+        return this.getRef<PullToRefresh>('pullRefresh');
+    }
+    async refreshHistory() {
+        const pullRefresh = this.pullRefresh;
+        try {
+            // if (pullRefresh) {
+            //     pullRefresh.refreshing = true;
+            // }
+            this.transactions = await this.$authService.lokAPI.getTransactions();
+            // console.log('transactions', this.transactions);
+        } catch (error) {
+            this.showError(error);
+        } finally {
+            if (pullRefresh) {
+                pullRefresh.refreshing = false;
+            }
+        }
     }
 
     async refresh() {
