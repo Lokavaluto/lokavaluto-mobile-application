@@ -4,11 +4,11 @@ module.exports = {
     webpackConfigPath: './app.webpack.config.js',
     appPath: 'app',
     android: {
-        maxLogcatObjectSize: 2048,
+        maxLogcatObjectSize: 5096,
         markingMode: 'none',
         v8Flags: '--expose_gc',
         codeCache: true,
-        forceLog: true,
+        forceLog: true
     },
-    cssParser: 'rework',
+    cssParser: 'rework'
 };
