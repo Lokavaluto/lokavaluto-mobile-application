@@ -1,0 +1,13 @@
+*Features*
+- working global transactions history
+
+*Bug fixes*
+- catch errors
+- ensure url is correctly encoded
+- script error logging
+- working script with api token
+- fully working script
+- map component working
+- log out fix
+- profile import fix
+- send window features
