@@ -1,7 +1,7 @@
 import { NavigatedData } from '@nativescript/core';
 import { ObservableArray } from '@nativescript/core/data/observable-array';
 import { Component, Prop } from 'vue-property-decorator';
-import { AccountInfo, Transaction } from '../services/AuthService';
+import { Transaction } from '../services/AuthService';
 import PageComponent from './PageComponent';
 
 @Component({})
@@ -9,7 +9,7 @@ export default class AccountHistory extends PageComponent {
     dataItems: ObservableArray<Transaction> = new ObservableArray();
 
     @Prop({})
-    public accountInfo: AccountInfo;
+    public accountInfo: any;
 
     destroyed() {
         super.destroyed();

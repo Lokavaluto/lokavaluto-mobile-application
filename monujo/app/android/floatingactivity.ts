@@ -4,7 +4,7 @@ import {
     AndroidActivityNewIntentEventData,
     AndroidActivityRequestPermissionsEventData,
     AndroidActivityResultEventData,
-    ApplicationEventData,
+    ApplicationEventData
 } from '@nativescript/core/application/application-interfaces';
 import { CSSUtils } from '@nativescript/core/css/system-classes';
 import { Device } from '@nativescript/core/platform';
@@ -65,6 +65,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
         if (savedInstanceState) {
             const rootViewId = savedInstanceState.getInt(ROOT_VIEW_ID_EXTRA, -1);
             if (rootViewId !== -1 && activityRootViewsMap.has(rootViewId)) {
+                //@ts-ignore
                 this._rootView = activityRootViewsMap.get(rootViewId).get();
             }
         }
@@ -74,7 +75,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
                 eventName: AndroidApplication.activityNewIntentEvent,
                 object: Application.android,
                 activity,
-                intent,
+                intent
             } as AndroidActivityNewIntentEventData);
         }
 
@@ -103,7 +104,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
             eventName: AndroidApplication.activityNewIntentEvent,
             object: Application.android,
             activity,
-            intent,
+            intent
         } as AndroidActivityNewIntentEventData);
 
         const data = JSON.parse(intent.getStringExtra('data'));
@@ -158,7 +159,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
             const args = {
                 eventName: Application.resumeEvent,
                 object: Application.android,
-                android: activity,
+                android: activity
             } as ApplicationEventData;
             Application.notify(args);
             Application.android.paused = false;
@@ -199,7 +200,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
             eventName: 'activityBackPressed',
             object: Application.android,
             activity,
-            cancel: false,
+            cancel: false
         } as AndroidActivityBackPressedEventData;
         Application.android.notify(args);
         if (args.cancel) {
@@ -215,7 +216,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
                 eventName: 'activityBackPressed',
                 object: view,
                 activity,
-                cancel: false,
+                cancel: false
             } as AndroidActivityBackPressedEventData;
             view.notify(viewArgs);
 
@@ -241,7 +242,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
             activity,
             requestCode,
             permissions,
-            grantResults,
+            grantResults
         } as AndroidActivityRequestPermissionsEventData);
     }
 
@@ -258,7 +259,7 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
             activity,
             requestCode,
             resultCode,
-            intent: data,
+            intent: data
         } as AndroidActivityResultEventData);
     }
 
@@ -291,11 +292,12 @@ class CustomActivityCallbacksImplementation implements AndroidActivityCallbacks 
                     h(Floating, {
                         props: {
                             closeCb,
-                            qrCodeData: data,
-                        },
+                            qrCodeData: data
+                        }
                         // key: serializeModalOptions(options)
-                    }),
+                    })
             }));
+            //@ts-ignore
             rootView = navEntryInstance.$mount().$el.nativeView;
             this._rootView = rootView;
 

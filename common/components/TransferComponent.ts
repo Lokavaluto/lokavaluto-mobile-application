@@ -4,7 +4,7 @@ import { sms } from 'nativescript-phone';
 import { Vibrate } from 'nativescript-vibrate';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { formatCurrency } from '../helpers/formatter';
-import { AccountInfo, Benificiary, QrCodeTransferData, User } from '../services/AuthService';
+import { Benificiary, QrCodeTransferData, User } from '../services/AuthService';
 import { NoNetworkError } from '../services/NetworkService';
 import BaseVueComponent from './BaseVueComponent';
 import TransferConfirmation from './TransferConfirmation';
@@ -23,8 +23,8 @@ export default class TransferComponent extends BaseVueComponent {
     reason: string = this.$t('default_reason');
     description: string = null;
     amount: number;
-    account: AccountInfo = null;
-    accounts: AccountInfo[] = [];
+    account: any = null;
+    accounts: any[] = [];
     recipient: User = null;
     beneficiaries: Benificiary[] = [];
     refreshing = false;
@@ -228,7 +228,7 @@ export default class TransferComponent extends BaseVueComponent {
             this.hideLoading();
         }
     }
-    async showTransactionDone(account: AccountInfo, recipient: User, amount: number, reason: string, description: string) {
+    async showTransactionDone(account: any, recipient: User, amount: number, reason: string, description: string) {
         await timeout(700);
         this.$showModal(TransferConfirmation, {
             props: {
