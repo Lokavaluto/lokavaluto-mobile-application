@@ -338,7 +338,7 @@ export default class App extends BaseVueComponent {
         this.$crashReportService.setExtra('profile', null);
         this.currentlyLoggedIn = false;
         this.$securityService.clear();
-        this.navigateToUrl(ComponentIds.Map, { clearHistory: true });
+        this.navigateToUrl(ComponentIds.Home, { clearHistory: true });
         this.goToLogin();
     }
     firstResume = true;
