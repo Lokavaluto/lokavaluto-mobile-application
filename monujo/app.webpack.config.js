@@ -18,6 +18,12 @@ NsVueTemplateCompiler.registerElement('Pager', () => require('@nativescript-comm
         event: 'selectedIndexChange'
     }
 });
+NsVueTemplateCompiler.registerElement('BottomSheet', () => require('@nativescript-community/ui-persistent-bottomsheet').Pager, {
+    model: {
+        prop: 'stepIndex',
+        event: 'stepIndexChange'
+    }
+});
 const webpackConfig = require('./webpack.config.js');
 const webpack = require('webpack');
 const { readFileSync, readdirSync } = require('fs');
