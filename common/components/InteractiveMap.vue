@@ -1,8 +1,9 @@
 <template>
-    <BottomSheet :opacity="opacity" @layoutChanged="onLayoutChange" :panGestureOptions="{ bottomSheetPanGestureOptions }" :steps="[0, 80]" :stepIndex="bottomSheetStepIndex">
+    <BottomSheet :opacity="opacity" :panGestureOptions="bottomSheetPanGestureOptions" :steps="bottomSheetSteps" v-model="bottomSheetStepIndex" @close="unselectItem">
         <MapComponent
             ref="mapComp"
             rowSpan="2"
+            :isUserInteractionEnabled="isUserInteractionEnabled"
             showLocationButton="true"
             @mapReady="onMapReady"
             @mapStable="onMapStable"
@@ -24,7 +25,7 @@
                 verticalAlignment="bottom"
             />
         </GridLayout>
-        <MapBottomSheet ~bottomSheet :item="selectedItem" />
+        <MapBottomSheet ~bottomSheet :height="bottomSheetHeight" :items="shownUsers" :selectedPageIndex="selectedItemIndex" />
         <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
     </BottomSheet>
 </template>

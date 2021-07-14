@@ -64,6 +64,7 @@
         "merge-options": "3.0.4",
         "nativescript-bitmap-factory": "1.8.1",
         "nativescript-clipboard": "2.1.1",
+        "nativescript-directions": "^1.4.0",
         "nativescript-inappbrowser": "3.1.2",
         "nativescript-phone": "3.0.1",
         "nativescript-photoviewer": "3.0.1",

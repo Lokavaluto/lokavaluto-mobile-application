@@ -1,5 +1,5 @@
 import { TWEEN } from '@nativescript-community/tween';
-import { MapPosVector } from '@nativescript-community/ui-carto/core';
+import { MapPos, MapPosVector } from '@nativescript-community/ui-carto/core';
 import { GeoJSONVectorTileDataSource } from '@nativescript-community/ui-carto/datasources';
 import { PersistentCacheTileDataSource } from '@nativescript-community/ui-carto/datasources/cache';
 import { HTTPTileDataSource } from '@nativescript-community/ui-carto/datasources/http';
@@ -12,9 +12,11 @@ import { setShowDebug, setShowError, setShowInfo, setShowWarn } from '@nativescr
 import { Point } from '@nativescript-community/ui-carto/vectorelements/point';
 import { Polygon } from '@nativescript-community/ui-carto/vectorelements/polygon';
 import { MBVectorTileDecoder } from '@nativescript-community/ui-carto/vectortiles';
+import { getNumber, getString, setNumber, setString } from '@nativescript/core/application-settings';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
 import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
+import { throttle } from 'helpful-decorators';
 import { Component, Prop } from 'vue-property-decorator';
 import { GeoHandler, GeoLocation, UserLocationdEvent, UserLocationdEventData } from '../handlers/GeoHandler';
 import { User } from '../services/AuthService';
@@ -106,8 +108,12 @@ export default class MapComponent extends BaseVueComponent {
         // console.log('this.isUserInteraction', this.isUserInteraction, options)
         options.setUserInput(this.isUserInteractionEnabled);
 
-        cartoMap.setZoom(this.zoom, 0);
-        cartoMap.setFocusPos({ lat: 45, lon: 6 }, 0);
+        const pos = JSON.parse(getString('mapFocusPos') || '{"lat":45,"lon":6}') as MapPos<LatLonKeys>;
+        const zoom = getNumber('mapZoom', 7);
+        if (pos) {
+            cartoMap.setFocusPos(pos, 0);
+            cartoMap.setZoom(zoom, 0);
+        }
 
         // options.setDrawDistance(8);
         // if (appSettings.getString('mapFocusPos')) {
@@ -169,12 +175,23 @@ export default class MapComponent extends BaseVueComponent {
         // console.log('onMapMove',this._cartoMap.zoom, this._cartoMap.focusPos);
         this.$emit('mapMove', e);
     }
+
+    @throttle(100)
+    saveSettings() {
+        if (!this._cartoMap) {
+            return;
+        }
+        const cartoMap = this._cartoMap;
+        setNumber('mapZoom', cartoMap.zoom);
+        setString('mapFocusPos', JSON.stringify(cartoMap.focusPos));
+    }
     onMapStable(e) {
-        // this.log('onMapStable', this.ignoreStable);
+        // console.log('onMapStable', this.ignoreStable);
         if (this.ignoreStable) {
             this.ignoreStable = false;
             return;
         }
+        this.saveSettings();
         this.$emit('mapStable', e);
     }
     onMapIdle(e) {
@@ -229,7 +246,7 @@ export default class MapComponent extends BaseVueComponent {
                 dirPath: '~/assets/styles/lokavaluto'
             });
             const layer = (this.localVectorTileLayer = new VectorTileLayer({
-                preloading: true,
+                // preloading: true,
                 dataSource: this.localVectorTileDataSource,
                 decoder
             }));
@@ -260,10 +277,10 @@ export default class MapComponent extends BaseVueComponent {
             }
         ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
-        // console.log('geojson', points, geojson);
+        // console.log('geojson', points.length);
         // geojson.features.unshift(perimeterGeoJSON.features[0]);
-        this.getOrCreateLocalVectorTileLayer();
         this.ignoreStable = true;
+        this.getOrCreateLocalVectorTileLayer();
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
     }
     onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
@@ -276,7 +293,7 @@ export default class MapComponent extends BaseVueComponent {
     }
     onVectorTileClicked(data: VectorTileEventData) {
         this.$emit('tileElementClick', data);
-        // this.log('onVectorTileClicked', this.vectorTileClicked);
+        // console.log('onVectorTileClicked', this.vectorTileClicked);
         if (this.vectorTileClicked) {
             return this.vectorTileClicked(data);
         }
@@ -403,6 +420,6 @@ export default class MapComponent extends BaseVueComponent {
     //     // console.log('onSessionUpdated', s);
     //     this.updateSession();
 
-    //     // this.log('createPolyline', JSON.stringify(result));
+    //     // console.log('createPolyline', JSON.stringify(result));
     // }
 }

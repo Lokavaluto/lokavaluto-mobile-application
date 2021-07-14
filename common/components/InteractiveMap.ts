@@ -3,7 +3,7 @@ import { VectorTileEventData } from '@nativescript-community/ui-carto/layers/vec
 import { CartoMap } from '@nativescript-community/ui-carto/ui';
 import * as appSettings from '@nativescript/core/application-settings';
 import { throttle } from 'helpful-decorators';
-import { Component, Prop } from 'vue-property-decorator';
+import { Component, Prop, Watch } from 'vue-property-decorator';
 import { User } from '../services/AuthService';
 import BaseVueComponent from './BaseVueComponent';
 import BottomSheetHolder, { BottomSheetHolderScrollEventData } from './BottomSheet/BottomSheetHolder';
@@ -24,6 +24,7 @@ export default class InteractiveMap extends BaseVueComponent {
     _cartoMap: CartoMap<LatLonKeys>;
     currentBounds: MapBounds<LatLonKeys>;
     selectedItem: User = null;
+    selectedItemIndex: number = 0;
     bottomSheetStepIndex = 0;
     bottomSheetTranslation = 0;
     bottomSheetPercentage = 0;
@@ -31,10 +32,13 @@ export default class InteractiveMap extends BaseVueComponent {
     loading = false;
     mapCategories = null;
     mapFilterSlugs: string[] = [];
-    bottomSheetPanGestureOptions = { failOffsetXEnd: 20, minDist: 40 };
+    bottomSheetHeight = 200;
+    bottomSheetSteps = [0, 200];
+    bottomSheetPanGestureOptions = { minDist: 70 };
 
     @Prop({ default: 1 }) opacity: number;
     @Prop({ default: false }) locationButton: boolean;
+    @Prop({ default: true }) isUserInteractionEnabled: boolean;
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
@@ -69,13 +73,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     // map: Mapbox;
     onMapReady(e) {
-        const map = (this._cartoMap = e.object as CartoMap<LatLonKeys>);
-        const pos = JSON.parse(appSettings.getString('mapFocusPos') || '{"lat":45,"lon":6}') as MapPos<LatLonKeys>;
-        const zoom = appSettings.getNumber('mapZoom', 7);
-        if (pos) {
-            map.setFocusPos(pos, 0);
-            map.setZoom(zoom, 0);
-        }
+
     }
     onLayoutChange() {
         // sometimes onMapStable is not called at first so we need this
@@ -90,22 +88,12 @@ export default class InteractiveMap extends BaseVueComponent {
         }
     }
 
-    @throttle(100)
-    saveSettings() {
-        if (!this._cartoMap) {
-            return;
-        }
-        const cartoMap = this._cartoMap;
-        appSettings.setNumber('mapZoom', cartoMap.zoom);
-        appSettings.setString('mapFocusPos', JSON.stringify(cartoMap.focusPos));
-    }
     onMapClicked(e) {
-        this.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
-        this.unselectItem();
+        console.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
+        this.bottomSheetStepIndex = 0;
     }
     onMapStable(e) {
-        // this.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
-        this.saveSettings();
+        // console.log('onMapStable', !!this._cartoMap, !!this.currentBounds);
         const map = e.object as CartoMap<LatLonKeys>;
         const currentBounds = new MapBounds<LatLonKeys>(map.screenToMap({ x: this.nativeView.getMeasuredWidth(), y: 0 }), map.screenToMap({ x: 0, y: this.nativeView.getMeasuredHeight() }));
         // console.log('onMapStable', currentBounds);
@@ -118,7 +106,7 @@ export default class InteractiveMap extends BaseVueComponent {
     onElementClick(...args) {}
 
     onVectorTileClicked(data: VectorTileEventData) {
-        this.log('onVectorTileClicked', data);
+        console.log('onVectorTileClicked', data);
         const { clickType, position, featureLayerName, featureData, featurePosition } = data;
         if (clickType === ClickType.SINGLE) {
             // const map = this._cartoMap;
@@ -128,7 +116,7 @@ export default class InteractiveMap extends BaseVueComponent {
             } else if (user) {
                 this.selectItem(user);
             } else {
-                this.unselectItem();
+                this.bottomSheetStepIndex = 0;
             }
         }
         return true;
@@ -155,6 +143,8 @@ export default class InteractiveMap extends BaseVueComponent {
     }
     selectItem(item: User) {
         this.selectedItem = item;
+        this.selectedItemIndex = this.shownUsers.indexOf(item);
+        console.log('selectItem', this.selectedItemIndex);
         this.cartoMap.setFocusPos(
             {
                 lat: item.partner_latitude,
@@ -171,6 +161,13 @@ export default class InteractiveMap extends BaseVueComponent {
 
             this.bottomSheetStepIndex = 0;
             this.selectedItem = null;
+        }
+    }
+    @Watch('bottomSheetStepIndex')
+    onBottomSheetStepIndexChange() {
+        console.log('onBottomSheetStepIndexChange', this.bottomSheetStepIndex);
+        if (this.bottomSheetStepIndex === 0) {
+            this.unselectItem();
         }
     }
     askUserLocation() {

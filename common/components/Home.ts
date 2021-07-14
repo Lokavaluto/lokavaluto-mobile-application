@@ -6,12 +6,12 @@ import { AccountInfoEvent, AccountInfoEventData, LoggedinEvent, LoggedoutEvent }
 import { mdiFontFamily } from '../variables';
 import { ComponentIds } from './App';
 import CreditAccount from './CreditAccount';
-import MapComponent from './MapComponent';
+import InteractiveMap from './InteractiveMap';
 import PageComponent from './PageComponent';
 
 @Component({
     components: {
-        MapComponent
+        InteractiveMap
     }
 })
 export default class Home extends PageComponent {
@@ -140,10 +140,17 @@ export default class Home extends PageComponent {
     async goToPay() {
         try {
             const result = await this.$scanQRCode(true);
-            if (result ) {
+            if (result) {
                 showSnack({ message: result });
-
             }
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+    async goToMap() {
+        console.log('goToMap    ');
+        try {
+            await this.$getAppComponent().navigateToUrl(ComponentIds.Map);
         } catch (error) {
             this.showError(error);
         }
