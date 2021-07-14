@@ -4,7 +4,7 @@
         <GridLayout @tap="goToMap" />
 
         <StackLayout class="flatCardView" elevation="10" borderRadius="25" margin="0 40 50 40" v-show="!currentlyLoggedIn" verticalAlignment="bottom">
-            <CanvasLabel height="100" padding="20">
+            <CanvasLabel height="100" padding="20" @tap="()=>{}" >
                 <CGroup :color="colorAccent" lineHeight="30">
                     <CSpan text="mdi-check" color="#46B020" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" />
                     <CSpan :text="' ' + $tc('apy_my_purchases')" fontSize="16" fontWeight="bold" verticalTextAlignment="center" />
@@ -14,7 +14,7 @@
             </CanvasLabel>
             <Button :text="$t('login')" @tap="goToLogin" margin="0" elevation="0" dynamicElevationOffset="0" />
         </StackLayout>
-        <StackLayout class="flatCardView" elevation="10" borderRadius="25 25 0 0" margin="0 40 0 40" v-show="currentlyLoggedIn" verticalAlignment="bottom" padding="24 16 24 16">
+        <StackLayout class="flatCardView" elevation="10" borderRadius="25 25 0 0" margin="0 40 0 40" v-show="currentlyLoggedIn" verticalAlignment="bottom" padding="24 16 24 16" @tap="()=>{}" >
             <GridLayout columns="*,*" rows="auto,auto,auto">
                 <Label>
                     <Span :text="$tc('balance')" fontSize="14" />
