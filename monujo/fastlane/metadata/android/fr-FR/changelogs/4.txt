@@ -1,0 +1,7 @@
+*Features*
+- full rewrite of the map componet
+
+*Bug fixes*
+- go to pay button fix
+- dont show progress for now
+- home tap fix
