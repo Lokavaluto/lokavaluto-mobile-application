@@ -90,6 +90,15 @@ export default class SendReceiveWindow extends PageComponent {
                 },
                 fullscreen: true
             });
+            if (!recipient) {
+                return;
+            }
+            const component2 = (await import('~/common/components/SendAmountWindow')).default;
+            this.navigateTo(component2, {
+                props: {
+                    recipient
+                }
+            });
         } catch (error) {
             this.showError(error);
         }
