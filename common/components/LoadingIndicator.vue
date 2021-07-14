@@ -2,7 +2,7 @@
     <GridLayout rows="auto,auto" columns="auto,*" padding="20">
         <MDActivityIndicator col="0" busy />
         <Label col="1" paddingLeft="15" fontSize="16" verticalAlignment="middle" textWrap />
-        <MDProgress row="1" colSpan="2" maxValue="100" :color="colorAccent" />
+        <MDProgress row="1" colSpan="2" maxValue="100" :color="colorAccent" v-show="false" />
     </GridLayout>
 </template>
 <script lang="ts">
