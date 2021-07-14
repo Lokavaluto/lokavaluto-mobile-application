@@ -149,7 +149,7 @@ export default class Profile extends PageComponent {
 
     //phoneNumber cannot be used as it is not an unique identifier
     deletePhoneNumber(phoneNumber: PhoneNumber) {
-        this.log('deletePhoneNumber', phoneNumber);
+        console.log('deletePhoneNumber', phoneNumber);
         confirm({
             // title: localize('stop_session'),
             message: this.$tc('delete_phone', phoneNumber.phoneNumber),
@@ -250,7 +250,7 @@ export default class Profile extends PageComponent {
     }
 
     onTextChange(value: string, key: string) {
-        this.log('onTextChange', key, value);
+        console.log('onTextChange', key, value);
         this.updateUserProfile = this.updateUserProfile || {};
         const keysArray = key.split('.');
         const finalKey = keysArray.pop();
@@ -275,7 +275,7 @@ export default class Profile extends PageComponent {
         // } else {
         ref[finalKey] = value;
         // }
-        this.log(this.updateUserProfile);
+        console.log(this.updateUserProfile);
     }
 
     chooseImage() {

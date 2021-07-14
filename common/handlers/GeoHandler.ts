@@ -83,7 +83,7 @@ export class GeoHandler extends Observable {
     constructor() {
         super();
         if (TEST_LOGS) {
-            this.log('creating GPS Handler', !!geolocation, DEV_LOG);
+            console.log('creating GPS Handler', !!geolocation, DEV_LOG);
         }
         if (!geolocation) {
             geolocation = new GPS();
@@ -110,10 +110,10 @@ export class GeoHandler extends Observable {
         if (this.launched) {
             return;
         }
-        // this.log('appOnLaunch');
+        // console.log('appOnLaunch');
         this.currentSession = JSON.parse(appSettings.getString('pausedSession', null));
         if (this.currentSession) {
-            // this.log('restore paused session', this.currentSession);
+            // console.log('restore paused session', this.currentSession);
             this.currentSession.startTime = new Date(this.currentSession.startTime);
             this.currentSession.lastPauseTime = new Date(this.currentSession.lastPauseTime);
             this.sessionState = SessionState.PAUSED;
@@ -130,7 +130,7 @@ export class GeoHandler extends Observable {
             this._isIOSBackgroundMode = false;
             // For iOS applications, args.ios is UIApplication.
             if (TEST_LOGS) {
-                // this.log('UIApplication: resumeEvent', this.isWatching());
+                // console.log('UIApplication: resumeEvent', this.isWatching());
             }
             if (this.isWatching()) {
                 const watcher = this.currentWatcher;
@@ -144,7 +144,7 @@ export class GeoHandler extends Observable {
             this._isIOSBackgroundMode = true;
             // For iOS applications, args.ios is UIApplication.
             if (TEST_LOGS) {
-                // this.log('UIApplication: suspendEvent', this.isWatching());
+                // console.log('UIApplication: suspendEvent', this.isWatching());
             }
             if (this.isWatching()) {
                 const watcher = this.currentWatcher;
@@ -173,7 +173,7 @@ export class GeoHandler extends Observable {
     onGPSStateChange(e: GPSEvent) {
         const enabled = e.data.enabled;
         // if (TEST_LOGS) {
-        //     this.log('GPS state change', enabled);
+        //     console.log('GPS state change', enabled);
         // }
         if (!enabled) {
             this.stopSession();
@@ -183,7 +183,7 @@ export class GeoHandler extends Observable {
             object: this,
             data: e.data
         });
-        // this.log('GPS state change done', enabled);
+        // console.log('GPS state change done', enabled);
     }
 
     askToEnableIfNotEnabled() {
@@ -197,7 +197,7 @@ export class GeoHandler extends Observable {
                 cancelButtonText: $t('cancel')
             }).then((result) => {
                 if (TEST_LOGS) {
-                    this.log('askToEnableIfNotEnabled, confirmed', result);
+                    console.log('askToEnableIfNotEnabled, confirmed', result);
                 }
                 if (!!result) {
                     return geolocation.openGPSSettings();
@@ -228,7 +228,7 @@ export class GeoHandler extends Observable {
                         okButtonText: $t('settings'),
                         cancelButtonText: $t('cancel')
                     }).then((result) => {
-                        // this.log('stop_session, confirmed', result);
+                        // console.log('stop_session, confirmed', result);
                         if (result) {
                             geolocation.openGPSSettings().catch(() => {});
                         }
@@ -292,7 +292,7 @@ export class GeoHandler extends Observable {
         this._deferringUpdates = false;
     };
     onLocation = (loc: GeoLocation, manager?: any) => {
-        // this.log('Received location: ', loc);
+        // console.log('Received location: ', loc);
         if (loc) {
             this.currentWatcher && this.currentWatcher(null, loc);
             this.notify({
@@ -308,7 +308,7 @@ export class GeoHandler extends Observable {
     };
     onLocationError = (err: Error) => {
         if (TEST_LOGS) {
-            this.log(' location error: ', err);
+            console.log(' location error: ', err);
         }
         this.currentWatcher && this.currentWatcher(err);
     };
@@ -316,7 +316,7 @@ export class GeoHandler extends Observable {
         this.currentWatcher = onLoc;
         const options: GeolocationOptions = { desiredAccuracy, minimumUpdateTime, onDeferred: this.onDeferred };
         if (TEST_LOGS) {
-            this.log('startWatch', options);
+            console.log('startWatch', options);
         }
         if (!global.isAndroid) {
             if (this._isIOSBackgroundMode) {
@@ -334,7 +334,7 @@ export class GeoHandler extends Observable {
 
     stopWatch() {
         if (TEST_LOGS) {
-            this.log('stopWatch', this.watchId);
+            console.log('stopWatch', this.watchId);
         }
         if (this.watchId) {
             geolocation.clearWatch(this.watchId);
@@ -407,7 +407,7 @@ export class GeoHandler extends Observable {
                 const newAlt = Math.round(loc.altitude);
                 deltaAlt = newAlt - this.lastAlt;
                 if (TEST_LOGS) {
-                    this.log('deltaAlt', deltaAlt, this.lastAlt, newAlt);
+                    console.log('deltaAlt', deltaAlt, this.lastAlt, newAlt);
                 }
                 // we only look for positive altitude gain
                 // we ignore little variations as it might induce wrong readings
@@ -430,7 +430,7 @@ export class GeoHandler extends Observable {
             } else {
                 newSpeed = (deltaDistance / deltaTime) * 3600; // 1m/s === 3.6 km/h => 1m/ms === 1000m/s === 3600 km/h
                 if (TEST_LOGS) {
-                    this.log('new speed based on points', newSpeed, deltaDistance, deltaTime);
+                    console.log('new speed based on points', newSpeed, deltaDistance, deltaTime);
                 }
                 loc.speed = newSpeed;
             }
@@ -438,7 +438,7 @@ export class GeoHandler extends Observable {
             // newSpeed defined means we are still moving, should be taken into account then
             if (newSpeed !== this.currentSession.currentSpeed) {
                 if (TEST_LOGS) {
-                    this.log('new loc based on speed', newSpeed, loc.speed);
+                    console.log('new loc based on speed', newSpeed, loc.speed);
                 }
                 // we also round the speed to 3 digits to prevent too small values
                 this.currentSession.currentSpeed = Math.round(newSpeed * 1000) / 1000;
@@ -447,7 +447,7 @@ export class GeoHandler extends Observable {
 
             if (deltaDistance > 2 || shouldNotif) {
                 if (TEST_LOGS) {
-                    this.log('deltaDistance', deltaDistance, this.currentSession.currentDistance);
+                    console.log('deltaDistance', deltaDistance, this.currentSession.currentDistance);
                 }
                 this.currentSession.currentDistance = this.currentSession.currentDistance + deltaDistance;
                 shouldNotif = true;
@@ -456,15 +456,15 @@ export class GeoHandler extends Observable {
             // wait to have a little more data to compugte / show average speed
             const sessionDuration = loc.timestamp.valueOf() - this.currentSession.startTime.valueOf() - this.currentSession.pauseDuration;
             if (TEST_LOGS) {
-                this.log('sessionDuration', sessionDuration);
+                console.log('sessionDuration', sessionDuration);
             }
             if (TEST_LOGS) {
-                this.log('currentDistance', this.currentSession.currentDistance);
+                console.log('currentDistance', this.currentSession.currentDistance);
             }
             if (sessionDuration > 3000 && this.currentSession.currentDistance > 10 && shouldNotif) {
                 const newAvg = Math.round((this.currentSession.currentDistance / sessionDuration) * 3600); // 1m/s === 3.6 km/h => 1m/ms === 1000m/s === 3600 km/h
                 if (TEST_LOGS) {
-                    this.log('average Speed', newAvg);
+                    console.log('average Speed', newAvg);
                 }
                 if (newAvg !== this.currentSession.averageSpeed) {
                     this.currentSession.averageSpeed = newAvg;
@@ -473,7 +473,7 @@ export class GeoHandler extends Observable {
                 }
             }
             if (TEST_LOGS) {
-                this.log(
+                console.log(
                     'onNewLoc',
                     `speed: ${loc.speed && loc.speed.toFixed(1)}, loc:${loc.lat.toFixed(2)},${loc.lon.toFixed(2)}, ${new Date(loc.timestamp).toLocaleTimeString()}, ${shouldNotif}, ${
                         this.currentSession.currentSpeed && this.currentSession.currentSpeed.toFixed(1)

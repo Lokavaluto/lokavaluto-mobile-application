@@ -1,6 +1,6 @@
 <template>
     <!-- <Frame> -->
-    <BasePage @navigatedTo="onLoaded" actionBarHidden backgroundColor="red">
+    <BasePage @navigatedTo="onLoaded" actionBarHidden>
         <GridLayout rows="3*,*,*,*,*" columns="*,*,*">
             <GridLayout columns="*,*,*,*" row="0" colSpan="3" orientation="horizontal" :backgroundColor="themeColor">
                 <Label

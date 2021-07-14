@@ -38,7 +38,7 @@ export default class Settings extends PageComponent {
             this.ignoreNextChange = false;
             return;
         }
-        // this.log('saveUserSettings');
+        // console.log('saveUserSettings');
         this.$authService.postUserSettings(this.userSettings).catch(this.showError);
     }
 

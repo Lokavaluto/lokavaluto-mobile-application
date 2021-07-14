@@ -88,10 +88,10 @@ export default class CreditAccount extends PageComponent {
         }
     }
     onUrlLoadStarted(e: LoadEventData) {
-        this.log(e.eventName, e.navigationType, e.url);
+        console.log(e.eventName, e.navigationType, e.url);
     }
     onUrlLoadFinished(e: LoadEventData) {
-        this.log(e.eventName, e.navigationType, e.url);
+        console.log(e.eventName, e.navigationType, e.url);
         if (e.url === CREDIT_URL) {
             const profile = this.$authService.userProfile;
             const isPro = this.$authService.isProUser(profile);

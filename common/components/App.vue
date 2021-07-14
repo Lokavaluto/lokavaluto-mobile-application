@@ -42,12 +42,9 @@
                     <Button col="1" variant="flat" v-if="$crashReportService.sentryEnabled" text="mdi-bug" @tap="onTap('sendBugReport')" />
                 </GridLayout>
             </GridLayout>
-            <!-- <GridLayout> -->
             <Frame ~mainContent ref="innerFrame" id="innerFrame">
                 <Home />
             </Frame>
-            <!-- <Label :text="$t('no_network_desc')"  verticalAlignment="bottom" textAlignment="center" color="white" backgroundColor="red" padding="10"/> -->
-            <!-- </GridLayout> -->
         </Drawer>
     </Page>
 </template>

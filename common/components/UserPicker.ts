@@ -91,7 +91,7 @@ export default class UserPicker extends PageComponent {
         this.textField.requestFocus();
     }
     close() {
-        this.log('close');
+        console.log('close');
         this.$modal.close();
     }
 

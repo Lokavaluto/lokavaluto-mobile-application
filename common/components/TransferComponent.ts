@@ -272,14 +272,14 @@ export default class TransferComponent extends BaseVueComponent {
             this.validateAmount({ value: amount, object: this.amountTF }, true);
         }
         if (ICC && name) {
-            // this.log('handleQRData1', ICC, name);
+            // console.log('handleQRData1', ICC, name);
             const beneficiary = this.beneficiaries && this.beneficiaries.find((b) => b.id === id);
             if (beneficiary) {
                 this.recipient = beneficiary.user;
             } else {
                 this.recipient = { mainICC: ICC, id, name } as any;
             }
-            // this.log('handleQRData', ICC, name, beneficiary, this.recipient);
+            // console.log('handleQRData', ICC, name, beneficiary, this.recipient);
             this.checkForm();
         }
     }

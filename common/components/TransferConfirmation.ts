@@ -109,7 +109,7 @@ export default class TransferConfirmation extends BaseVueComponent {
     }
     onGestureTouch(args: GestureTouchEventData) {
         const data = args.data;
-        // this.log('onGestureTouch', this._isPanning, this.panEnabled, this.isAnimating, data.state, data.extraData.translationY, this.prevDeltaY);
+        // console.log('onGestureTouch', this._isPanning, this.panEnabled, this.isAnimating, data.state, data.extraData.translationY, this.prevDeltaY);
 
         if (data.state !== GestureState.ACTIVE) {
             return;

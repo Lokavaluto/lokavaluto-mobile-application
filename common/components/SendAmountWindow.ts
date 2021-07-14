@@ -45,7 +45,6 @@ export default class SendAmountWindow extends PageComponent {
 
     mounted(): void {
         super.mounted();
-        console.log('user', this.recipient);
     }
     destroyed(): void {
         super.destroyed();
@@ -53,7 +52,6 @@ export default class SendAmountWindow extends PageComponent {
 
     onAmountTFLoaded(e) {
         const textField = e.object as TextField;
-        // console.log('onAmountTFLoaded', amount, !!textField);
         textField.requestFocus();
         if (global.isIOS) {
             textField.nativeTextViewProtected.keyboardType = 8;
@@ -108,7 +106,6 @@ export default class SendAmountWindow extends PageComponent {
     // }
 
     async submit() {
-        console.log('submit', this.amount);
         if (!this.amount) {
             return;
         }

@@ -48,7 +48,6 @@ export default class SendReceiveWindow extends PageComponent {
             //     pullRefresh.refreshing = true;
             // }
             this.transactions = await this.$authService.lokAPI.getTransactions();
-            // console.log('transactions', this.transactions);
         } catch (error) {
             this.showError(error);
         } finally {

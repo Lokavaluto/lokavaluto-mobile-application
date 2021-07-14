@@ -179,7 +179,6 @@ export default class App extends BaseVueComponent {
 
     constructor() {
         super();
-        // this.log('loggedInOnStart', this.loggedInOnStart, this.$authService.userProfile);
         // this.currentlyLoggedin = Vue.prototype.$authService.isLoggedIn();
         this.$setAppComponent(this);
         this.userProfile = this.$authService.userProfile || null;
@@ -399,13 +398,13 @@ export default class App extends BaseVueComponent {
         if (!event.entry.resolvedPage) {
             return;
         }
-        // this.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
+        // console.log('onPageNavigation', event.entry.resolvedPage, event.entry.resolvedPage[navigateUrlProperty]);
         this.closeDrawer();
         this.setActivatedUrl(event.entry.resolvedPage[navigateUrlProperty]);
     }
 
     isComponentSelected(url: string) {
-        // this.log('isComponentSelected', url, this.activatedUrl);
+        // console.log('isComponentSelected', url, this.activatedUrl);
         return this.activatedUrl === url;
     }
 
@@ -441,7 +440,7 @@ export default class App extends BaseVueComponent {
     }
 
     isActiveUrl(id) {
-        // this.log('isActiveUrl', id, this.activatedUrl);
+        // console.log('isActiveUrl', id, this.activatedUrl);
         return this.activatedUrl === id;
     }
 
@@ -466,7 +465,7 @@ export default class App extends BaseVueComponent {
             return;
         }
         this.activatedUrl = id;
-        // this.log('setActivatedUrl', id);
+        // console.log('setActivatedUrl', id);
         this.handleSetActivatedUrl(id);
     }
     async navigateBack(backEntry?) {
@@ -503,7 +502,7 @@ export default class App extends BaseVueComponent {
             this.onTap(item.id);
             this.closeDrawer();
         }
-        // this.log('onNavItemTap', url);
+        // console.log('onNavItemTap', url);
         // });
     }
     onTap(command: string) {
@@ -807,7 +806,7 @@ export default class App extends BaseVueComponent {
         }
     }
     onAppUrl(appURL: AppURL, args) {
-        this.log('Got the following appURL', appURL, args);
+        console.log('Got the following appURL', appURL, args);
         // if (appURL.path.startsWith(CUSTOM_URL_SCHEME)) {
 
         if (global.isAndroid) {

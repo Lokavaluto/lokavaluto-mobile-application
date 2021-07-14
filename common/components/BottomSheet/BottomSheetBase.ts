@@ -16,7 +16,7 @@ export default class BottomSheetBase extends BaseVueComponent {
     isScrollEnabled = true;
     set scrollEnabled(value) {
         if (value !== this.isScrollEnabled) {
-            // this.log('set scrollEnabled', value);
+            // console.log('set scrollEnabled', value);
             this.isScrollEnabled = value;
         }
     }
@@ -29,7 +29,7 @@ export default class BottomSheetBase extends BaseVueComponent {
     set listViewAtTop(value) {
         if (value !== this.isListViewAtTop) {
             this.isListViewAtTop = value;
-            // this.log('set listViewAtTop ', value);
+            // console.log('set listViewAtTop ', value);
             this.$emit('listViewAtTop', value);
         }
     }
@@ -49,7 +49,7 @@ export default class BottomSheetBase extends BaseVueComponent {
             parent = parent.$parent as any;
         }
         const listView = this.listView;
-        // this.log('mounted', !!parent, !!listView);
+        // console.log('mounted', !!parent, !!listView);
         if (parent instanceof BottomSheetHolder) {
             this.holder = parent;
             parent.setBottomSheet(this);
@@ -70,14 +70,14 @@ export default class BottomSheetBase extends BaseVueComponent {
     }
 
     onListViewScroll(args) {
-        // this.log('onListViewScroll', this.isScrollEnabled , this.holder.isPanning, this.listViewAtTop, args.scrollOffset);
+        // console.log('onListViewScroll', this.isScrollEnabled , this.holder.isPanning, this.listViewAtTop, args.scrollOffset);
         if (!this.isScrollEnabled) {
             return;
         }
         if (!this.listViewAtTop && args.scrollOffset <= 0) {
             this.listViewAtTop = true;
         } else if (this.listViewAtTop && args.scrollOffset > 0) {
-            // this.log('listViewAtTop', this.listViewAtTop);
+            // console.log('listViewAtTop', this.listViewAtTop);
             this.listViewAtTop = false;
         }
     }

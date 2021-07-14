@@ -23,7 +23,6 @@ export default class AddressPicker extends PageComponent {
         this.textField.requestFocus();
     }
     close() {
-        this.log('close');
         this.$modal.close();
     }
 
@@ -32,7 +31,6 @@ export default class AddressPicker extends PageComponent {
     }
     hasFocus = false;
     onFocus(e) {
-        this.log('onFocus');
         this.hasFocus = true;
         // if (this.currentSearchText && this.searchResultsCount === 0) {
         //     this.instantSearch(this.currentSearchText);
@@ -40,7 +38,6 @@ export default class AddressPicker extends PageComponent {
     }
     searchAsTypeTimer;
     onBlur(e) {
-        this.log('onBlur');
         this.hasFocus = false;
     }
     async searchAddress(query: string) {

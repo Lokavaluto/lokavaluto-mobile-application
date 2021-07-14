@@ -25,7 +25,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         this.bottomSheet = comp;
         if (comp) {
             comp.$on('listViewAtTop', value => {
-                // this.log('listViewAtTop changed', value);
+                // console.log('listViewAtTop changed', value);
                 this.panEnabled = value;
                 // if (value && this._isPanning) {
                 // if (this.bottomSheet) {
@@ -114,7 +114,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
     panGestureHandler: PanGestureHandler;
     mounted() {
         super.mounted();
-        // this.log('mounted');
+        // console.log('mounted');
         const manager = Manager.getInstance();
         const gestureHandler = manager.createGestureHandler(HandlerType.PAN, PAN_GESTURE_TAG, {
             shouldCancelWhenOutside: false,
@@ -124,7 +124,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         });
         gestureHandler.on(GestureHandlerTouchEvent, this.onGestureTouch, this);
         gestureHandler.on(GestureHandlerStateEvent, this.onGestureState, this);
-        // this.log('mounted2', !!this.scrollingView, !!gestureHandler);
+        // console.log('mounted2', !!this.scrollingView, !!gestureHandler);
         gestureHandler.attachToView(this.scrollingView);
         this.panGestureHandler = gestureHandler as any;
     }
@@ -150,7 +150,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         // if (global.isIOS) {
         //     this.bottomDecale = navigationBarHeight;
         // }
-        // this.log('onLayoutChange', viewHeight, this.viewHeight, this.currentViewHeight, this.translationMaxOffset, this.bottomDecale);
+        // console.log('onLayoutChange', viewHeight, this.viewHeight, this.currentViewHeight, this.translationMaxOffset, this.bottomDecale);
         if (this.mCurrentViewHeight === 0) {
             this.viewHeight = viewHeight + this.bottomDecale ;
             this.currentViewHeight = this.viewHeight;
@@ -164,7 +164,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         const { state, prevState, extraData, view } = args.data;
 
         this.updateIsPanning(state);
-        // this.log('onGestureState', state, prevState, GestureState.ACTIVE, this._isPanning, this.panEnabled);
+        // console.log('onGestureState', state, prevState, GestureState.ACTIVE, this._isPanning, this.panEnabled);
         if (!this.panEnabled) {
             return;
         }
@@ -200,11 +200,11 @@ export default class BottomSheetHolder extends BaseVueComponent {
         // }
 
         // && viewTop !== -this.translationMaxOffset;
-        // this.log('updateIsPanning', state, viewTop, this.translationMaxOffset, this._isPanning);
+        // console.log('updateIsPanning', state, viewTop, this.translationMaxOffset, this._isPanning);
     }
     onGestureTouch(args: GestureTouchEventData) {
         const data = args.data;
-        // this.log('onGestureTouch', this._isPanning, this.panEnabled, this.isAnimating, data.state, data.extraData.translationY, this.prevDeltaY);
+        // console.log('onGestureTouch', this._isPanning, this.panEnabled, this.isAnimating, data.state, data.extraData.translationY, this.prevDeltaY);
 
         if (data.state !== GestureState.ACTIVE) {
             return;
@@ -243,7 +243,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
         // }
         // console.log('scrollSheetToPosition', position)
         this.currentStep = this.peekerSteps.indexOf(position);
-        // this.log('scrollSheetToPosition', position, this.currentViewHeight, this.viewHeight);
+        // console.log('scrollSheetToPosition', position, this.currentViewHeight, this.viewHeight);
         // this.getRef('scrollingView').animate( {
         //     translate:{
         //         x:0,
@@ -258,7 +258,7 @@ export default class BottomSheetHolder extends BaseVueComponent {
                 .easing(TWEEN.Easing.Quadratic.Out)
                 .onUpdate(obj => {
                     this.currentViewHeight = this.viewHeight + obj.value;
-                    // this.log('onUpdate', this.currentViewHeight, this.viewHeight, obj.value);
+                    // console.log('onUpdate', this.currentViewHeight, this.viewHeight, obj.value);
                 })
                 .onComplete(resolve)
                 .onStop(resolve)
@@ -279,14 +279,14 @@ export default class BottomSheetHolder extends BaseVueComponent {
         // if (!!this.opened) {
         //     return Promise.resolve();
         // }
-        // this.log('peek', this.opened);
+        // console.log('peek', this.opened);
         const steps = this.peekerSteps;
         const currentStep = this.currentStep;
         const dest = currentStep >= 0 && currentStep < steps.length ? steps[this.currentStep] : steps[0];
         this.scrollSheetToPosition(dest);
     }
     close() {
-        // this.log('close', this.opened);
+        // console.log('close', this.opened);
         if (!this.opened) {
             return Promise.resolve();
         }
