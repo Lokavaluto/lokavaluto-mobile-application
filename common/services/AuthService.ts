@@ -90,21 +90,8 @@ export interface QrCodeTransferData {
     amount?: string;
 }
 
-export enum TransactionType {
-    EXECUTED = 0,
-    RECURRING = 1,
-    SCHEDULED = 2,
-    BDC = 3,
-    HELLOASSO = 4,
-    DEPOSIT = 5,
-    WITHDRAWAL = 6,
-    SCHEDULED_FAILED = 7,
-    SMS_PAYMENT = 8,
-    MANDATE = 9,
-    ONLINE_PAYMENT = 10,
-    RECONVERSION = 11,
-    MOBILE_APP = 12,
-    DIRECT_DEBITING = 13
+function getCacheControl(maxAge = 60, stale = 59) {
+    return `max-age=${maxAge}, max-stale=${stale}, stale-while-revalidate=${stale}`;
 }
 
 export class User {
@@ -205,27 +192,6 @@ function cleanupUser(user: any) {
 
     return result as User;
 }
-function cleanupTransaction(transaction: any, myUserId) {
-    const result = pick(transaction, TransactionKeys) as Transaction;
-    result.submissionDate = dayjs(result.submissionDate).valueOf();
-    result.executionDate = dayjs(result.executionDate).valueOf();
-
-    // TODO: remove
-    // this is a fix for an error in the api. We need that for already done transactions.
-    if (result.executionDate < result.submissionDate) {
-        result.executionDate = result.submissionDate;
-    }
-    result.reason = result.reason.split('\n')[0];
-    // t.executionDate = dayjs(t.executionDate).valueOf();
-    result.credit = !result.creditor || result.creditor.id === myUserId;
-    // if (result.creditor) {
-    //     result.creditor = cleanupUser(result.creditor);
-    // }
-    // if (result.debitor) {
-    //     result.debitor = cleanupUser(result.debitor);
-    // }
-    return result;
-}
 
 export interface LoginParams {
     username: string;
@@ -270,29 +236,7 @@ export interface UpdateUserProfile extends Partial<Omit<UserProfile, 'image'>> {
     image?: ImageAsset | ImageSource;
 }
 
-export interface UserSettings {
-    baseNotifications: [
-        {
-            radius: number;
-            id: number;
-            webPushEnabled: boolean;
-            appPushEnabled: boolean;
-            emailEnabled: boolean;
-            smsEnabled: boolean;
-            keyword: string;
-        },
-        {
-            types: TransactionType[];
-            minAmount: number;
-            id: number;
-            webPushEnabled: boolean;
-            appPushEnabled: boolean;
-            emailEnabled: boolean;
-            smsEnabled: boolean;
-            keyword: string;
-        }
-    ];
-}
+export interface UserSettings {}
 export interface Benificiary {
     autocompleteLabel: string;
     id: number;
@@ -334,33 +278,6 @@ interface TokenRequestResult {
     id: number;
     uid: number;
 }
-
-export class Transaction {
-    credit: boolean = null;
-    smsPayment: boolean = null;
-    id: number = null;
-    type: TransactionType = null;
-    paymentID: string = null;
-    submissionDate: number = null;
-    executionDate: number = null;
-    creditorame: string = null;
-    description: string = null;
-    reason: string = null;
-    amount: number = null;
-    fromAccountNumber: string = null;
-    toAccountNumber: string = null;
-    creditor: {
-        name: string;
-        id: number;
-    } = null;
-    creditorName: string = null;
-    debitor: {
-        name: string;
-        id: number;
-    } = null;
-    debitorName: string = null;
-}
-const TransactionKeys = Object.getOwnPropertyNames(new Transaction());
 
 function getImageData(asset: ImageAsset | ImageSource): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -541,20 +458,17 @@ export default class AuthService extends NetworkService {
             apiPath: `/mobile/notifications/${this.userId}`,
             method: 'GET'
         });
-        result.baseNotifications = result.baseNotifications.sort(function (a, b) {
-            return a.id - b.id;
-        });
         return result;
     }
     async postUserSettings(userSettings: UserSettings) {
-        const body = JSON.parse(JSON.stringify({ baseNotifications: userSettings.baseNotifications })) as UserSettings;
-        body.baseNotifications = body.baseNotifications.sort(function (a, b) {
-            return a.id - b.id;
-        });
+        // const body = JSON.parse(JSON.stringify({ baseNotifications: userSettings.baseNotifications })) as UserSettings;
+        // body.baseNotifications = body.baseNotifications.sort(function (a, b) {
+        //     return a.id - b.id;
+        // });
         const result = await this.request<UserSettings>({
             apiPath: `/mobile/notifications/${this.userId}`,
-            method: 'POST',
-            body
+            method: 'POST'
+            // body
         });
         // this.notify({
         //     eventName: UserProfileEvent,
@@ -817,11 +731,6 @@ export default class AuthService extends NetworkService {
 
         // call getAccounts to update accounts balance after transfer
         this.getAccounts();
-        // XXXvlab: this check is not working yet and need to be more
-        // thought through
-        // if (fromAccount.backend.internalId !== recipient.backend.internalId) {
-        //     throw new Error("Transfer across backends is not supported.")
-        // }
         return result;
     }
     async createTransaction(account: AccountInfo, user: User, amount: number, reason: string, description: string): Promise<TransactionConfirmation> {
@@ -841,48 +750,6 @@ export default class AuthService extends NetworkService {
             method: 'POST',
             body
         });
-    }
-    async confirmOperation(operationId, code?: string) {
-        const result = await this.request({
-            apiPath: `/mobile/transaction/confirm/${operationId}.json`,
-            method: 'POST',
-            body: {
-                save: 'true'
-            }
-        });
-        await this.getAccounts();
-        return result;
-    }
-    accountHistory: {
-        [k: string]: Transaction[];
-    } = {};
-    async getAccountHistory({ accountId, sortKey, sortOrder, limit, offset, query }: { accountId: string; sortKey?: string; sortOrder?: string; limit?: number; offset?: number; query?: string }) {
-        const result = await this.request<Transaction[]>({
-            apiPath: `/mobile/account/operations/${accountId}`,
-            body: {
-                begin: dayjs().subtract(2, 'month').format('YYYY-MM-DD'),
-                end: dayjs().format('YYYY-MM-DD'),
-                // maxAmount: '',
-                // keywords: '',
-                types: '',
-                sortOrder: 'DESC',
-                limit: limit || 100,
-                offset: offset || 0
-                // orderBy: {
-                //     key: sortKey || '',
-                //     order: sortOrder || ''
-                // },
-                // name: query || ''
-            },
-            method: 'POST'
-        });
-        const accountHistory = result
-            .map((t) => cleanupTransaction(t, this.userId))
-            .sort(function (a, b) {
-                return b.executionDate - a.executionDate;
-            });
-        this.accountHistory[accountId] = accountHistory;
-        return accountHistory;
     }
     async fakeSMSPayment(sender: string, message: string) {
         return this.request({
