@@ -234,5 +234,7 @@
   "search_by_location": "chercher le nom du lieu",
   "or": "ou",
   "global_balance": "solde global",
-  "details": "details"
+  "details": "details",
+  "route": "itinéraire",
+  "more_info": "plus d'infos"
 }
