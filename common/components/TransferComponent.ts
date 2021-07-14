@@ -215,7 +215,7 @@ export default class TransferComponent extends BaseVueComponent {
                 //     // }
                 //     // }
                 // }
-                await this.$authService.confirmOperation(r.operation.id, code);
+                // await this.$authService.confirmOperation(r.operation.id, code);
                 this.hideLoading();
             }
 

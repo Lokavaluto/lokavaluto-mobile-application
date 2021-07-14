@@ -47,12 +47,12 @@ export default class Settings extends PageComponent {
         this.userSettings = await this.$authService.getUserSettings();
     }
 
-    get paymentNotifSettings() {
-        return this.userSettings && this.userSettings.baseNotifications[1];
-    }
-    get newproNotifSettings() {
-        return this.userSettings && this.userSettings.baseNotifications[0];
-    }
+    // get paymentNotifSettings() {
+        // return this.userSettings && this.userSettings.baseNotifications[1];
+    // }
+    // get newproNotifSettings() {
+        // return this.userSettings && this.userSettings.baseNotifications[0];
+    // }
 
     ignoreNextCheckEvent = false;
     get biometricsEnabled() {
