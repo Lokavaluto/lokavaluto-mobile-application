@@ -12,6 +12,7 @@ import Vue from 'nativescript-vue';
 import { sprintf } from 'sprintf-js';
 import { Component, Prop } from 'vue-property-decorator';
 import { formatAddress } from '../helpers/formatter';
+import { $tc } from '../helpers/locale';
 import { Address, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '../services/AuthService';
 import { textColor } from '../variables';
 import AddressPicker from './AddressPicker';
@@ -41,6 +42,7 @@ export default class Profile extends PageComponent {
     updateUserProfile: UpdateUserProfile = null;
 
     image: string | ImageAsset | ImageSource = null;
+    title: string = null;
     get canSave() {
         return !!this.updateUserProfile && Object.keys(this.updateUserProfile).length > 0;
     }
@@ -67,6 +69,7 @@ export default class Profile extends PageComponent {
         } else {
             this.userProfile = this.$authService.userProfile;
             this.myProfile = true;
+            // this.editable = true;
         }
         this.image = this.userProfile.image;
     }
@@ -77,6 +80,11 @@ export default class Profile extends PageComponent {
     }
     mounted() {
         super.mounted();
+        if (this.myProfile) {
+            this.title = $tc('my_profile');
+        } else {
+            this.title = $tc('user_profile', this.userProfile.name);
+        }
         this.$authService.on(UserProfileEvent, this.onProfileUpdate, this);
     }
     updateMapCenter() {
@@ -360,10 +368,48 @@ export default class Profile extends PageComponent {
             });
         } catch (err) {
             this.showError(err);
-            return;
         }
     }
     async copyTextUserAdress() {
-        await this.copyText(formatAddress(this.userProfile.address));
+        try {
+            await this.copyText(formatAddress(this.userProfile.address));
+        } catch (err) {
+            this.showError(err);
+        }
+    }
+
+    async showContacts() {
+        try {
+            const component = (await import('~/common/components/UserPicker')).default;
+            const recipient = await this.$showModal(component, {
+                props: {
+                    pro: true,
+                    clickToShowProfile: true,
+                    title: $tc('contacts')
+                },
+                fullscreen: true
+            });
+        } catch (err) {
+            this.showError(err);
+        }
+    }
+
+    async showSettings() {
+        this.$getAppComponent().navigateToUrl(ComponentIds.Settings);
+    }
+    async logout() {
+        try {
+            const r = await confirm({
+                // title: localize('stop_session'),
+                message: this.$tc('confirm_logout'),
+                okButtonText: this.$tc('logout'),
+                cancelButtonText: this.$tc('cancel')
+            });
+            if (r) {
+                this.$authService.logout();
+            }
+        } catch (error) {
+            this.showError(error);
+        }
     }
 }
