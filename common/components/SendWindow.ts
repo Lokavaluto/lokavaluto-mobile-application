@@ -25,7 +25,8 @@ export default class SendWindow extends PageComponent {
             const recipient = await this.$showModal(component, {
                 props: {
                     pro: true,
-                    title: $tc('pick_a_recipient')
+                    title: $tc('pick_a_recipient'),
+                    canScanQrCode: true
                 },
                 fullscreen: true
             });
@@ -48,7 +49,8 @@ export default class SendWindow extends PageComponent {
             const recipient = await this.$showModal(component, {
                 props: {
                     pro: false,
-                    title: $tc('pick_a_recipient')
+                    title: $tc('pick_a_recipient'),
+                    canScanQrCode: true
                 },
                 fullscreen: true
             });
