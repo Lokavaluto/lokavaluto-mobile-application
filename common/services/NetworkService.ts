@@ -232,6 +232,20 @@ export class MessageError extends CustomError {
         );
     }
 }
+// used to throw while not show the error
+export class FakeError extends CustomError {
+    constructor(props?: any) {
+        super(
+            Object.assign(
+                {
+                    message: 'error'
+                },
+                props
+            ),
+            'FakeError'
+        );
+    }
+}
 
 interface ReturnMessageFormat {
     type: string;
@@ -385,7 +399,10 @@ export class NetworkService extends Observable {
         requestParams.headers = this.getRequestHeaders(requestParams as HttpRequestOptions);
         requestParams.useLegacy = true;
         const requestStartTime = Date.now();
+        if (DEV_LOG) {
+            console.log('request', requestParams);
 
+        }
         return https.request(requestParams as HttpRequestOptions).then((response) => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
 

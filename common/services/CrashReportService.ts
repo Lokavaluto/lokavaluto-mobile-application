@@ -6,7 +6,7 @@ import { Device } from '@nativescript/core/platform';
 import { alert, confirm } from '@nativescript-community/ui-material-dialogs';
 import { Label as HTMLLabel } from '@nativescript-community/ui-label';
 import { l as $t, lc as $tc, lt as $tt, lu as $tu } from '@nativescript-community/l';
-import { CustomError, HTTPError, MessageError, NoNetworkError } from './NetworkService';
+import { CustomError, FakeError, HTTPError, MessageError, NoNetworkError } from './NetworkService';
 import { Application, Color } from '@nativescript/core';
 import { install } from '../utils/logging';
 
@@ -83,6 +83,9 @@ export default class CrashReportService extends Observable {
     }
 
     showError(err: Error | string) {
+        if (err instanceof FakeError) {
+            return;
+        }
         const realError = typeof err === 'string' ? null : err;
         const isString = realError === null || realError === undefined;
         const message = isString ? (err as string) : realError.message || realError.toString();
