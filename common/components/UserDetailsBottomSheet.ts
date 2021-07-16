@@ -23,4 +23,12 @@ export default class UserDetailsBottomSheet extends BaseVueComponent {
             }
         });
     }
+
+    async toggleFavorite() {
+        try {
+            this.user = await this.$authService.toggleFavorite(this.user);
+        } catch (error) {
+            this.showError(error);
+        }
+    }
 }

@@ -1,13 +1,11 @@
 import { TextField } from '@nativescript-community/ui-material-textfield';
 import { Component, Prop } from 'vue-property-decorator';
 import { $tc } from '../helpers/locale';
-import { Benificiary, Roles, User } from '../services/AuthService';
+import { Benificiary, ProfileEvent, ProfileEventData, Roles, User } from '../services/AuthService';
 import { backgroundColor, colorPrimary, subtitleColor, textColor } from '../variables';
 import PageComponent from './PageComponent';
 
-interface Recipient extends User {
-    isFavorite?: boolean;
-}
+interface Recipient extends User {}
 
 @Component({})
 export default class UserPicker extends PageComponent {
@@ -35,52 +33,75 @@ export default class UserPicker extends PageComponent {
         this._dataItems = value;
         this.updateFilteredItems();
     }
-
-    constructor() {
-        super();
-        // this.beneficiaries = this.$authService.beneficiaries;
-    }
     updateFilteredItems() {
         if (this.selectionIndex === 1) {
-            this.filteredDataItems = this._dataItems.filter((s) => s.isFavorite === true);
+            this.filteredDataItems = this._dataItems.filter((s) => s.is_favorite === true);
         } else {
-            this.filteredDataItems = this._dataItems;
+            this.filteredDataItems = this._dataItems.slice(0);
         }
     }
     destroyed() {
         super.destroyed();
+        this.$authService.off(ProfileEvent, this.onProfileUpdate, this);
     }
     mounted() {
         super.mounted();
+        this.$authService.on(ProfileEvent, this.onProfileUpdate, this);
         this.buildHistoryFavs();
+    }
+    onProfileUpdate(event: ProfileEventData) {
+        const id = event.data.id;
+        const isFavorite = event.data.is_favorite;
+        const index = this.historyAndFavsItems.findIndex((f) => f.id === id);
+        const index2 = this._dataItems.findIndex((f) => f.id === id);
+        console.log('onProfileUpdate', id, isFavorite, index, index2);
+        if (isFavorite) {
+            if (index < 0) {
+                this.historyAndFavsItems.push(event.data);
+            } else {
+                this.historyAndFavsItems[index].is_favorite = isFavorite;
+            }
+        } else {
+            if (index >= 0) {
+                this.historyAndFavsItems.splice(index, 1);
+            }
+        }
+        if (index2 >= 0) {
+            this._dataItems[index2].is_favorite = isFavorite;
+        }
+        this.updateFilteredItems();
     }
     async buildHistoryFavs() {
         try {
             const historyAndFavsItems = [];
             const history = this.$authService.recipientHistory;
             const favorites = this.$authService.recipientfavorites?.slice(0);
+            console.log('history', history);
+            console.log('favorites', favorites);
             if (history) {
                 for (let index = 0; index < history.length; index++) {
                     const data = history[index];
-                    let isFavorite = false;
+                    let is_favorite = false;
                     const favIndex = favorites ? favorites.findIndex((f) => f.id === data.id) : -1;
                     if (favIndex >= 0) {
                         favorites.splice(favIndex, 1);
-                        isFavorite = true;
+                        is_favorite = true;
                     }
-                    const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
+                    // const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
+                    const recipients = history[index];
                     recipients.forEach((r) => {
                         r['isHistory'] = true;
-                        r['isFavorite'] = isFavorite;
+                        // r['is_favorite'] = is_favorite;
                         historyAndFavsItems.push(r);
                     });
                 }
             }
             if (favorites) {
                 for (let index = 0; index < favorites.length; index++) {
-                    const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
+                    // const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
+                    const recipients = [favorites[index]];
                     recipients.forEach((r) => {
-                        r['isFavorite'] = true;
+                        // r['is_favorite'] = true;
                         historyAndFavsItems.push(r);
                     });
                 }
@@ -90,11 +111,11 @@ export default class UserPicker extends PageComponent {
             this.showError(error);
         }
     }
+
     onTFLoaded() {
         this.textField.requestFocus();
     }
     close() {
-        console.log('close');
         this.$modal.close();
     }
 
@@ -144,6 +165,11 @@ export default class UserPicker extends PageComponent {
         }
     }
     currentQueryText = null;
+
+    clearSearch() {
+        this.currentQueryText = null;
+        this.textField.clearFocus();
+    }
     onTextChange(e) {
         const query = (this.currentQueryText = e.value);
         if (this.searchAsTypeTimer) {

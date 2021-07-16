@@ -18,6 +18,7 @@
                         width="100%"
                         color="black"
                         verticalAlignment="center"
+                        v-model="currentQueryText"
                         @focus="onFocus"
                         @blur="onBlur"
                         @textChange="onTextChange"
@@ -25,7 +26,7 @@
                         @loaded="onTFLoaded"
                     />
                     <Button v-if="canScanQrCode" col="2" variant="text" class="icon-btn" text="mdi-qrcode-scan" />
-                    <Button v-show="!!currentQueryText" col="3" variant="text" class="icon-btn" text="mdi-close" />
+                    <Button v-show="!!currentQueryText" col="3" variant="text" class="icon-btn" text="mdi-close" @tap="clearSearch" />
                 </GridLayout>
                 <TabsBar
                     row="1"
@@ -44,7 +45,7 @@
                 <CollectionView row="3" rowHeight="70" :items="filteredDataItems">
                     <v-template>
                         <GridLayout columns="30,60,*, auto" @tap="chooseRecipient(item)" :rippleColor="colorPrimary">
-                            <Label :visibility="item.isFavorite ? 'visible' : 'hidden'" class="mdi" text="mdi-star" color="#F4BA40" />
+                            <Label :visibility="item.is_favorite ? 'visible' : 'hidden'" class="mdi" text="mdi-star" color="#F4BA40" verticalTextAlignment="center" textAlignment="center" />
                             <Label
                                 col="1"
                                 :visibility="item.isHistory ? 'visible' : 'hidden'"

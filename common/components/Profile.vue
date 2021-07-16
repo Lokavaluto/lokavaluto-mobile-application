@@ -3,7 +3,7 @@
         <StackLayout slot="actionBarRightButtons" verticalAlignment="center" orientation="horizontal">
             <Button variant="text" class="icon-btn" v-show="!editing" text="mdi-qrcode" @tap="toggleQRCode()" />
             <Button variant="text" class="icon-btn" v-show="editable && canSave" text="mdi-content-save" @tap="saveProfile()" />
-            <Button variant="text" class="icon-btn" v-show="editable" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" />
+            <!-- <Button variant="text" class="icon-btn" v-show="editable" :text="editing ? 'mdi-close-circle' : 'mdi-pencil'" @tap="switchEditing()" /> -->
         </StackLayout>
         <ScrollView>
             <StackLayout>
@@ -35,6 +35,8 @@
                         <ButtonWithIcon variant="text" color="red" icon="mdi-logout" :text="$tc('logout')" @tap="logout" />
                     </GridLayout>
                 </StackLayout>
+                <ButtonWithIcon variant="outline" v-if="!myProfile" marginTop="30" icon="mdi-star" :text="$tc('add_to_favorites')" @tap="toggleFavorite" />
+                <ButtonWithIcon v-if="!myProfile" icon="mdi-arrow-right-bold" :text="$tc('send_money')" @tap="sendMoney" />
             </StackLayout>
         </ScrollView>
     </BasePage>

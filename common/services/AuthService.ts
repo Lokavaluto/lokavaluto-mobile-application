@@ -2,7 +2,7 @@ import { numberProperty, objectProperty, stringProperty } from './BackendService
 import { EventData } from '@nativescript/core/data/observable';
 import dayjs from 'dayjs';
 import { MapBounds } from '@nativescript-community/ui-carto/core';
-import { HTTPError, HttpRequestOptions, NetworkService, base64Encode } from './NetworkService';
+import { FakeError, HTTPError, HttpRequestOptions, NetworkService, base64Encode } from './NetworkService';
 import { ImageAsset } from '@nativescript/core/image-asset';
 import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source';
@@ -39,6 +39,7 @@ export const LoggedinEvent = 'loggedin';
 export const LoggedoutEvent = 'loggedout';
 export const AccountInfoEvent = 'accountinfo';
 export const UserProfileEvent = 'userprofile';
+export const ProfileEvent = 'profile';
 export const UserNeedsPasswordChangeEvent = 'userneedspasswordchange';
 
 export interface NominatimAddress {
@@ -70,7 +71,8 @@ export interface NominatimResult {
 export interface AccountInfoEventData extends EventData {
     data: AccountInfo[];
 }
-export interface UserProfileEventData extends EventData {
+export interface UserProfileEventData extends ProfileEventData {}
+export interface ProfileEventData extends EventData {
     data: UserProfile;
 }
 
@@ -106,6 +108,8 @@ export class User {
     email: string;
     partner_latitude: number;
     partner_longitude: number;
+    is_company: boolean;
+    is_favorite: boolean;
     [k: string]: any;
     // webPushSubscriptions: string[] = null;
     // phoneNumbers: PhoneNumber[] = null;
@@ -446,7 +450,6 @@ export default class AuthService extends NetworkService {
             this.userProfile = profile;
             this.notify({
                 eventName: UserProfileEvent,
-                object: this,
                 data: profile
             } as UserProfileEventData);
         }
@@ -472,7 +475,6 @@ export default class AuthService extends NetworkService {
         });
         // this.notify({
         //     eventName: UserProfileEvent,
-        //     object: this,
         //     data: this.userProfile
         // } as UserProfileEventData);
         return result;
@@ -640,7 +642,6 @@ export default class AuthService extends NetworkService {
         // // }
         this.notify({
             eventName: AccountInfoEvent,
-            object: this,
             data: this.accounts
         } as AccountInfoEventData);
         return this.accounts;
@@ -683,7 +684,11 @@ export default class AuthService extends NetworkService {
         categories?: string[];
         payment_context?: boolean;
     }) {
-        return this.lokAPI.searchRecipient(query);
+        try {
+            return (await this.lokAPI.searchRecipient(query)).map((u) => ({ ...u['jsonData'], internalId: u['internalId'] }));
+        } catch (error) {
+            throw error;
+        }
     }
     async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
         let boundingBox = {
@@ -785,7 +790,6 @@ export default class AuthService extends NetworkService {
 
             this.notify({
                 eventName: UserProfileEvent,
-                object: this,
                 data: this.userProfile
             } as UserProfileEventData);
 
@@ -794,7 +798,6 @@ export default class AuthService extends NetworkService {
                 // console.log('emitting loggedin event', new Error().stack);
                 this.notify({
                     eventName: LoggedinEvent,
-                    object: this,
                     data: this.userProfile
                 } as UserProfileEventData);
             }
@@ -821,6 +824,32 @@ export default class AuthService extends NetworkService {
         }
     }
 
+    async toggleFavorite(partner: User): Promise<User> {
+        try {
+            const res: User = await this.lokAPI.$post(`/partner/${partner.id}/toggle_favorite`);
+            const isFavorite = res.is_favorite;
+            if (isFavorite) {
+                const newArray = this.recipientfavorites || [];
+                newArray.push(partner);
+                this.recipientfavorites = newArray;
+            } else if (this.recipientfavorites) {
+                const index = this.recipientfavorites.findIndex((f) => f.id === partner.id);
+                if (index >= 0) {
+                    this.recipientfavorites.splice(index, 1);
+                    this.recipientfavorites = this.recipientfavorites;
+                }
+            }
+            console.log('this.recipientfavorites', this.recipientfavorites);
+            this.notify({
+                eventName: ProfileEvent,
+                data: res
+            } as ProfileEventData);
+            return res;
+        } catch (error) {
+            throw error;
+        }
+    }
+
     async register(user, type: string) {
         return this.request({
             apiPath: '/mobile/users/registration',
@@ -839,7 +868,9 @@ export default class AuthService extends NetworkService {
     }
     async handleRequestRetry(requestParams: HttpRequestOptions, retry = 0) {
         this.logout();
-        throw new HTTPError({
+
+        // throw but dont show the error
+        throw new FakeError({
             statusCode: 401,
             message: 'HTTP error',
             requestParams

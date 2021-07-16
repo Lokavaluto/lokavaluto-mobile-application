@@ -13,7 +13,7 @@ import { sprintf } from 'sprintf-js';
 import { Component, Prop } from 'vue-property-decorator';
 import { formatAddress } from '../helpers/formatter';
 import { $tc } from '../helpers/locale';
-import { Address, PhoneNumber, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '../services/AuthService';
+import { Address, PhoneNumber, ProfileEvent, ProfileEventData, UpdateUserProfile, UserProfile, UserProfileEvent, UserProfileEventData } from '../services/AuthService';
 import { textColor } from '../variables';
 import AddressPicker from './AddressPicker';
 import { ComponentIds } from './App';
@@ -77,6 +77,7 @@ export default class Profile extends PageComponent {
     destroyed() {
         super.destroyed();
         this.$authService.off(UserProfileEvent, this.onProfileUpdate, this);
+        this.$authService.off(ProfileEvent, this.onProfileUpdate, this);
     }
     mounted() {
         super.mounted();
@@ -86,6 +87,7 @@ export default class Profile extends PageComponent {
             this.title = $tc('user_profile', this.userProfile.name);
         }
         this.$authService.on(UserProfileEvent, this.onProfileUpdate, this);
+        this.$authService.on(ProfileEvent, this.onProfileUpdate, this);
     }
     updateMapCenter() {
         if (this.$refs.mapComp && this.userProfile.address && this.userProfile.partner_latitude) {
@@ -99,11 +101,13 @@ export default class Profile extends PageComponent {
             this.$refs.mapComp.addGeoJSONPoints([this.userProfile]);
         }
     }
-    onProfileUpdate(event: UserProfileEventData) {
-        this.loading = false;
-        this.userProfile = event.data;
-        this.image = this.userProfile.image;
-        this.updateMapCenter();
+    onProfileUpdate(event: ProfileEventData) {
+        if (event.data.id === this.userProfile.id) {
+            this.loading = false;
+            this.userProfile = event.data;
+            this.image = this.userProfile.image;
+            this.updateMapCenter();
+        }
     }
     switchEditing() {
         this.editing = !this.editing;
@@ -408,6 +412,27 @@ export default class Profile extends PageComponent {
             if (r) {
                 this.$authService.logout();
             }
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+
+    async toggleFavorite() {
+        try {
+            this.userProfile = await this.$authService.toggleFavorite(this.userProfile);
+        } catch (error) {
+            this.showError(error);
+        }
+    }
+
+    async sendMoney() {
+        try {
+            const component2 = (await import('~/common/components/SendAmountWindow')).default;
+            this.navigateTo(component2, {
+                props: {
+                    recipient: this.userProfile
+                }
+            });
         } catch (error) {
             this.showError(error);
         }

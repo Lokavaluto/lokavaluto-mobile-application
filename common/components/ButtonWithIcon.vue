@@ -1,7 +1,7 @@
 <template>
     <Button @tap="$emit('tap', $event)" textAlignment="center" verticalTextAlignment="center" paddingTop="7" :color="color">
         <Span :fontSize="vertical ? 14 : 26" :fontFamily="mdiFontFamily" :text="icon" :visibility="icon ? 'visible' : 'collapsed'" verticalAlignment="center" />
-        <Span :text="((vertical ? '\n' : '  ') + text) | uppercase" verticalAlignment="center" :fontSize="vertical ? 14 : 17" />
+        <Span :text="((vertical ? '\n' : '  ') + text) | uppercase" verticalAlignment="center" :fontSize="vertical ? 12 : 17" />
     </Button>
 </template>
 <script lang="ts">
