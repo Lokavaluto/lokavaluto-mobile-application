@@ -1,6 +1,6 @@
 <template>
     <BasePage id="home" showMenuIcon @navigatedTo="onNavigatedTo">
-        <InteractiveMap :isUserInteractionEnabled="false" />
+        <InteractiveMap :isUserInteractionEnabled="false" :loadCategories="false"/>
         <GridLayout @tap="goToMap" />
 
         <StackLayout class="flatCardView" elevation="10" borderRadius="25" margin="0 40 50 40" v-show="!currentlyLoggedIn" verticalAlignment="bottom">

@@ -39,6 +39,7 @@ export default class InteractiveMap extends BaseVueComponent {
     @Prop({ default: 1 }) opacity: number;
     @Prop({ default: false }) locationButton: boolean;
     @Prop({ default: true }) isUserInteractionEnabled: boolean;
+    @Prop({ default: true }) loadCategories: boolean;
 
     get scrollingWidgetsOpacity() {
         if (this.bottomSheetPercentage <= 0.5) {
@@ -61,11 +62,13 @@ export default class InteractiveMap extends BaseVueComponent {
     mounted() {
         super.mounted();
         this.mapFilterSlugs = [];
-        if (!this.mapCategories) {
-            this.$authService.categories().then((r) => {
-                console.log('categories', r);
-                this.mapCategories = categories = r;
-            });
+        if (this.loadCategories) {
+            if (!this.mapCategories) {
+                this.$authService.categories().then((r) => {
+                    console.log('categories', r);
+                    this.mapCategories = categories = r;
+                });
+            }
         }
     }
     destroyed() {

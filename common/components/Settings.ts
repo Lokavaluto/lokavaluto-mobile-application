@@ -44,7 +44,7 @@ export default class Settings extends PageComponent {
 
     async refreshSettings() {
         this.ignoreNextChange = true;
-        this.userSettings = await this.$authService.getUserSettings();
+        // this.userSettings = await this.$authService.getUserSettings();
     }
 
     // get paymentNotifSettings() {
