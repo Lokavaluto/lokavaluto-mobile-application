@@ -436,6 +436,10 @@ export default class App extends BaseVueComponent {
         }
     }
     canGoBack() {
+        const frame = Frame.topmost();
+        if (frame !== this.innerFrame) {
+            return frame.canGoBack();
+        }
         return this.innerFrame && this.innerFrame.canGoBack();
     }
 
@@ -469,6 +473,10 @@ export default class App extends BaseVueComponent {
         this.handleSetActivatedUrl(id);
     }
     async navigateBack(backEntry?) {
+        const frame = Frame.topmost();
+        if (frame !== this.innerFrame) {
+            return frame.goBack();
+        }
         this.innerFrame && this.innerFrame.goBack(backEntry);
     }
 
