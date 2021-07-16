@@ -1,10 +1,11 @@
 <template>
-    <Button @tap="$emit('tap', $event)" textAlignment="center" verticalTextAlignment="center" paddingTop="7">
-        <Span fontSize="26" :fontFamily="mdiFontFamily" :text="icon" :visibility="icon ? 'visible' : 'collapsed'" verticalAlignment="center" />
-        <Span :text="('  ' + text) | uppercase" verticalAlignment="center" />
+    <Button @tap="$emit('tap', $event)" textAlignment="center" verticalTextAlignment="center" paddingTop="7" :color="color">
+        <Span :fontSize="vertical ? 14 : 26" :fontFamily="mdiFontFamily" :text="icon" :visibility="icon ? 'visible' : 'collapsed'" verticalAlignment="center" />
+        <Span :text="((vertical ? '\n' : '  ') + text) | uppercase" verticalAlignment="center" :fontSize="vertical ? 14 : 17" />
     </Button>
 </template>
 <script lang="ts">
+import { Color } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component, Prop } from 'vue-property-decorator';
 import { appFontFamily, colorAccent, mdiFontFamily } from '../variables';
@@ -16,5 +17,7 @@ export default class ButtonWithIcon extends Vue {
     colorAccent = colorAccent;
     @Prop({ type: String }) text: string;
     @Prop({ type: String }) icon: string;
+    @Prop() color: string | Color;
+    @Prop({ type: Boolean, default: false }) vertical: boolean;
 }
 </script>
