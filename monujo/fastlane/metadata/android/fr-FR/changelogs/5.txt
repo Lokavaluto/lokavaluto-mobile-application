@@ -1,0 +1,9 @@
+*Features*
+- user picker can show user details bottom sheet
+- basic favorite support
+
+*Bug fixes*
+- new profile window
+- fix currency format
+- dont show error dialog on logout on http error
+- dont load map categories on home
