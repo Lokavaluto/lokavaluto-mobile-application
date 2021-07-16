@@ -100,9 +100,9 @@ export function formatCurrency(num, showZeroCents = true) {
     if (cents < 10) {
         cents = '0' + cents;
     }
-    for (let i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
-        num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
-    }
+    // for (let i = 0; i < Math.floor((num.length - (1 + i)) / 3); i++) {
+    //     num = num.substring(0, num.length - (4 * i + 3)) + ',' + num.substring(num.length - (4 * i + 3));
+    // }
 
     let result = (sign ? '' : '-') + num;
     if (cents !== '00' || showZeroCents) {
