@@ -87,7 +87,8 @@ export default class SendReceiveWindow extends PageComponent {
                 props: {
                     pro: false,
                     title: $tc('pick_a_recipient'),
-                    canScanQrCode: true
+                    canScanQrCode: true,
+                    modal: true
                 },
                 fullscreen: true
             });

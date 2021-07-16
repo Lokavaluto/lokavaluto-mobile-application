@@ -1,6 +1,6 @@
 <template>
     <Frame>
-        <BasePage showMenuIcon modal actionBarThemed :title="title">
+        <BasePage showMenuIcon :modal="modal" actionBarThemed :title="title">
             <MDActivityIndicator slot="actionBarRightButtons" v-show="loading" busy class="activity-indicator" />
             <GridLayout class="pageContent" rows="auto,auto,8,*">
                 <GridLayout columns="auto,*,auto,auto,auto" height="50" margin="10 16 10 16" borderRadius="25" borderWidth="1" borderColor="#F2F2F2" padding="0 10 0 10">

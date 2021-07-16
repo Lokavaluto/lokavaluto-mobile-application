@@ -385,13 +385,12 @@ export default class Profile extends PageComponent {
     async showContacts() {
         try {
             const component = (await import('~/common/components/UserPicker')).default;
-            const recipient = await this.$showModal(component, {
+            this.$navigateTo(component, {
                 props: {
                     pro: true,
                     clickToShowProfile: true,
                     title: $tc('contacts')
-                },
-                fullscreen: true
+                }
             });
         } catch (err) {
             this.showError(err);

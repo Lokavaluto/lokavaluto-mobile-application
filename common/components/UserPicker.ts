@@ -15,6 +15,7 @@ export default class UserPicker extends PageComponent {
     colorPrimary = colorPrimary;
     @Prop({ default: () => [] }) favorites: User[];
     @Prop({ default: true }) pro: boolean;
+    @Prop({ default: false }) modal: boolean;
     @Prop({ default: $tc('pick_a_recipient') }) title: string;
 
     selectionIndex: number = 0;
