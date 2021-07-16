@@ -75,9 +75,7 @@ export default class InteractiveMap extends BaseVueComponent {
         super.destroyed();
     }
     // map: Mapbox;
-    onMapReady(e) {
-
-    }
+    onMapReady(e) {}
     onLayoutChange() {
         // sometimes onMapStable is not called at first so we need this
         // to make sure the map refreshes
