@@ -21,6 +21,9 @@ export default class UserPicker extends PageComponent {
 
     selectionIndex: number = 0;
 
+    @Prop({ default: false }) canScanQrCode: boolean;
+    @Prop({ default: false }) clickToShowProfile: boolean;
+
     _dataItems: Recipient[] = [];
     filteredDataItems: Recipient[] = [];
     historyAndFavsItems: Recipient[] = [];
@@ -140,8 +143,9 @@ export default class UserPicker extends PageComponent {
             this.dataItems = items;
         }
     }
+    currentQueryText = null;
     onTextChange(e) {
-        const query = e.value;
+        const query = (this.currentQueryText = e.value);
         if (this.searchAsTypeTimer) {
             clearTimeout(this.searchAsTypeTimer);
             this.searchAsTypeTimer = null;
@@ -164,7 +168,32 @@ export default class UserPicker extends PageComponent {
         }
         // this.currentSearchText = query;
     }
+
+    async showUserDetails(item: Recipient) {
+        try {
+            const component = (await import('~/common/components/UserDetailsBottomSheet')).default;
+            this.$showBottomSheet(component, {
+                props: {
+                    user: item
+                }
+            });
+        } catch (err) {
+            this.showError(err);
+        }
+    }
+    async showSettings(item: Recipient) {
+        try {
+            const component = (await import('~/common/components/Settings')).default;
+            this.$showBottomSheet(component);
+        } catch (err) {
+            this.showError(err);
+        }
+    }
     chooseRecipient(item: Recipient) {
+        if (this.clickToShowProfile) {
+            this.showUserDetails(item);
+            return;
+        }
         const history = this.$authService.recipientHistory || [];
         if (history.findIndex((h) => h.id === item.id) === -1) {
             history.push(item.jsonData);
