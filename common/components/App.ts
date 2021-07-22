@@ -779,7 +779,6 @@ export default class App extends BaseVueComponent {
                 const data = parsed.data;
                 if (global.isAndroid) {
                     const visible = this.isVisisble();
-                    console.log('android transfer data', data, visible);
                     if (!visible) {
                         const context = this.nativeView._context;
 
@@ -790,7 +789,6 @@ export default class App extends BaseVueComponent {
                             intent.putExtra('data', JSON.stringify(data));
                             intent.addFlags(android.content.Intent.FLAG_ACTIVITY_NEW_TASK);
 
-                            console.log('starting FloatingActivity activity');
                             context.startActivity(intent);
                             context.overridePendingTransition(0, 0);
                             context.moveTaskToBack(true);

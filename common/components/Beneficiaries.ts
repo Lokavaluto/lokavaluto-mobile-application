@@ -67,7 +67,6 @@ export default class Beneficiaries extends PageComponent {
     }
 
     onItemTap(userProfile: User) {
-        console.log('onItemTap', userProfile);
         if (this.$authService.isProUser(userProfile)) {
             // const accountInfo = this.dataItems[args.index];
             this.navigateTo(Profile, {

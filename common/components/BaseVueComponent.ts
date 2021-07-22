@@ -70,7 +70,6 @@ export default class BaseVueComponent extends Vue {
     showLoadingStartTime: number = null;
     showLoading(msg: string) {
         const loadingIndicator = this.getLoadingIndicator();
-        // console.log('showLoading', msg, !!this.loadingIndicator);
         loadingIndicator.label.text = $t(msg) + '...';
         this.showLoadingStartTime = Date.now();
         loadingIndicator.show();
@@ -81,15 +80,12 @@ export default class BaseVueComponent extends Vue {
             setTimeout(() => this.hideLoading(), 1000 - delta);
             return;
         }
-        // console.log('hideLoading', !!this.loadingIndicator);
         if (this.loadingIndicator) {
             this.loadingIndicator.hide();
         }
     }
     mounted() {}
-    destroyed() {
-        // console.log('destroyed');
-    }
+    destroyed() {}
 
     navigateTo(component: VueConstructor, options?: NavigationEntryVue, cb?: () => Page) {
         options = options || {};

@@ -20,7 +20,7 @@
                 <slot name="actionBarRightButtons" slot="rightButtons" />
                 <slot name="actionBarSubView" slot="subView" />
             </CActionBar>
-            <CActionBar
+            <!-- <CActionBar
                 v-if="!bottomActionBarHidden"
                 row="3"
                 :showMenuIcon="showMenuIcon"
@@ -44,7 +44,7 @@
                 horizontalAlignment="center"
                 verticalAlignment="top"
                 @tap="$emit('actionTap', $event)"
-            />
+            /> -->
             <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
         </GridLayout>
     </Page>

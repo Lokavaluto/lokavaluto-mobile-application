@@ -66,21 +66,15 @@ export default class Login extends PageComponent {
     }
 
     @Watch('user', { deep: true })
-    onUserChange() {
-        // console.log('onUserChange', this.user);
-    }
+    onUserChange() {}
 
     animateLogoView() {
-        // const view = this.getRef('logoView');
         return new Promise((resolve) => {
             new TWEEN.Tween({ height: this.logoViewHeight })
                 .to({ height: 200 }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
-                .onUpdate((object) => {
-                    this.logoViewHeight = object.height;
-                    // Object.assign(view.style, object)
-                })
+                .onUpdate((object) => (this.logoViewHeight = object.height))
                 .start(0);
         }).catch(this.showError);
     }
@@ -91,10 +85,7 @@ export default class Login extends PageComponent {
                 .to({ height: actionBarHeight }, 1000)
                 .easing(TWEEN.Easing.Elastic.Out)
                 .onComplete(resolve)
-                .onUpdate((object) => {
-                    this.logoViewHeight = object.height;
-                    // Object.assign(view.style, object)
-                })
+                .onUpdate((object) => (this.logoViewHeight = object.height))
                 .start(0);
         }).catch(this.showError);
     }
