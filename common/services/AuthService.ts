@@ -96,18 +96,18 @@ function getCacheControl(maxAge = 60, stale = 59) {
     return `max-age=${maxAge}, max-stale=${stale}, stale-while-revalidate=${stale}`;
 }
 
-export class User {
+export class User implements LokAPIType.IPartner {
     id: number;
     name: string;
     street: string;
     street2: string;
-    zip: number;
-    city: string;
+    zip: string;
+    city?: string;
     phone: string;
     mobile: string;
     email: string;
-    partner_latitude: number;
-    partner_longitude: number;
+    partner_latitude?: number;
+    partner_longitude?: number;
     is_company: boolean;
     is_favorite: boolean;
     [k: string]: any;
@@ -375,7 +375,6 @@ export default class AuthService extends NetworkService {
 
         this.lokAPI = new NativeLokAPI(APP_HOST, APP_DB, this);
         this.lokAPI.apiToken = this.token;
-        console.log('AuthService', this.token, this.userProfile);
     }
 
     async lokAPIRequest<T = any>(opts: LokAPIType.coreHttpOpts) {
