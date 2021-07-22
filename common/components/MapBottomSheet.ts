@@ -33,7 +33,6 @@ export default class MapBottomSheet extends BaseVueComponent {
         this.innerSelectedPageIndex = this.selectedPageIndex;
     }
     showProfile(item: User) {
-        // console.log('showProfile', item);
         this.navigateTo(Profile, {
             props: {
                 propUserProfile: item,

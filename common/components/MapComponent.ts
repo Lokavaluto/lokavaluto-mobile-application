@@ -105,7 +105,6 @@ export default class MapComponent extends BaseVueComponent {
         options.setTileThreadPoolSize(2);
         options.setZoomGestures(true);
         options.setRotatable(false);
-        // console.log('this.isUserInteraction', this.isUserInteraction, options)
         options.setUserInput(this.isUserInteractionEnabled);
 
         const pos = JSON.parse(getString('mapFocusPos') || '{"lat":45,"lon":6}') as MapPos<LatLonKeys>;
@@ -114,12 +113,6 @@ export default class MapComponent extends BaseVueComponent {
             cartoMap.setFocusPos(pos, 0);
             cartoMap.setZoom(zoom, 0);
         }
-
-        // options.setDrawDistance(8);
-        // if (appSettings.getString('mapFocusPos')) {
-        //     console.log('saved focusPos', appSettings.getString('mapFocusPos'));
-        //     cartoMap.setFocusPos(JSON.parse(appSettings.getString('mapFocusPos')), 0);
-        // }
 
         const cacheFolder = Folder.fromPath(path.join(knownFolders.documents().path, 'carto_cache'));
         const dataSource = new PersistentCacheTileDataSource({
@@ -139,40 +132,10 @@ export default class MapComponent extends BaseVueComponent {
         });
         cartoMap.addLayer(this.rasterLayer);
 
-        // this.getOrCreateLocalVectorTileLayer();
-        // this.ignoreStable = true;
-        // this.localVectorTileDataSource.setLayerGeoJSON(1, perimeterGeoJSON);
-
-        console.log('onMapReady', this.zoom, cartoMap.zoom, cartoMap.focusPos, 0);
-        // setTimeout(() => {
-        // perms
-        // .request('storage')
-        // .then(status => {
-        // console.log('on request storage', status, this.actionBarButtonHeight, !!this._cartoMap);
-        // if (status === 'authorized') {
-        // this.$packageService.start();
-        // this.setMapStyle(appSettings.getString('mapStyle', 'alpimaps.zip'));
-        // this.runOnModules('onMapReady', this, cartoMap);
-        // cartoMap.requestRedraw();
-        // console.log('onMapReady', 'done');
-        // } else {
-        //     return Promise.reject(status);
-        // }
-        // })
-        // .catch(err => console.error(err));
-        // }, 0);
-        // this.updateSession();
-        // if (this.sessionLine) {
-        //     const zoomBounds = this.sessionLine.getBounds();
-        //     const zoomLevel = getBoundsZoomLevel(zoomBounds, { width: screen.mainScreen.widthDIPs, height: screen.mainScreen.heightDIPs });
-        //     cartoMap.setZoom(Math.min(zoomLevel, 18), 0);
-        //     cartoMap.setFocusPos(getCenter(zoomBounds.northeast, zoomBounds.southwest), 0);
-        // }
         this.$emit('mapReady', e);
     }
     onMapMove(e) {
         this.userFollow = !e.data.userAction;
-        // console.log('onMapMove',this._cartoMap.zoom, this._cartoMap.focusPos);
         this.$emit('mapMove', e);
     }
 
@@ -186,7 +149,6 @@ export default class MapComponent extends BaseVueComponent {
         setString('mapFocusPos', JSON.stringify(cartoMap.focusPos));
     }
     onMapStable(e) {
-        // console.log('onMapStable', this.ignoreStable);
         if (this.ignoreStable) {
             this.ignoreStable = false;
             return;
@@ -231,8 +193,6 @@ export default class MapComponent extends BaseVueComponent {
     getOrCreateLocalVectorLayer() {
         if (!this.localVectorLayer && this._cartoMap) {
             this.localVectorLayer = new VectorLayer({ visibleZoomRange: [0, 24], dataSource: this.localVectorDataSource });
-            // this.localVectorLayer.setVectorElementEventListener(null);
-            // this.localVectorLayer.setVectorElementEventListener(this);
 
             // always add it at 1 to respect local order
             this._cartoMap.addLayer(this.localVectorLayer);
@@ -277,7 +237,6 @@ export default class MapComponent extends BaseVueComponent {
             }
         ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
-        // console.log('geojson', points.length);
         // geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.ignoreStable = true;
         this.getOrCreateLocalVectorTileLayer();
@@ -285,7 +244,6 @@ export default class MapComponent extends BaseVueComponent {
     }
     onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;
-        // console.log('onVectorElementClicked');
         Object.keys(metaData).forEach((k) => {
             metaData[k] = JSON.parse(metaData[k]);
         });
@@ -293,7 +251,6 @@ export default class MapComponent extends BaseVueComponent {
     }
     onVectorTileClicked(data: VectorTileEventData) {
         this.$emit('tileElementClick', data);
-        // console.log('onVectorTileClicked', this.vectorTileClicked);
         if (this.vectorTileClicked) {
             return this.vectorTileClicked(data);
         }
@@ -313,7 +270,6 @@ export default class MapComponent extends BaseVueComponent {
             lon: geoPos.lon,
             horizontalAccuracy: geoPos.horizontalAccuracy
         };
-        console.log('updateUserLocation', position, geoPos, this.userFollow);
         if (this.userMarker) {
             const currentLocation = {
                 lat: this.lastUserLocation.lat,
@@ -338,7 +294,6 @@ export default class MapComponent extends BaseVueComponent {
                 .start(0);
         } else {
             this.getOrCreateLocalVectorLayer();
-            // const projection = this.mapView.projection;
 
             this.accuracyMarker = new Polygon({
                 positions: this.getCirclePoints(geoPos),
@@ -369,8 +324,6 @@ export default class MapComponent extends BaseVueComponent {
                 }
             });
             this.localVectorDataSource.add(this.userMarker);
-            // this.userBackMarker.position = position;
-            // this.userMarker.position = position;
         }
         if (this.userFollow) {
             this._cartoMap.setZoom(Math.max(this._cartoMap.zoom, 16), position, LOCATION_ANIMATION_DURATION);
@@ -383,43 +336,10 @@ export default class MapComponent extends BaseVueComponent {
             console.log(data.error);
             return;
         }
-        // const { android, ios, ...toPrint } = data.location;
-        console.log('onLocation', data.location);
         this.updateUserLocation(data.location);
     }
-    // onServiceLoaded(bluetoothHandler, geoHandler: GeoHandler) {
-    //     this.geoHandlerOn(UserLocationdEvent, this.onLocation, this);
-    // }
     askUserLocation() {
         this.userFollow = true;
         return this.geoHandler.enableLocation(false).then(() => this.geoHandler.getLocation());
     }
-
-    // updateSession() {
-    //     if (!this.session || !this._cartoMap) {
-    //         return;
-    //     }
-    //     if (!this.sessionLine) {
-    //         this.sessionLine = new Line({
-    //             positions: [],
-    //             styleBuilder: {
-    //                 color: 'orange',
-    //                 joinType: LineJointType.ROUND,
-    //                 endType: LineEndType.ROUND,
-    //                 clickWidth: 20,
-    //                 width: 10
-    //             }
-    //         });
-    //         this.getOrCreateLocalVectorLayer();
-    //         this.localVectorDataSource.add(this.sessionLine);
-    //     }
-    //     this.sessionLine.positions = this.session.locs.map(l => ({ lat: l.lat, lon: l.lon }));
-    // }
-    // @Watch('session', { deep: true })
-    // onSessionUpdated(s: Session) {
-    //     // console.log('onSessionUpdated', s);
-    //     this.updateSession();
-
-    //     // console.log('createPolyline', JSON.stringify(result));
-    // }
 }

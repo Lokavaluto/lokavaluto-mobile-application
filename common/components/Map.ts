@@ -2,11 +2,12 @@ import { Component } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
-import Vue, { NativeScriptVue, NavigationEntryVue } from 'nativescript-vue';
+import MapComponent from './MapComponent';
 import { mdiFontFamily } from '../variables';
 
 @Component({
     components: {
+        MapComponent,
         InteractiveMap
     }
 })

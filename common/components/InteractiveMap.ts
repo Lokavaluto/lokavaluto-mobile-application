@@ -65,7 +65,6 @@ export default class InteractiveMap extends BaseVueComponent {
         if (this.loadCategories) {
             if (!this.mapCategories) {
                 this.$authService.categories().then((r) => {
-                    console.log('categories', r);
                     this.mapCategories = categories = r;
                 });
             }
@@ -90,7 +89,7 @@ export default class InteractiveMap extends BaseVueComponent {
     }
 
     onMapClicked(e) {
-        console.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
+        // console.log('onMapClicked', !!this._cartoMap, !!this.currentBounds);
         this.bottomSheetStepIndex = 0;
     }
     onMapStable(e) {
@@ -128,7 +127,7 @@ export default class InteractiveMap extends BaseVueComponent {
         this.$authService
             .getUsersForMap(mapBounds, this.mapFilterSlugs)
             .then((r) => {
-                // console.log('received', r.length, 'users for map');
+                console.log('received', r.length, 'users for map');
                 this.shownUsers = r;
                 if (r.length > 0) {
                     // const geojson = GeoJSON.parse(r, { Point: ['address.lat', 'address.lon'], include: ['name', 'id'] });

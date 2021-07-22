@@ -1,5 +1,5 @@
 <template>
-    <BottomSheet :opacity="opacity" :panGestureOptions="bottomSheetPanGestureOptions" :steps="bottomSheetSteps" v-model="bottomSheetStepIndex" @close="unselectItem">
+    <BottomSheet :opacity="opacity" :panGestureOptions="bottomSheetPanGestureOptions" :steps="bottomSheetSteps" v-model="bottomSheetStepIndex" @close="unselectItem" @layoutChanged="onLayoutChange">
         <MapComponent
             ref="mapComp"
             rowSpan="2"
