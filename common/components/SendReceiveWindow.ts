@@ -60,7 +60,7 @@ export default class SendReceiveWindow extends PageComponent {
     async refresh() {
         try {
             let totalSold = 0;
-            const accounts = this.$authService.lokAPI.accounts;
+            const accounts = await this.$authService.lokAPI.getAccounts();
             for (let index = 0; index < accounts.length; index++) {
                 totalSold += parseFloat(await accounts[index].getBalance());
             }
