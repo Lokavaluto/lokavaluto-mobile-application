@@ -685,7 +685,7 @@ export default class AuthService extends NetworkService {
         payment_context?: boolean;
     }) {
         try {
-            return (await this.lokAPI.searchRecipient(query)).map((u) => ({ ...u['jsonData'], internalId: u['internalId'] }));
+            return await this.lokAPI.searchRecipient(query);
         } catch (error) {
             throw error;
         }

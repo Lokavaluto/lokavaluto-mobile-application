@@ -82,27 +82,23 @@ export default class UserPicker extends PageComponent {
             if (history) {
                 for (let index = 0; index < history.length; index++) {
                     const data = history[index];
-                    let is_favorite = false;
                     const favIndex = favorites ? favorites.findIndex((f) => f.id === data.id) : -1;
                     if (favIndex >= 0) {
                         favorites.splice(favIndex, 1);
-                        is_favorite = true;
                     }
-                    // const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
-                    const recipients = history[index];
-                    recipients.forEach((r) => {
-                        r['isHistory'] = true;
-                        // r['is_favorite'] = is_favorite;
-                        historyAndFavsItems.push(r);
-                    });
-                }
+                    const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
+                    if (recipients) {
+                        recipients.forEach((r) => {
+                            r['isHistory'] = true;
+                            historyAndFavsItems.push(r);
+                        });
+                    }
+                    }
             }
             if (favorites) {
                 for (let index = 0; index < favorites.length; index++) {
-                    // const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
-                    const recipients = [favorites[index]];
+                    const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
                     recipients.forEach((r) => {
-                        // r['is_favorite'] = true;
                         historyAndFavsItems.push(r);
                     });
                 }
@@ -222,7 +218,7 @@ export default class UserPicker extends PageComponent {
             return;
         }
         const history = this.$authService.recipientHistory || [];
-        if (history.findIndex((h) => h.id === item.id) === -1) {
+        if (history.findIndex((h) => h && h.id === item.id) === -1) {
             history.push(item.jsonData);
             this.$authService.recipientHistory = history;
         }
