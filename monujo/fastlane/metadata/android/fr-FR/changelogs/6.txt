@@ -1,0 +1,6 @@
+*Features*
+- enable http cache support
+
+*Bug fixes*
+- Map components fix
+- always use getAccounts to ensure we are up to date
