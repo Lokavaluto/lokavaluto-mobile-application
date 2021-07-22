@@ -86,8 +86,10 @@ if (gVars.sentry) {
 }
 const originalConsole = {
     log: console.log,
+    info: console.info,
     error: console.error,
     warn: console.warn,
+    debug: console.debug
 };
 
 function convertArg(arg) {
