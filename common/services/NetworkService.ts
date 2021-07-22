@@ -6,6 +6,7 @@ import { BaseError } from 'make-error';
 import { Headers } from '@nativescript/core/http';
 import * as https from '@nativescript-community/https';
 import { DEV_LOG } from '../utils/logging';
+import { knownFolders } from '@nativescript/core';
 
 export function base64Encode(value) {
     if (global.isIOS) {
@@ -318,6 +319,15 @@ export class NetworkService extends Observable {
     start() {
         connectivity.startMonitoring(this.onConnectionStateChange.bind(this));
         this.connectionType = connectivity.getConnectionType();
+        const folder = knownFolders.documents().getFolder('cache');
+        const diskLocation = folder.path;
+        const cacheSize = 10 * 1024 * 1024;
+        DEV_LOG && console.log('setCache', diskLocation, cacheSize);
+        https.setCache({
+            diskLocation,
+            diskSize: cacheSize,
+            memorySize: cacheSize
+        });
     }
     stop() {
         connectivity.stopMonitoring();
