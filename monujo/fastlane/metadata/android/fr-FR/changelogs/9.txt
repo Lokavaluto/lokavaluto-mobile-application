@@ -1,0 +1,2 @@
+*Bug fixes*
+- new assets design for Monujo
