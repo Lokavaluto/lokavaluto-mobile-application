@@ -6,9 +6,9 @@
         <StackLayout class="flatCardView" elevation="10" borderRadius="25" margin="0 40 50 40" v-show="!currentlyLoggedIn" verticalAlignment="bottom">
             <CanvasLabel height="100" padding="20" @tap="() => {}">
                 <CGroup :color="colorAccent" lineHeight="30">
-                    <CSpan text="mdi-check" color="#46B020" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" />
+                    <CSpan text="mdi-check" :color="colorPrimary" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" />
                     <CSpan :text="' ' + $tc('apy_my_purchases')" fontSize="16" fontWeight="bold" verticalTextAlignment="center" />
-                    <CSpan :text="'\n' + 'mdi-check'" color="#46B020" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" />
+                    <CSpan :text="'\n' + 'mdi-check'" :color="colorPrimary" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" />
                     <CSpan :text="' ' + $tc('send_request_money')" fontSize="16" fontWeight="bold" verticalTextAlignment="center" />
                 </CGroup>
             </CanvasLabel>

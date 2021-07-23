@@ -4,7 +4,7 @@
     <StackLayout padding="30 30 0 30" rows="*,*,*" height="400">
         <!-- <StackLayout verticalAlignment="center"> -->
         <Label :text="$tc('transaction_done')" textAlignment="center" fontSize="20" />
-        <Label text="mdi-check" color="#46B020" fontSize="50" :fontFamily="mdiFontFamily" textAlignment="center" />
+        <Label text="mdi-check" :color="colorPrimary" fontSize="50" :fontFamily="mdiFontFamily" textAlignment="center" />
         <!-- </StackLayout> -->
         <!-- <StackLayout row="1" verticalAlignment="center"> -->
         <Label :text="$tc('recipient')" fontSize="16" color="#A0A0A0" textAlignment="center" marginTop="20" />

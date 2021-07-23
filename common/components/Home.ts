@@ -3,7 +3,7 @@ import { NavigatedData } from '@nativescript/core';
 import Vue from 'nativescript-vue';
 import { Component } from 'vue-property-decorator';
 import { AccountInfoEvent, AccountInfoEventData, LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
-import { mdiFontFamily } from '../variables';
+import { colorPrimary, mdiFontFamily } from '../variables';
 import { ComponentIds } from './App';
 import CreditAccount from './CreditAccount';
 import InteractiveMap from './InteractiveMap';
@@ -18,6 +18,7 @@ export default class Home extends PageComponent {
     navigateUrl = ComponentIds.Situation;
     amountError: string = null;
     mdiFontFamily = mdiFontFamily;
+    colorPrimary = colorPrimary;
     totalSold: number | string = '-';
     symbol: string = 'U';
     constructor() {

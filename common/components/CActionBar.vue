@@ -15,10 +15,7 @@
                     class="actionBarLogo"
                     :themed="themed"
                     text="app-full_logo"
-                    padding="10"
                     :autoFontSize="true"
-                    textAlignment="center"
-                    verticalAlignment="center"
                     @tap="$emit('titleTap', $event)"
                 />
             </slot>

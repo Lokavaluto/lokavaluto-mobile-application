@@ -1,0 +1,8 @@
+<layer-list
+    xmlns:android="http://schemas.android.com/apk/res/android" android:gravity="fill">
+    <item
+    android:drawable="@color/colorPrimaryDark"
+    android:gravity="fill" />
+    <item android:gravity="center"  android:drawable="@drawable/ic_logo_big">
+    </item>
+</layer-list>

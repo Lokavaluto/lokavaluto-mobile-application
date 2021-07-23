@@ -2,7 +2,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import PageComponent from './PageComponent';
 import { ComponentIds } from './App';
 import InteractiveMap from './InteractiveMap';
-import { mdiFontFamily } from '../variables';
+import { colorPrimary, mdiFontFamily } from '../variables';
 import { $tc } from '../helpers/locale';
 import { Benificiary, Roles, User } from '../services/AuthService';
 import { TextField } from '@nativescript-community/ui-material-textfield';
@@ -26,6 +26,7 @@ export default class SendAmountWindow extends PageComponent {
     @Prop({ default: () => Vue.prototype.$authService.accounts[0] }) account: any;
     amount: number = 0;
     mdiFontFamily = mdiFontFamily;
+    colorPrimary = colorPrimary;
     ignoreNextTextChange = false;
     oldAmountStr = null;
     description = null;

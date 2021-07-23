@@ -168,7 +168,9 @@ mdtextfield {
 }
 
 .actionBarLogo {
+    padding:0;
     vertical-alignment: center;
+    text-alignment: center;
     color: $color-primary;
 }
 

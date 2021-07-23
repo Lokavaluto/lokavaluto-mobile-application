@@ -14,7 +14,7 @@ import { Component, Prop } from 'vue-property-decorator';
 import { Benificiary, Roles, User } from '../services/AuthService';
 import PageComponent from './PageComponent';
 import { t as LokAPIType } from '~/lokapi/src/index';
-import { appFontFamily, mdiFontFamily } from '../variables';
+import { appFontFamily, colorPrimary, mdiFontFamily } from '../variables';
 import BaseVueComponent from './BaseVueComponent';
 
 interface Recipient extends User {
@@ -23,6 +23,7 @@ interface Recipient extends User {
 
 @Component({})
 export default class TransferConfirmation extends BaseVueComponent {
+    colorPrimary = colorPrimary;
     mdiFontFamily = mdiFontFamily;
     appFontFamily = appFontFamily;
     @Prop() account: any;

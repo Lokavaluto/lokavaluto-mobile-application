@@ -7,6 +7,7 @@ import BottomSheetBase from './BottomSheet/BottomSheetBase';
 import BaseVueComponent from './BaseVueComponent';
 import { Directions } from 'nativescript-directions';
 import { $tc } from '../helpers/locale';
+import { colorPrimary } from '../variables';
 const directions = new Directions();
 
 export const BOTTOMSHEET_HEIGHT = 200;
@@ -23,6 +24,7 @@ function getViewTop(view: View) {
     components: {}
 })
 export default class MapBottomSheet extends BaseVueComponent {
+    colorPrimary = colorPrimary;
     @Prop() items: User[];
     @Prop() height: number;
     @Prop() selectedPageIndex = 0;

@@ -19,7 +19,7 @@
                     height="40"
                 />
                 <Label col="1" :text="recipient && recipient.name" fontSize="18" margin="10" color="#A3A3A3" verticalTextAlignment="center" />
-                <Label col="2" text="mdi-check" color="#46B020" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" marginRight="10" />
+                <Label col="2" text="mdi-check" :color="colorPrimary" fontSize="22" :fontFamily="mdiFontFamily" verticalTextAlignment="center" marginRight="10" />
             </GridLayout>
             <Label :text="$tc('amount')" fontSize="25" margin="10" />
             <TextField

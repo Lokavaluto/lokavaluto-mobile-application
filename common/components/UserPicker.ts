@@ -77,8 +77,6 @@ export default class UserPicker extends PageComponent {
             const historyAndFavsItems = [];
             const history = this.$authService.recipientHistory;
             const favorites = this.$authService.recipientfavorites?.slice(0);
-            console.log('history', history);
-            console.log('favorites', favorites);
             if (history) {
                 for (let index = 0; index < history.length; index++) {
                     const data = history[index];

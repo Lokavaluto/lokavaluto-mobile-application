@@ -10,7 +10,7 @@
                     <Label row="3" colSpan="2" fontSize="15" color="#686868" verticalAlignment="top" :text="userProfile.email" />
                 </GridLayout>
                 <GridLayout v-if="!userProfile" height="150" padding="15 15 5 15" borderBottomWidth="1" borderBottomColor="#E0E0E0" marginBottom="4" columns="50,*">
-                    <Label :fontFamily="appFontFamily" colSpan="2" fontSize="40" :color="themeColor" text="app-full_logo" textAlignment="center" verticalAlignment="top" verticalTextAlignment="top" />
+                    <Label :fontFamily="appFontFamily" colSpan="2" fontSize="60" :color="themeColor" text="app-full_logo" textAlignment="center" verticalAlignment="top" verticalTextAlignment="top" />
                     <Label
                         class="mdi"
                         borderRadius="20"
