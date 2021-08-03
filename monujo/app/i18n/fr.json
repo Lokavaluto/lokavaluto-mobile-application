@@ -84,6 +84,7 @@
   "forgot_password": "mot de passe oublié",
   "fos_user.email.already_used": "Email déjà utilisé",
   "geolocalization_failed": "La géolocalisation a échoué pour l'adresse %1$s",
+  "geolocate_me": "me géolocaliser",
   "global_balance": "solde global",
   "gps_not_authorized": "activez le GPS et autorisez «Monujo» à l'utiliser pour vous localiser",
   "gps_not_enabled": "activez le GPS pour permettre à «Monujo» de vous localiser",
