@@ -397,6 +397,9 @@ export class NetworkService extends Observable {
         if (requestParams.apiPath) {
             requestParams.url = this.authority + requestParams.apiPath;
         }
+        if (!requestParams.method) {
+            requestParams.method = 'GET';
+        }
         // if (!this.connected && !requestParams.cachePolicy) {
         //     requestParams.cachePolicy = 'onlyCache';
         // }
