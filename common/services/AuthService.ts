@@ -4,7 +4,6 @@ import dayjs from 'dayjs';
 import { MapBounds } from '@nativescript-community/ui-carto/core';
 import { FakeError, HTTPError, HttpRequestOptions, NetworkService, base64Encode } from './NetworkService';
 import { ImageAsset } from '@nativescript/core/image-asset';
-import mergeOptions from 'merge-options';
 import { ImageSource } from '@nativescript/core/image-source';
 import { alert, login } from '@nativescript-community/ui-material-dialogs';
 import { $t, $tc, $tt, $tu } from '../helpers/locale';
@@ -366,7 +365,6 @@ export default class AuthService extends NetworkService {
     @objectProperty userProfile: UserProfile;
     // @objectProperty loginParams: LoginParams;
     @objectProperty recipientHistory: User[];
-    @objectProperty recipientfavorites: User[];
     @stringProperty pushToken: string;
     authority = `https://${APP_HOST}`;
     lokAPI: NativeLokAPI;
@@ -511,17 +509,17 @@ export default class AuthService extends NetworkService {
 
         const currentData = pick(this.userProfile as any, editableKeys);
 
-        const actualData = mergeOptions(currentData, data);
-        if (actualData.address) {
-            actualData.address = pick(actualData.address, ['street1', 'street2', 'zipCity']);
-            if (actualData.address.zipCity) {
-                // actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
-                // currentData.address.zipCity = pick(currentData.address, ['street1', 'street2', 'zipCity']);
-                actualData.address.zipCity = `${actualData.address.zipCity.zipCode} ${actualData.address.zipCity.city}`;
-                // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
-            }
-        }
-        const params = await getFormData(actualData);
+        // const actualData = mergeOptions(currentData, data);
+        // if (actualData.address) {
+        //     actualData.address = pick(actualData.address, ['street1', 'street2', 'zipCity']);
+        //     if (actualData.address.zipCity) {
+        //         // actualData.address.zipCity = pick(actualData.address.zipCity, ['zipCode', 'city']);
+        //         // currentData.address.zipCity = pick(currentData.address, ['street1', 'street2', 'zipCity']);
+        //         actualData.address.zipCity = `${actualData.address.zipCity.zipCode} ${actualData.address.zipCity.city}`;
+        //         // currentData.address.zipCity = pick(currentData.address.zipCity, ['city', 'zipCode']);
+        //     }
+        // }
+        const params = await getFormData(currentData);
         const result = await this.request({
             headers: {
                 'Content-Type': 'multipart/form-data'
@@ -573,15 +571,15 @@ export default class AuthService extends NetworkService {
         }).then(() => this.getUserProfile());
     }
 
-    async getZipCities(zipCity: ZipCity) {
-        return this.request({
-            apiPath: '/zipcities',
-            body: {
-                search: `${zipCity.zipCode} ${zipCity.city}`
-            },
-            method: 'POST'
-        });
-    }
+    // async getZipCities(zipCity: ZipCity) {
+    //     return this.request({
+    //         apiPath: '/zipcities',
+    //         body: {
+    //             search: `${zipCity.zipCode} ${zipCity.city}`
+    //         },
+    //         method: 'POST'
+    //     });
+    // }
     async autocompleteAddress(query: string) {
         const result = await this.request({
             url: 'https://photon.komoot.de/api',
@@ -812,7 +810,6 @@ export default class AuthService extends NetworkService {
         this.token = null;
         // this.loginParams = null;
         this.recipientHistory = null;
-        this.recipientfavorites = null;
         this.userId = null;
         if (wasLoggedin) {
             this.notify({
@@ -821,28 +818,28 @@ export default class AuthService extends NetworkService {
             });
         }
     }
-
+    async getFavorites() {
+        try {
+            const partners = await this.lokAPI.$post('/partner/favorite');
+            console.log('getFavorites', partners);
+            const recipients: LokAPIType.IRecipient[] = [];
+            for (let index = 0; index < partners.rows.length; index++) {
+                recipients.push(...(await this.lokAPI.makeRecipient(partners.rows[index])));
+            }
+            return recipients;
+        } catch (error) {
+            throw error;
+        }
+    }
     async toggleFavorite(partner: User): Promise<User> {
         try {
-            const res: User = await this.lokAPI.$post(`/partner/${partner.id}/toggle_favorite`);
-            const isFavorite = res.is_favorite;
-            if (isFavorite) {
-                const newArray = this.recipientfavorites || [];
-                newArray.push(partner);
-                this.recipientfavorites = newArray;
-            } else if (this.recipientfavorites) {
-                const index = this.recipientfavorites.findIndex((f) => f.id === partner.id);
-                if (index >= 0) {
-                    this.recipientfavorites.splice(index, 1);
-                    this.recipientfavorites = this.recipientfavorites;
-                }
-            }
-            console.log('this.recipientfavorites', this.recipientfavorites);
+            await this.lokAPI.toggleFavorite(partner);
+            // console.log('this.recipientfavorites', this.recipientfavorites);
             this.notify({
                 eventName: ProfileEvent,
-                data: res
+                data: partner
             } as ProfileEventData);
-            return res;
+            return partner;
         } catch (error) {
             throw error;
         }
