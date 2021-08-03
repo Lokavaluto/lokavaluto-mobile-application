@@ -16,8 +16,8 @@
 			marker-type: ellipse;
 			marker-line-color: #fff;
 			marker-fill: #8DA378;
-			marker-width: 24;
-			marker-height: 24;
+			marker-width: linear([view::zoom], (7, 14), (18, 24));
+			marker-height: linear([view::zoom], (7, 14), (18, 24));
 			marker-allow-overlap: true;
 			marker-clip: false;
 		}
