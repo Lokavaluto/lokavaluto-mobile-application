@@ -9,7 +9,7 @@
     <key>CFBundleDevelopmentRegion</key>
     <string>en</string>
     <key>CFBundleDisplayName</key>
-    <string>lokavaluto</string>
+    <string>Monujo</string>
     <key>CFBundleExecutable</key>
     <string>${EXECUTABLE_NAME}</string>
     <key>CFBundleInfoDictionaryVersion</key>
@@ -83,10 +83,10 @@
       </dict>
     </dict>
     <key>NSFaceIDUsageDescription</key>
-    <string>lokavaluto uses biometric services to secure your transactions</string>
+    <string>Monujo uses biometric services to secure your transactions</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>lokavaluto needs your location</string>
+    <string>Monujo needs your location</string>
     <key>NSCameraUsageDescription</key>
-    <string>lokavaluto needs your camera to scan QRCodes</string>
+    <string>Monujo needs your camera to scan QRCodes</string>
   </dict>
 </plist>

@@ -406,14 +406,14 @@ module.exports = (env, params = {}) => {
             console.log('appVersion', appVersion, buildNumber);
 
             config.plugins.push(
-                // @ts-ignore
                 new SentryCliPlugin({
                     release: appVersion,
                     urlPrefix: 'app:///',
                     rewrite: true,
+                    release: `${nconfig.id}@${appVersion}+${buildNumber}`,
                     dist: `${buildNumber}.${platform}`,
-                    ignore: ['tns-java-classes', 'hot-update'],
-                    include: [dist, join(dist, process.env.SOURCEMAP_REL_DIR)]
+                    ignoreFile: '.sentrycliignore',
+                    include: [join(dist, process.env.SOURCEMAP_REL_DIR)]
                 })
             );
         } else {
