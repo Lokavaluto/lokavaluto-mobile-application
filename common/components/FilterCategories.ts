@@ -6,7 +6,6 @@ import BaseVueComponent from './BaseVueComponent';
 export default class FilterCategories extends BaseVueComponent {
     @Prop() categories: {
         id: string;
-        slug: string;
         name: string;
     }[];
     @Prop() filterSlugs: string[];
@@ -16,12 +15,12 @@ export default class FilterCategories extends BaseVueComponent {
 
     mounted() {
         super.mounted();
-        this.currentFilterSlugs = this.filterSlugs;
+        this.currentFilterSlugs = this.filterSlugs || [];
         this.dataItems = new ObservableArray(
             [{ name: this.$tc('all'), selected: this.filterSlugs.length === 0 }].concat(
                 this.categories.map((c) => ({
                     ...c,
-                    selected: this.currentFilterSlugs.indexOf(c.slug) !== -1
+                    selected: this.currentFilterSlugs.indexOf(c.id) !== -1
                 }))
             )
         );
@@ -31,15 +30,15 @@ export default class FilterCategories extends BaseVueComponent {
     }
     onShownInBottomSheet() {}
     isSelected(item) {
-        if (item.slug) {
-            const index = this.currentFilterSlugs.indexOf(item.slug);
+        if (item.id) {
+            const index = this.currentFilterSlugs.indexOf(item.id);
             return index !== -1;
         } else {
             return this.currentFilterSlugs.length === 0;
         }
     }
     updateItem(key: string, selected: boolean) {
-        const index = this.categories.findIndex((d) => key === d.slug);
+        const index = this.categories.findIndex((d) => key === d.id);
         if (index !== -1) {
             this.dataItems.setItem(index + 1, Object.assign(this.dataItems.getItem(index + 1), { selected }));
         }
@@ -48,17 +47,18 @@ export default class FilterCategories extends BaseVueComponent {
         if (!item) {
             return;
         }
-        if (item.slug) {
+        console.log('onTap', item.id);
+        if (item.id !== undefined) {
             if (this.currentFilterSlugs.length === 0) {
                 this.dataItems.setItem(0, Object.assign(this.dataItems.getItem(0), { selected: false }));
             }
-            const index = this.currentFilterSlugs.indexOf(item.slug);
+            const index = this.currentFilterSlugs.indexOf(item.id);
             if (index === -1) {
-                this.currentFilterSlugs.push(item.slug);
-                this.updateItem(item.slug, true);
+                this.currentFilterSlugs.push(item.id);
+                this.updateItem(item.id, true);
             } else {
                 this.currentFilterSlugs.splice(index, 1);
-                this.updateItem(item.slug, false);
+                this.updateItem(item.id, false);
             }
         } else {
             this.currentFilterSlugs.forEach((s) => this.updateItem(s, false));

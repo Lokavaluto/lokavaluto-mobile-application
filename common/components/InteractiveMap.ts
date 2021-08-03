@@ -66,6 +66,7 @@ export default class InteractiveMap extends BaseVueComponent {
             if (!this.mapCategories) {
                 this.$authService.categories().then((r) => {
                     this.mapCategories = categories = r;
+                    console.log('mapCategories', this.mapCategories);
                 });
             }
         }

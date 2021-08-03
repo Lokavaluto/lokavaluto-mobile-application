@@ -1,6 +1,6 @@
 <template>
     <BasePage id="map" :title="$t('map')" showMenuIcon>
-        <InteractiveMap />
+        <InteractiveMap :locationButton="true" />
     </BasePage>
 </template>
 

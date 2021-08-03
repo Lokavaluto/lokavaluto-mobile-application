@@ -768,10 +768,9 @@ export default class AuthService extends NetworkService {
     }
     async categories() {
         const res = await this.request<{ rows: { id: number; name: string }[] }>({
-            apiPath: '/lokavaluto_api/public/partner_industry/get_all',
-            method: 'POST'
+            apiPath: '/lokavaluto_api/public/partner_industry/get'
         });
-        return res.rows.map((c) => c.name);
+        return res.rows;
     }
 
     async login(user: LoginParams) {

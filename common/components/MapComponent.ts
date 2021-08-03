@@ -237,10 +237,9 @@ export default class MapComponent extends BaseVueComponent {
             }
         ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
-        // geojson.features.unshift(perimeterGeoJSON.features[0]);
         this.ignoreStable = true;
-        this.getOrCreateLocalVectorTileLayer();
         this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
+        this.getOrCreateLocalVectorTileLayer();
     }
     onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;
