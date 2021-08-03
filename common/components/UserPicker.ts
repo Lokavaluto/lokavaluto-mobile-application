@@ -68,7 +68,7 @@ export default class UserPicker extends PageComponent {
             }
         }
         if (index2 >= 0) {
-            this._dataItems[index2].is_favorite = isFavorite;
+            this._dataItems[index2].jsonData.is_favorite = isFavorite;
         }
         this.updateFilteredItems();
     }
@@ -76,7 +76,7 @@ export default class UserPicker extends PageComponent {
         try {
             const historyAndFavsItems = [];
             const history = this.$authService.recipientHistory;
-            const favorites = this.$authService.recipientfavorites?.slice(0);
+            const favorites = await this.$authService.getFavorites();
             if (history) {
                 for (let index = 0; index < history.length; index++) {
                     const data = history[index];
@@ -91,15 +91,10 @@ export default class UserPicker extends PageComponent {
                             historyAndFavsItems.push(r);
                         });
                     }
-                    }
+                }
             }
             if (favorites) {
-                for (let index = 0; index < favorites.length; index++) {
-                    const recipients = await this.$authService.lokAPI.makeRecipient(favorites[index]);
-                    recipients.forEach((r) => {
-                        historyAndFavsItems.push(r);
-                    });
-                }
+                historyAndFavsItems.push(...favorites);
             }
             this.dataItems = this.historyAndFavsItems = historyAndFavsItems;
         } catch (error) {
