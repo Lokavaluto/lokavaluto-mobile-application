@@ -48,7 +48,7 @@
         "@nativescript-community/ui-material-textfield": "5.3.14",
         "@nativescript-community/ui-pager": "13.0.24",
         "@nativescript-community/ui-persistent-bottomsheet": "^0.0.17",
-        "@nativescript-community/ui-webview": "1.2.4",
+        "@nativescript-community/ui-webview": "1.2.5",
         "@nativescript/email": "2.0.5",
         "@nativescript/fingerprint-auth": "7.0.0",
         "@nativescript/imagepicker": "1.0.5",
