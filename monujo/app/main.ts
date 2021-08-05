@@ -71,6 +71,13 @@ themer.createShape('round', {
         unit: '%'
     }
 });
+themer.createShape('homeCard', {
+    cornerFamily: 'rounded' as any,
+    cornerSizeBottomRight: 0,
+    cornerSizeTopRight: 20,
+    cornerSizeBottomLeft: 0,
+    cornerSizeTopLeft: 20
+});
 
 import App from '~/common/components/App';
 import { setMapPosKeys } from '@nativescript-community/ui-carto/core/index.common';

@@ -148,6 +148,14 @@ export default class Home extends PageComponent {
             this.showError(error);
         }
     }
+    async goToCredit() {
+        try {
+            this.$getAppComponent().navigateToUrl(ComponentIds.Credit, {
+            });
+        } catch (error) {
+            this.showError(error);
+        }
+    }
     async goToMap() {
         console.log('goToMap    ');
         try {
