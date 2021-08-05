@@ -33,17 +33,6 @@ export default class SendAmountWindow extends PageComponent {
     get amountTF() {
         return this.getRef<TextField>('amountTF');
     }
-    // _amountError: string = null;
-    // canStartTransfer = false;
-    // account = null;
-    // get amountError() {
-    //     return this._amountError;
-    // }
-    // set amountError(error) {
-    //     this._amountError = error;
-    //     this.$emit('amountError', error);
-    // }
-
     mounted(): void {
         super.mounted();
     }
@@ -88,24 +77,6 @@ export default class SendAmountWindow extends PageComponent {
         }
     }
 
-    // checkForm() {
-    //     if (!this.reason || this.reason.length === 0) {
-    //         this.reasonError = this.$t('reason_required');
-    //     } else {
-    //         this.reasonError = null;
-    //         // this.showError(this.reasonError);
-    //     }
-    //     if (this.account && this.account.balance === 0) {
-    //         this.amountError = this.$t('non_sufficient_funds');
-    //     } else {
-    //         this.amountError = null;
-    //     }
-    //     this.canStartTransfer = this.amount > 0 && !!this.account && (FAKE_ALL || this.account.balance > 0) && !!this.recipient && !this.reasonError;
-    // }
-    // onInputChange(e: PropertyChangeData, value) {
-    //     this.checkForm();
-    // }
-
     async submit() {
         if (!this.amount) {
             return;
@@ -114,10 +85,6 @@ export default class SendAmountWindow extends PageComponent {
             return this.showError(new NoNetworkError());
         }
         try {
-            // const canSubmit = await this.$securityService.validateSecurity(this, { allowClose: true });
-            // if (!canSubmit) {
-            //     throw new Error(this.$t('wrong_security'));
-            // }
             let r;
             if (!FAKE_ALL) {
                 this.showLoading(this.$t('loading'));
@@ -150,8 +117,5 @@ export default class SendAmountWindow extends PageComponent {
         } catch (err) {
             this.showError(err);
         }
-        // showSnack({
-        //     message: this.$t('transaction_done', amount, recipient)
-        // });
     }
 }

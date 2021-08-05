@@ -30,7 +30,6 @@ import TabsBar from '~/common/components/TabsBar.vue';
 
 //@ts-ignore
 import Pager from '@nativescript-community/ui-pager/vue';
-import SVGPlugin from '@nativescript-community/ui-svg/vue';
 
 const Plugin = {
     install(Vue) {
@@ -47,7 +46,6 @@ const Plugin = {
         Vue.use(CollectionViewPlugin);
         Vue.use(DrawerPlugin);
         Vue.use(ProgressPlugin);
-        Vue.use(SVGPlugin);
         Vue.use(CardViewPlugin);
         Vue.use(CanvasLabelPlugin);
         Vue.use(CanvasPlugin);
@@ -71,7 +69,6 @@ const Plugin = {
         Vue.registerElement('PullToRefresh', () => require('@akylas/nativescript-pulltorefresh').PullToRefresh);
         Vue.registerElement('BarcodeView', () => require('@nativescript-community/ui-barcodeview').BarcodeView);
         Vue.registerElement('AWebView', () => require('@nativescript-community/ui-webview').AWebView);
-        // registerElement('SVGImage', () => require('@teammaestro/nativescript-svg').SVGImage);
     }
 };
 

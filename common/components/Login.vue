@@ -1,8 +1,5 @@
 <template>
     <BasePage @navigatedTo="onNavigatedTo" :actionBarHeight="logoViewHeight" :modal="modal">
-        <!-- <StackLayout verticalAlignment="top">
-            <SVGView :height="logoViewHeight" src="~/assets/logo_big.svg" :backgroundColor="themeColor" />
-        </StackLayout> -->
         <ScrollView ref="scrollView" class="pageContent">
             <StackLayout>
                 <StackLayout class="form" horizontalAlignment="center">
