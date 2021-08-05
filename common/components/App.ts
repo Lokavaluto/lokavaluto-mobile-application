@@ -61,6 +61,7 @@ export enum ComponentIds {
     Situation = 'situation',
     Profile = 'profile',
     SendReceive = 'sendreceive',
+    Credit = 'credit',
     Transfer = 'transfer',
     Home = 'home',
     Map = 'map',
@@ -110,6 +111,9 @@ export default class App extends BaseVueComponent {
         },
         [ComponentIds.SendReceive]: {
             component: async () => (await import('~/common/components/SendReceiveWindow')).default
+        },
+        [ComponentIds.Credit]: {
+            component: async () => (await import('~/common/components/CreditAmountWindow')).default
         }
     };
     selectedTabIndex: number = 0;
