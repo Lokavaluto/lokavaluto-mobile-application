@@ -1,0 +1,15 @@
+*Features*
+- credit window first try
+
+*Bug fixes*
+- map component fixes
+- action bar fixes
+- map style fix
+- user picker favorite fix
+- home layout fi
+- *ios:* theme colors fix
+- ios splash
+- home layout fix on iOS
+- *ios:* style fi
+- dismiss keyboard on logout
+- *ios:* button layout fix
