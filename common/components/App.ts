@@ -17,7 +17,7 @@ import {
     resumeEvent,
     suspendEvent
 } from '@nativescript/core/application';
-import { ad } from '@nativescript/core/utils/utils';
+import { ad, dismissSoftInput } from '@nativescript/core/utils/utils';
 import { compose } from '@nativescript/email';
 import { Drawer } from '@nativescript-community/ui-drawer';
 import { Vibrate } from 'nativescript-vibrate';
@@ -330,6 +330,7 @@ export default class App extends BaseVueComponent {
         // }
     }
     onLoggedOut() {
+        dismissSoftInput();
         if (WITH_PUSH_NOTIFICATIONS) {
             this.$authService.unregisterPushToken();
         }
