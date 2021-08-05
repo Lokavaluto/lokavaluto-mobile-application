@@ -31,7 +31,7 @@ export default class InteractiveMap extends BaseVueComponent {
     shownUsers: User[] = [];
     loading = false;
     mapCategories = null;
-    mapFilterSlugs: string[] = [];
+    mapFilterSlugs: number[] = [];
     bottomSheetHeight = 200;
     bottomSheetSteps = [0, 200];
     bottomSheetPanGestureOptions = { minDist: 70 };
