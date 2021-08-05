@@ -40,11 +40,6 @@ Prepare the application.
 fastlane build_flavor
 ```
 
-### sentry_upload_sourcemaps
-```
-fastlane sentry_upload_sourcemaps
-```
-
 ### get_changelog
 ```
 fastlane get_changelog
@@ -54,11 +49,6 @@ fastlane get_changelog
 ----
 
 ## iOS
-### ios registerDevice
-```
-fastlane ios registerDevice
-```
-Register device
 ### ios sentry_upload
 ```
 fastlane ios sentry_upload
