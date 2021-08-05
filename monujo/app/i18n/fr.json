@@ -6,6 +6,7 @@
   "account.enter_description": "Saisissez une description",
   "account.not_found": "Aucun compte n'a été trouvé",
   "account_history": "historique du compte",
+  "actual_balance": "solde actuel",
   "add": "ajouter",
   "add_beneficiary": "ajouter un bénéficiaire",
   "add_favorite": "ajouter un favori",
@@ -18,6 +19,7 @@
   "already_in_use": "Déjà utilisé",
   "amount": "montant",
   "amount_required": "un montant est nécessaire",
+  "amount_to_credit": "montant à créditer",
   "app": {
     "name": "Monujo"
   },
@@ -53,6 +55,7 @@
   "copied_clipboard": "copié dans le presse-papier",
   "credit": "crediter",
   "credit_account": "créditer votre compte",
+  "credit_my_account": "créditer mon compte",
   "cumulated_amount_threshold": "Le plafond du montant cumulé quotidien a été dépassé (%1$i Monujos)",
   "cumulated_quantity_threshold": "Le plafond du nombre de paiements quotidien a été dépassé (%1$i paiements)",
   "current_passcode": "ancien PIN",
