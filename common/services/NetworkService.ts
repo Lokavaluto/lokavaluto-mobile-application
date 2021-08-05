@@ -479,7 +479,7 @@ export class NetworkService extends Observable {
                     return this.handleRequestRetry(requestParams, retry);
                 }
                 // const error = jsonReturn.error_description || jsonReturn.error || jsonReturn;
-                const message = getMessageFromErrorMessageObject(error);
+                const message = getMessageFromErrorMessageObject(error || jsonReturn);
                 // if (error.exception && error.exception.length > 0) {
                 //     message += ': ' + $t(error.exception[0].message.replac(/\s/g, '_').toLowerCase());
                 // }

@@ -95,7 +95,7 @@ function getCacheControl(maxAge = 60, stale = 59) {
     return `max-age=${maxAge}, max-stale=${stale}, stale-while-revalidate=${stale}`;
 }
 
-export class User implements LokAPIType.IPartner {
+export interface User extends LokAPIType.IContact {
     id: number;
     name: string;
     street: string;
@@ -134,66 +134,6 @@ export class User implements LokAPIType.IPartner {
     // enabled: boolean = null;
     // groups: string[] = null;
     // groupNames: string[] = null;
-}
-
-const UserKeys = Object.getOwnPropertyNames(new User());
-
-function pick<T, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
-    const ret: any = {};
-    keys.forEach((key) => {
-        ret[key] = obj[key];
-    });
-    return ret;
-}
-
-function cleanupUser(user: any) {
-    const result = pick(user, UserKeys);
-
-    // if (result.creationDate) {
-    //     result.creationDate = result.creationDate.timestamp * 1000;
-    // }
-    // if (result.image) {
-    //     result.image = `${APP_URL}/${result.image.webPath}`;
-    //     // } else {
-    //     // result.image = ``;
-    // }
-    // if (user.account_number) {
-    //     // in case of perso user returned we might have account_number instead of mainICC
-    //     result.mainICC = user.account_number;
-    // }
-    // if (user.phones) {
-    //     result.phoneNumbers = [];
-    //     result.smsIds = [];
-    //     user.phones.forEach((p) => {
-    //         if (p.phoneNumber) {
-    //             result.phoneNumbers.push({
-    //                 id: p.id,
-    //                 phoneNumber: p.phoneNumber
-    //             });
-    //         }
-    //         if (p.identifier) {
-    //             result.smsIds.push({
-    //                 id: p.id,
-    //                 identifier: p.identifier
-    //             });
-    //         }
-    //     });
-    // }
-    // if (result.address) {
-    //     result.address = {
-    //         street1: result.address.street1,
-    //         street2: result.address.street2,
-    //         lat: result.address.lat,
-    //         lon: result.address.lon,
-    //         zipCity: {
-    //             zipCode: result.address.zipCity.zipCode,
-    //             city: result.address.zipCity.city,
-    //             name: result.address.zipCity.name
-    //         }
-    //     };
-    // }
-
-    return result as User;
 }
 
 export interface LoginParams {
@@ -438,7 +378,7 @@ export default class AuthService extends NetworkService {
     }
 
     async getUserProfile(userId?: number) {
-        const profile = await this.lokAPI.getUserProfile(this.userId);
+        const profile = await this.lokAPI.getMyContact(this.userId);
         if (!profile) {
             return null;
         }
@@ -507,7 +447,7 @@ export default class AuthService extends NetworkService {
             editableKeys.push('image');
         } //if user is admin...
 
-        const currentData = pick(this.userProfile as any, editableKeys);
+        const currentData = this.userProfile;
 
         // const actualData = mergeOptions(currentData, data);
         // if (actualData.address) {
@@ -653,12 +593,7 @@ export default class AuthService extends NetworkService {
             apiPath: '/mobile/beneficiaries',
             method: 'GET'
         });
-        this.beneficiaries = result = result
-            .filter((b) => !!b.user)
-            .map((b) => {
-                b.user = cleanupUser(b.user);
-                return b;
-            });
+        this.beneficiaries = result = result.filter((b) => !!b.user);
         // this.lastBenificiariesUpdateTime = Date.now();
         return result;
     }
@@ -682,12 +617,12 @@ export default class AuthService extends NetworkService {
         payment_context?: boolean;
     }) {
         try {
-            return await this.lokAPI.searchRecipient(query);
+            return await this.lokAPI.searchRecipients(query);
         } catch (error) {
             throw error;
         }
     }
-    async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: string[]) {
+    async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: number[]) {
         let boundingBox = {
             minLon: '',
             maxLon: '',
@@ -703,13 +638,9 @@ export default class AuthService extends NetworkService {
             };
         }
 
-        const result = await this.request<{ rows: User[] }>({
-            apiPath: '/lokavaluto_api/public/partner_map/search_in_area',
-            method: 'POST',
-            body: {
-                bounding_box: boundingBox,
-                categories
-            }
+        const result = await this.lokAPI.get('/partner_map/search', {
+            bounding_box: boundingBox,
+            categories
         });
         // result = (result as any).result || result;
         // if (!Array.isArray(result)) {
@@ -728,8 +659,8 @@ export default class AuthService extends NetworkService {
         });
     }
 
-    public async transfer(fromAccount: any, recipient: LokAPIType.IRecipient, amount: number, description: string): Promise<LokAPIType.IPayment> {
-        const result = await this.lokAPI.transfer(fromAccount, recipient, amount, description);
+    public async transfer(fromAccount: LokAPIType.IAccount, recipient: LokAPIType.IRecipient, amount: number, description: string): Promise<LokAPIType.IPayment> {
+        const result = await fromAccount.transfer(recipient, amount, description);
 
         // call getAccounts to update accounts balance after transfer
         this.getAccounts();
@@ -833,7 +764,7 @@ export default class AuthService extends NetworkService {
     }
     async toggleFavorite(partner: User): Promise<User> {
         try {
-            await this.lokAPI.toggleFavorite(partner);
+            await partner.toggleFavorite();
             // console.log('this.recipientfavorites', this.recipientfavorites);
             this.notify({
                 eventName: ProfileEvent,
