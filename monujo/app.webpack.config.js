@@ -319,6 +319,17 @@ module.exports = (env, params = {}) => {
 
     // we remove default rules
     config.plugins = config.plugins.filter((p) => ['CopyPlugin', 'ForkTsCheckerWebpackPlugin'].indexOf(p.constructor.name) === -1);
+
+    config.externalsPresets = { node: false };
+    config.resolve.fallback = config.resolve.fallback || {};
+    config.resolve.fallback.buffer = false;
+    config.resolve.fallback.util = require.resolve('util/');
+    config.resolve.fallback.path = false;
+    config.resolve.fallback.fs = false;
+    config.resolve.fallback.assert = false;
+    config.resolve.fallback.tty = false;
+    config.resolve.fallback.os = false;
+
     // we add our rules
     const globOptions = { dot: false, ignore: [`**/${relative(appPath, appResourcesFullPath)}/**`] };
     const context = nsWebpack.Utils.platform.getEntryDirPath();
