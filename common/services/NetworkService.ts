@@ -259,7 +259,18 @@ interface ReturnError {
     message: string;
 }
 
-function getMessageFromErrorMessageObject(obj: ReturnMessageFormat | ReturnError) {
+function getMessageFromErrorMessageObject(
+    obj:
+        | ReturnMessageFormat
+        | ReturnError
+        | {
+              data?: any;
+              error?: ReturnError;
+              message?: string;
+              errors: ReturnMessageFormat[];
+              messages: ReturnMessageFormat[];
+          }
+) {
     obj = (obj as any).error || obj;
     return $t(obj['key'] ? $t(obj['key'], ...obj['args']) : obj.message);
 }
@@ -414,7 +425,6 @@ export class NetworkService extends Observable {
         const requestStartTime = Date.now();
         if (DEV_LOG) {
             console.log('request', requestParams);
-
         }
         return https.request(requestParams as HttpRequestOptions).then((response) => this.handleRequestResponse(response, requestParams as HttpRequestOptions, requestStartTime, retry)) as Promise<T>;
     }
@@ -437,7 +447,6 @@ export class NetworkService extends Observable {
         const isString = typeof content === 'string';
         if (DEV_LOG) {
             console.log('handleRequestResponse response', requestParams.url, statusCode, response.reason, response.headers, isString, typeof content, content);
-
         }
         if (Math.round(statusCode / 100) !== 2) {
             let jsonReturn: {
