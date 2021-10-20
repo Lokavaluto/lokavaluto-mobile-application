@@ -74,8 +74,6 @@ export default class SecurityService extends Observable {
             .verifyFingerprint({
                 //   title: 'Android title', // optional title (used only on Android)
                 //   message: 'Scan yer finger', // optional (used on both platforms) - for FaceID on iOS see the notes about NSFaceIDUsageDescription
-                authenticationValidityDuration: 10, // optional (used on Android, default 5)
-                useCustomAndroidUI: false // set to true to use a different authentication screen (see below)
             })
             .then((enteredPassword?: string) => {
                 if (enteredPassword === undefined) {
