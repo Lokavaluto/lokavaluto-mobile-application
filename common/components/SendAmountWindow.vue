@@ -37,8 +37,8 @@
                 @textChange="validateAmount"
             />
             <GridLayout columns="*,auto" v-show="!!amount" rows="auto">
-                <TextField :hint="$tc('add_optional_text')" placeholderColor="#BBBBBB" backgroundColor="#ECECEC" verticalAlignment="center" margin="0 10 0 10" borderRadius="20"/>
-                <Button col="1" :text="$tc('next')" @tap="submit"/>
+                <TextField :hint="$tc('add_optional_text')" placeholderColor="#BBBBBB" backgroundColor="#ECECEC" verticalAlignment="center" margin="0 10 0 10" borderRadius="20" />
+                <Button col="1" :text="$tc('next')" @tap="submit" />
             </GridLayout>
         </StackLayout>
     </BasePage>
