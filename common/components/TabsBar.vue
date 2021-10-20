@@ -14,7 +14,8 @@
                 :color="textColor"
                 lineBreak="none"
                 :horizontalAlignment="centered ? 'center' : undefined"
-                textWrap="true"
+                textWrap
+                height="100%"
                 textAlignment="center"
                 verticalTextAlignment="center"
                 :opacity="selected === index ? 1 : 0.7"
@@ -23,15 +24,14 @@
                 padding="0 10 0 10"
                 :fontWeight="selected === index ? 'bold' : 'normal'"
             >
-                <FormattedString>
-                    <Span
-                        :fontFamily="mdiFontFamily"
-                        :visibility="!!option.icon ? 'visible' : 'collapsed'"
-                        :text="option.icon ? option.icon + ' ' : ''"
-                        :color="selected === index ? option.iconSelectedColor : option.iconColor"
-                    />
-                    <Span :text="option.text || option" />
-                </FormattedString>
+                <Span
+                    :fontFamily="mdiFontFamily"
+                    :fontSize="fontSize"
+                    :visibility="!!option.icon ? 'visible' : 'collapsed'"
+                    :text="option.icon ? option.icon + ' ' : ''"
+                    :color="selected === index ? option.iconSelectedColor : option.iconColor"
+                />
+                <Span :text="option.text || option" :fontSize="fontSize" />
             </Label>
         </GridLayout>
     </GridLayout>

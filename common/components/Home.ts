@@ -5,7 +5,6 @@ import { Component } from 'vue-property-decorator';
 import { AccountInfoEvent, AccountInfoEventData, LoggedinEvent, LoggedoutEvent } from '../services/AuthService';
 import { colorPrimary, mdiFontFamily } from '../variables';
 import { ComponentIds } from './App';
-import CreditAccount from './CreditAccount';
 import InteractiveMap from './InteractiveMap';
 import PageComponent from './PageComponent';
 
@@ -112,13 +111,6 @@ export default class Home extends PageComponent {
         //     // page.androidStatusBarBackground = new Color(this.colorPrimaryDark);
         // }
     }
-    creditAccount() {
-        // this.openLink(CREDIT_URL);
-
-        this.navigateTo(CreditAccount);
-        // .then(r => {})
-        // .catch(this.showError);
-    }
 
     async goToLogin() {
         try {
@@ -150,14 +142,13 @@ export default class Home extends PageComponent {
     }
     async goToCredit() {
         try {
-            this.$getAppComponent().navigateToUrl(ComponentIds.Credit, {
-            });
+            this.$getAppComponent().navigateToUrl(ComponentIds.Credit, {});
         } catch (error) {
             this.showError(error);
         }
     }
     async goToMap() {
-        console.log('goToMap    ');
+        console.log('goToMap');
         try {
             await this.$getAppComponent().navigateToUrl(ComponentIds.Map);
         } catch (error) {

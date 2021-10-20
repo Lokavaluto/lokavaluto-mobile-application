@@ -752,10 +752,10 @@ export default class AuthService extends NetworkService {
     async getFavorites() {
         try {
             const partners = await this.lokAPI.$post('/partner/favorite');
-            console.log('getFavorites', partners);
             const recipients: LokAPIType.IRecipient[] = [];
             for (let index = 0; index < partners.rows.length; index++) {
-                recipients.push(...(await this.lokAPI.makeRecipient(partners.rows[index])));
+                // recipients.push(...(await this.lokAPI.makeRecipient(partners.rows[index])));
+                recipients.push(partners.rows[index]);
             }
             return recipients;
         } catch (error) {

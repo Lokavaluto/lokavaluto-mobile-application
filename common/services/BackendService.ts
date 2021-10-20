@@ -45,6 +45,7 @@ export const objectProperty = (target: Object, key: string | symbol) => {
     const innerKey = '_' + actualkey;
 
     const savedValue = secureStorage.getSync({ key: actualkey });
+    console.log('savedValue', key, savedValue);
     target[innerKey] = savedValue !== undefined ? JSON.parse(savedValue) : undefined;
 
     // property getter

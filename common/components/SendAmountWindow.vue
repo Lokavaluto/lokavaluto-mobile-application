@@ -28,7 +28,7 @@
                 fontWeight="bold"
                 ref="amountTF"
                 fontSize="36"
-                :hint="$tc('amount')"
+                floating="false"
                 keyboardType="number"
                 digits="0123456789.,"
                 returnKeyType="done"

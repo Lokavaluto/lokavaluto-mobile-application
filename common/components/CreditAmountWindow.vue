@@ -35,6 +35,9 @@
                 @loadFinished="onUrlLoadFinished"
                 domStorage
                 supportZoom="false"
+                builtInZoomControls="false"
+                displayZoomControls="false"
+                viewPortSize="initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
             />
             <MDActivityIndicator v-show="loading" row="1" :busy="{ loading }" verticalAlignment="center" horizontalAlignment="center" />
         </GridLayout>

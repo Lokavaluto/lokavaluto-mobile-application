@@ -2,6 +2,7 @@ import { ClickType, MapBounds, MapPos } from '@nativescript-community/ui-carto/c
 import { VectorTileEventData } from '@nativescript-community/ui-carto/layers/vector';
 import { CartoMap } from '@nativescript-community/ui-carto/ui';
 import * as appSettings from '@nativescript/core/application-settings';
+import { isMainThread } from '@nativescript/core/utils';
 import { throttle } from 'helpful-decorators';
 import { Component, Prop, Watch } from 'vue-property-decorator';
 import { User } from '../services/AuthService';

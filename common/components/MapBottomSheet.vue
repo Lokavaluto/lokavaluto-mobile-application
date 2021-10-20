@@ -3,7 +3,7 @@
         <Pager :items="items" v-model="innerSelectedPageIndex" peaking="20">
             <v-template>
                 <GridLayout padding="0 10 0 5">
-                    <GridLayout backgroundColor="white" borderRadius="20 20 0 0" rows="84,*" columns="*,*">
+                    <GridLayout backgroundColor="white" borderRadius="20 20 0 0" rows="84,*" columns="auto,*">
                         <NSImg backgroundColor="black" borderRadius="20 20 0 0" colSpan="2" />
                         <Label color="white" colSpan="2" :text="item.name" verticalTextAlignment="bottom" padding="0 15 4 15" fontSize="24" />
                         <Label :color="colorPrimary" row="1" colSpan="2" :text="item.opening_time" verticalTextAlignment="top" padding="4 15 0 15" fontSize="13" />

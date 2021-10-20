@@ -15,6 +15,7 @@ import { MBVectorTileDecoder } from '@nativescript-community/ui-carto/vectortile
 import { getNumber, getString, setNumber, setString } from '@nativescript/core/application-settings';
 import { Color } from '@nativescript/core/color';
 import { Folder, knownFolders, path } from '@nativescript/core/file-system';
+import { isMainThread } from '@nativescript/core/utils';
 import { FeatureCollection, Point as GeoJSONPoint } from 'geojson';
 import { throttle } from 'helpful-decorators';
 import { Component, Prop } from 'vue-property-decorator';
@@ -206,6 +207,8 @@ export default class MapComponent extends BaseVueComponent {
                 dirPath: '~/assets/styles/lokavaluto'
             });
             const layer = (this.localVectorTileLayer = new VectorTileLayer({
+                labelBlendingSpeed: 0,
+                layerBlendingSpeed: 0,
                 // preloading: true,
                 dataSource: this.localVectorTileDataSource,
                 decoder
@@ -238,8 +241,10 @@ export default class MapComponent extends BaseVueComponent {
         ) as FeatureCollection<GeoJSONPoint, GeoJSONProperties>;
         geojson.features.forEach((f) => (f.properties.id = f.properties.id + ''));
         this.ignoreStable = true;
-        this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
         this.getOrCreateLocalVectorTileLayer();
+        setTimeout(() => {
+            this.localVectorTileDataSource.setLayerGeoJSON(1, geojson);
+        }, 0);
     }
     onVectorElementClicked(data: VectorElementEventData<LatLonKeys>) {
         const { clickType, position, elementPos, metaData, element } = data;

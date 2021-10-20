@@ -14,7 +14,8 @@
                         width="80"
                         height="80"
                         verticalAlignment="bottom"
-                        :iamge="userProfile.image"
+                        horizontalAlignment="center"
+                        :image="userProfile.image"
                         backgroundColor="white"
                         stretch="aspectFill"
                         noCache

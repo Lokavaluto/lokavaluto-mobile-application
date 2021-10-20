@@ -9,6 +9,7 @@ import { TextField } from '@nativescript-community/ui-material-textfield';
 import { NoNetworkError } from '../services/NetworkService';
 import { Vibrate } from 'nativescript-vibrate';
 import Vue from 'vue';
+import { showSnack } from '@nativescript-community/ui-material-snackbar';
 
 import { t as LokAPIType } from '~/lokapi/src/index';
 import { LoadEventData } from '@nativescript-community/ui-webview';
@@ -104,45 +105,29 @@ export default class CreditAmountWindow extends PageComponent {
                 const account = (await this.$authService.lokAPI.getAccounts())[0];
                 const result = await account.getCreditUrl(this.amount);
                 this.creditUrl = result.order_url;
-                console.log('result', result);
                 this.showWebView = true;
-                // r = await this.$authService.transfer(this.account, this.recipient, this.amount, this.description);
-                // this.hideLoading();
             }
-
-            // this.close();
-            // this.$getAppComponent().navigateBackToRoot();
-            // this.showTransactionDone(r);
-            // new Vibrate().vibrate(500);
         } catch (err) {
             this.showError(err);
         } finally {
             this.hideLoading();
         }
     }
-    async showTransactionDone(payment: LokAPIType.IPayment) {
-        // await timeout(700);
-        try {
-            // const component = (await import('~/common/components/TransferConfirmation')).default;
-            // this.$showBottomSheet(component, {
-            //     props: {
-            //         account: this.account,
-            //         recipient: this.recipient,
-            //         amount: this.amount,
-            //         description: this.description
-            //     }
-            // });
-        } catch (err) {
-            this.showError(err);
-        }
-    }
 
     onUrlLoadStarted(e: LoadEventData) {
+        if (e.url.endsWith('success=1')) {
+            // trigger an account refresh to update home
+            this.$authService.getAccounts();
+            this.$getAppComponent().navigateBackToRoot();
+            showSnack({
+                message: this.$t('account_credited')
+            });
+        }
         this.loading = true;
         console.log(e.eventName, e.navigationType, e.url);
     }
     onUrlLoadFinished(e: LoadEventData) {
-        this.loading = true;
+        this.loading = false;
         console.log(e.eventName, e.navigationType, e.url);
         // if (e.url === CREDIT_URL) {
         //     const profile = this.$authService.userProfile;

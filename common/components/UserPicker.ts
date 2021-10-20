@@ -55,7 +55,6 @@ export default class UserPicker extends PageComponent {
         const isFavorite = event.data.is_favorite;
         const index = this.historyAndFavsItems.findIndex((f) => f.id === id);
         const index2 = this._dataItems.findIndex((f) => f.id === id);
-        console.log('onProfileUpdate', id, isFavorite, index, index2);
         if (isFavorite) {
             if (index < 0) {
                 this.historyAndFavsItems.push(event.data);
@@ -84,12 +83,10 @@ export default class UserPicker extends PageComponent {
                     if (favIndex >= 0) {
                         favorites.splice(favIndex, 1);
                     }
-                    const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
-                    if (recipients) {
-                        recipients.forEach((r) => {
-                            r['isHistory'] = true;
-                            historyAndFavsItems.push(r);
-                        });
+                    const recipient = history[index];
+                    if (recipient) {
+                        recipient['isHistory'] = true;
+                        historyAndFavsItems.push(recipient);
                     }
                 }
             }
@@ -212,7 +209,8 @@ export default class UserPicker extends PageComponent {
         }
         const history = this.$authService.recipientHistory || [];
         if (history.findIndex((h) => h && h.id === item.id) === -1) {
-            history.push(item.jsonData);
+            console.log('item', item);
+            history.push(item.jsonData || item);
             this.$authService.recipientHistory = history;
         }
         this.$modal.close(item);

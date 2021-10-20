@@ -6,14 +6,17 @@
             <Label :visibility="!!subtitle ? 'visible' : 'collapse'" class="actionBarSubtitle" :text="subtitle" :themed="themed" />
         </StackLayout>
         <!-- </StackLayout> -->
-        <ContentView colSpan="3" rowSpan="2" verticalAlignment="center">
+        <ContentView colSpan="3" rowSpan="2">
             <slot name="title">
                 <Label
                     v-if="!!showLogo && !title"
                     :fontFamily="appFontFamily"
                     :fontSize="titleFontSize"
+                    :maxFontSize="titleFontSize"
+                    :minFontSize="1"
                     class="actionBarLogo"
                     :themed="themed"
+                    verticalTextAlignment="center"
                     text="app-full_logo"
                     :autoFontSize="true"
                     @tap="$emit('titleTap', $event)"

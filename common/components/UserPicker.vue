@@ -51,7 +51,6 @@
                                 :visibility="item.isHistory ? 'visible' : 'hidden'"
                                 class="mdi"
                                 text="mdi-history"
-                                backgroundColor="#D8D8D8"
                                 color="#636363"
                                 width="40"
                                 fontSize="24"

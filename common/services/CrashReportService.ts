@@ -1,7 +1,7 @@
 import { Observable } from '@nativescript/core/data/observable';
 import { booleanProperty } from './BackendService';
 import * as Sentry from '@nativescript-community/sentry';
-import { getBuildNumber, getVersionName } from '@nativescript-community/extendedinfo';
+import { getAppId, getBuildNumber, getVersionName } from '@nativescript-community/extendedinfo';
 import { Device } from '@nativescript/core/platform';
 import { alert, confirm } from '@nativescript-community/ui-material-dialogs';
 import { Label as HTMLLabel } from '@nativescript-community/ui-label';
@@ -32,10 +32,11 @@ export default class CrashReportService extends Observable {
             this.sentry = Sentry;
             const versionName = await getVersionName();
             const buildNumber = await getBuildNumber();
+            const appId = await getAppId();
             Sentry.init({
                 dsn: SENTRY_DSN,
                 appPrefix: SENTRY_PREFIX,
-                release: `${versionName}`,
+                release: `${appId}@${versionName}+${buildNumber}`,
                 dist: `${buildNumber}.${global.isAndroid ? 'android' : 'ios'}`
             });
             Sentry.setTag('locale', Device.language);

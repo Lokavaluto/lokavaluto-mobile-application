@@ -424,7 +424,7 @@ module.exports = (env, params = {}) => {
                     release: `${nconfig.id}@${appVersion}+${buildNumber}`,
                     dist: `${buildNumber}.${platform}`,
                     ignoreFile: '.sentrycliignore',
-                    include: [join(dist, process.env.SOURCEMAP_REL_DIR)]
+                    include: [dist, join(dist, process.env.SOURCEMAP_REL_DIR)]
                 })
             );
         } else {

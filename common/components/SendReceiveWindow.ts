@@ -22,8 +22,13 @@ export default class SendReceiveWindow extends PageComponent {
 
     mounted(): void {
         super.mounted();
-        this.pageIndex = this.startPageIndex;
-        this.refresh();
+        try {
+            console.log('mounted');
+            this.pageIndex = this.startPageIndex;
+            this.refresh();
+        } catch (err) {
+            console.error(err);
+        }
     }
     destroyed(): void {
         super.destroyed();
@@ -47,7 +52,21 @@ export default class SendReceiveWindow extends PageComponent {
             // if (pullRefresh) {
             //     pullRefresh.refreshing = true;
             // }
-            this.transactions = await this.$authService.lokAPI.getTransactions();
+            const serverTransactions = await this.$authService.lokAPI.getTransactions();
+            this.transactions = serverTransactions
+                .filter((t) => !!t)
+                .map((transaction) => ({
+                    amount: transaction.amount,
+                    currency: transaction.currency,
+                    date: transaction.curredatency,
+                    description: transaction.description,
+                    id: transaction.id,
+                    kind: transaction.kind,
+                    related: transaction.related,
+                    relatedKind: transaction.relatedKind,
+                    relatedUser: transaction.relatedUser
+                }));
+            console.log('this.transactions', this.transactions, typeof this.transactions[0].amount);
         } catch (error) {
             this.showError(error);
         } finally {
@@ -58,6 +77,7 @@ export default class SendReceiveWindow extends PageComponent {
     }
 
     async refresh() {
+        console.log('refresh');
         try {
             let totalSold = 0;
             const accounts = await this.$authService.lokAPI.getAccounts();
@@ -73,8 +93,25 @@ export default class SendReceiveWindow extends PageComponent {
 
     async goToSend() {
         try {
-            const component = (await import('~/common/components/SendWindow')).default;
-            this.navigateTo(component);
+            const component = (await import('~/common/components/UserPicker')).default;
+            const recipient = await this.$showModal(component, {
+                props: {
+                    pro: true,
+                    title: $tc('pick_a_recipient'),
+                    canScanQrCode: true,
+                    modal: true
+                },
+                fullscreen: true
+            });
+            if (!recipient) {
+                return;
+            }
+            const component2 = (await import('~/common/components/SendAmountWindow')).default;
+            this.navigateTo(component2, {
+                props: {
+                    recipient
+                }
+            });
         } catch (error) {
             this.showError(error);
         }
