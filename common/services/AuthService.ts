@@ -597,30 +597,11 @@ export default class AuthService extends NetworkService {
         // this.lastBenificiariesUpdateTime = Date.now();
         return result;
     }
-    async getUsers({
-        sortKey,
-        sortOrder,
-        limit,
-        offset,
-        query,
-        categories,
-        roles,
-        payment_context = false
-    }: {
-        sortKey?: string;
-        sortOrder?: string;
-        limit?: number;
-        offset?: number;
-        query?: string;
-        roles?: string[];
-        categories?: string[];
-        payment_context?: boolean;
-    }) {
-        try {
-            return await this.lokAPI.searchRecipients(query);
-        } catch (error) {
-            throw error;
+    async getUsers({ pro, query }: { pro?: boolean; query?: string }) {
+        if (pro) {
+            return this.lokAPI.searchProRecipients(query);
         }
+        return this.lokAPI.searchRecipients(query);
     }
     async getUsersForMap(mapBounds: MapBounds<LatLonKeys>, categories: number[]) {
         let boundingBox = {
@@ -749,23 +730,9 @@ export default class AuthService extends NetworkService {
             });
         }
     }
-    async getFavorites() {
-        try {
-            const partners = await this.lokAPI.$post('/partner/favorite');
-            const recipients: LokAPIType.IRecipient[] = [];
-            for (let index = 0; index < partners.rows.length; index++) {
-                // recipients.push(...(await this.lokAPI.makeRecipient(partners.rows[index])));
-                recipients.push(partners.rows[index]);
-            }
-            return recipients;
-        } catch (error) {
-            throw error;
-        }
-    }
     async toggleFavorite(partner: User): Promise<User> {
         try {
             await partner.toggleFavorite();
-            // console.log('this.recipientfavorites', this.recipientfavorites);
             this.notify({
                 eventName: ProfileEvent,
                 data: partner
