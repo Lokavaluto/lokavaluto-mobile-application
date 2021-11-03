@@ -16,7 +16,7 @@ dayjs.extend(LocalizedFormat);
 function setLang(newLang) {
     newLang = getOwmLanguage(newLang);
     if (supportedLanguages.indexOf(newLang) === -1) {
-        newLang = 'en';
+        newLang = 'fr';
     }
     lang = newLang;
     console.log('changed lang', lang, Device.region);
