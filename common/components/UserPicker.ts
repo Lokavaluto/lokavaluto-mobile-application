@@ -75,7 +75,11 @@ export default class UserPicker extends PageComponent {
         try {
             const historyAndFavsItems = [];
             const history = this.$authService.recipientHistory;
-            const favorites = await this.$authService.getFavorites();
+            const favorites = (await Promise.all([this.$authService.getUsers({ query: '' }), this.$authService.getUsers({ query: '', pro: true })])).flat();
+            console.log('favorites', favorites.length);
+            console.log('history', history?.length);
+            console.log(Object.keys(favorites[0]['backends'][1]));
+
             if (history) {
                 for (let index = 0; index < history.length; index++) {
                     const data = history[index];
@@ -83,16 +87,19 @@ export default class UserPicker extends PageComponent {
                     if (favIndex >= 0) {
                         favorites.splice(favIndex, 1);
                     }
-                    const recipient = history[index];
-                    if (recipient) {
-                        recipient['isHistory'] = true;
-                        historyAndFavsItems.push(recipient);
+                    const recipients = await this.$authService.lokAPI.makeRecipient(history[index]);
+                    if (recipients) {
+                        recipients.forEach((r) => {
+                            r['isHistory'] = true;
+                            historyAndFavsItems.push(r);
+                        });
                     }
                 }
             }
             if (favorites) {
                 historyAndFavsItems.push(...favorites);
             }
+            console.log('historyAndFavsItems', JSON.stringify(historyAndFavsItems));
             this.dataItems = this.historyAndFavsItems = historyAndFavsItems;
         } catch (error) {
             this.showError(error);
@@ -136,9 +143,17 @@ export default class UserPicker extends PageComponent {
             });
         }
         try {
-            const users = await this.$authService.getUsers({
-                query
-            });
+            const users = (
+                await Promise.all([
+                    this.$authService.getUsers({
+                        query
+                    }),
+                    this.$authService.getUsers({
+                        query,
+                        pro: true
+                    })
+                ])
+            ).flat();
             users.forEach((u) => {
                 if (items.findIndex((i) => i.id === u.id) === -1) {
                     items.push(u);
