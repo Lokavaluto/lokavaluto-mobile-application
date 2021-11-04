@@ -26,10 +26,10 @@ class PersistentStore implements LokAPIType.IPersistentStore {
 }
 
 class NativeLokAPI extends LokAPIAbstract {
-    constructor(host: string, dbName: string, private apiService: AuthService) {
+    constructor(host: string, dbName: string, private httpRequestAuthService: AuthService) {
         super(host, dbName);
     }
-    httpRequest = async (opts: LokAPIType.coreHttpOpts) => this.apiService.lokAPIRequest(opts);
+    httpRequest = async (opts: LokAPIType.coreHttpOpts) => this.httpRequestAuthService(opts);
     base64Encode = base64Encode;
     persistentStore = new PersistentStore();
 }
@@ -310,8 +310,8 @@ export default class AuthService extends NetworkService {
     lokAPI: NativeLokAPI;
     constructor() {
         super();
-
-        this.lokAPI = new NativeLokAPI(APP_HOST, APP_DB, this);
+        var self = this;
+        this.lokAPI = new NativeLokAPI(APP_HOST, APP_DB, (opts) => self.lokAPIRequest(opts));
         this.lokAPI.apiToken = this.token;
     }
 
